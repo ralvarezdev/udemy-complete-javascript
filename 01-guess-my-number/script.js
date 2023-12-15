@@ -17,7 +17,7 @@ function setTextContent (element, text)
   element.textContent = text;
 }
 
-document.querySelector('.again').addEventListener('click', (event) =>
+document.querySelector('.again').addEventListener('click', () =>
 {
   playerWon = false;
 
@@ -32,7 +32,7 @@ document.querySelector('.again').addEventListener('click', (event) =>
   setTextContent(domScore, score);
 });
 
-document.querySelector('.check').addEventListener('click', (event) =>
+document.querySelector('.check').addEventListener('click', () =>
 {
   if (playerWon)
     return;
