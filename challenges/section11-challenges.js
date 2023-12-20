@@ -77,13 +77,13 @@ const dogsAge2 = [16, 6, 10, 5, 6, 1, 4];
 
 const calcAverageHumanAge = ages =>
 {
-  const humanYears = ages.map(curr => (curr <= 2) ? curr * 2 : 16 + curr * 4);
-  const humanYearsFiltered = humanYears.filter(curr => curr >= 18);
+  const humanYears = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4);
+  const humanYearsFiltered = humanYears.filter(age => age >= 18);
   console.log(humanYearsFiltered);
 
-  let avr = humanYearsFiltered.reduce((acc, curr) => acc += curr, 0);
+  let avr = humanYearsFiltered.reduce((acc, age) => acc += age, 0);
   avr /= humanYearsFiltered.length;
-  console.log(`Average of Human Years: ${ avr }`);
+  console.log(`Human Years Average: ${ avr }`);
 };
 
 console.log('----- TEST 1 -----');
@@ -91,3 +91,28 @@ calcAverageHumanAge(dogsAge1);
 
 console.log('----- TEST 2 -----');
 calcAverageHumanAge(dogsAge2);
+
+// Coding Challenge 2
+
+/*
+Rewrite the 'calcAverageHumanAge' function from Challenge #2, but this time
+as an arrow function, and using chaining!
+Test data:
+§ Data 1: [5, 2, 4, 1, 15, 8, 3]
+§ Data 2: [16, 6, 10, 5, 6, 1, 4]
+GOOD LUCK 😀
+*/
+
+const calcAverageHumanAgeRev = ages =>
+{
+  let avr = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4)
+    .filter(age => age >= 18)
+    .reduce((acc, age, i, arr) => acc + age / arr.length, 0);
+  console.log(`Human Years Average: ${ avr }`);
+};
+
+console.log('----- TEST 1 REV -----');
+calcAverageHumanAgeRev(dogsAge1);
+
+console.log('----- TEST 2 REV -----');
+calcAverageHumanAgeRev(dogsAge2);
