@@ -1,3 +1,5 @@
+'use strict';
+
 const budget = [
   { value: 250, description: 'Sold old TV 📺', user: 'jonas' },
   { value: -45, description: 'Groceries 🥑', user: 'jonas' },
@@ -9,50 +11,46 @@ const budget = [
   { value: -1800, description: 'New Laptop 💻', user: 'jonas' },
 ];
 
-const spendingLimits = {
+const spendingLimits = Object.freeze({
   jonas: 1500,
   matilda: 100,
-};
+});
 
-const getLimit = function (user)
+const getLimit = function (limits, user)
 {
   //return return = spendingLimits[user] ? spendingLimits[user] : 0;
-  return spendingLimits?.[user] ?? 0;
+  return limits?.[user] ?? 0;
 };
 
-const addExpense = function (value, description, user = 'jonas')
+const addExpense = function (state, limits, value, description, user = 'jonas')
 {
-  user = user.toLowerCase();
+  const cleanUser = user.toLowerCase();
 
-  if (value > getLimit(user)) return;
+  if (value > getLimit(spendingLimits, cleanUser)) return state;
 
-  budget.push({ value: -value, description, user });
+  return [...state, { value: -value, description, user: cleanUser }];
 };
-addExpense(10, 'Pizza 🍕');
-addExpense(100, 'Going to movies 🍿', 'Matilda');
-addExpense(200, 'Stuff', 'Jay');
-console.log(budget);
+const newBudget1 = addExpense(budget, spendingLimits, 10, 'Pizza 🍕');
+const newBudget2 = addExpense(newBudget1, spendingLimits, 100, 'Going to movies 🍿', 'Matilda');
+const newBudget3 = addExpense(newBudget2, spendingLimits, 200, 'Stuff', 'Jay');
+console.log(newBudget3);
 
-const check = function ()
+const checkExpenses = function (state)
 {
-  budget.forEach(entry =>
-  {
-    if (entry.value >= -getLimit(entry.user)) return;
-
-    entry.flag = 'limit';
-  });
+  return state.map(entry =>
+    entry.value < -getLimit(spendingLimits, entry.user) ? { ...entry, flag: 'limit' } : entry
+  );
 };
-check();
+const finalBudget = checkExpenses(newBudget3, spendingLimits);
+console.log(finalBudget);
 
-console.log(budget);
-
-const logBigExpenses = function (bigLimit)
+const logBigExpenses = function (state, bigLimit)
 {
-  const output = '';
-  budget.forEach(entry =>
-  {
-    output += (entry.value <= -bigLimit) ? `${ entry.description.slice(-2) } / ` : ''; // Emojis are 2 chars
-  });
-  output = output.slice(0, -2); // Remove last '/ '
-  console.log(output);
+  let bigExpenses = state
+    .filter(entry => entry.value <= -bigLimit)
+    .map(entry => entry.description.slice(-2)) // Emojis are 2 chars)
+    .join(' / ');
+
+  console.log(bigExpenses);
 };
+logBigExpenses(finalBudget, 500);
