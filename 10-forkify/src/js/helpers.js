@@ -11,6 +11,13 @@ export const timeout = function (s)
   });
 };
 
+
+export const getHash = function ()
+{
+  // Get Hash ID
+  return window.location.hash.slice(1);
+};
+
 export const getJSON = async function (url)
 {
   try

@@ -10,8 +10,37 @@ export default class View
 
     this._data = data;
     const markup = this._generateMarkup();
+
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  update (data)
+  {
+    // if (!data || (Array.isArray(data) && data.length === 0)) return this.renderError();
+
+    this._data = data;
+    const newMarkup = this._generateMarkup();
+
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const currElements = Array.from(this._parentElement.querySelectorAll('*'));
+
+    newElements.forEach((newEl, i) =>
+    {
+      const currEl = currElements.at(i);
+
+      // Checks if Nodes are Different from Each Other
+      if (newEl.isEqualNode(currEl)) return;
+
+      // Checks if it's First Child is Text
+      if (newEl.firstChild?.nodeValue.trim() !== '')
+        // Update Changed Text
+        currEl.textContent = newEl.textContent;
+
+      // Update Node Attributes
+      Array.from(newEl.attributes).forEach(atr => currEl.setAttribute(atr.name, atr.value));
+    });
   }
 
   _clear ()
