@@ -4,12 +4,12 @@ import { API_URL, RESULTS_PER_PAGE } from './config';
 import { getJSON } from './helpers.js';
 
 export const state = {
+  bookmarks: [],
   recipe: {},
   search: {
     query: '',
     results: [],
     resultsPerPage: RESULTS_PER_PAGE,
-    page: 1
   }
 };
 
@@ -34,6 +34,9 @@ export const loadRecipe = async function (id)
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients
     };
+
+    state.recipe.bookmarked = state.bookmarks.some(bookmark => bookmark.id === id);
+
     console.log(state.recipe);
   }
   catch (err)
@@ -48,6 +51,7 @@ export const loadSearchResults = async function (query)
   try
   {
     const data = await getJSON(`${ API_URL }?search=${ query }`);
+    state.search.page = 1;
 
     state.search.query = query;
     state.search.results = data.data.recipes.map(recipe =>
@@ -76,3 +80,54 @@ export const getSearchResultsPage = function (page = state.search.page)
 
   return state.search.results.slice(start, end);
 };
+
+export const updateServings = function (newServings)
+{
+  const oldServings = state.recipe.servings;
+  state.recipe.ingredients.map(ing =>
+  {
+    ing.quantity = ing.quantity * newServings / oldServings;
+  });
+
+  state.recipe.servings = newServings;
+};
+
+const storeBookmarks = function ()
+{
+  localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
+};
+
+export const addBookmark = function (recipe)
+{
+  // Add Bookmark
+  state.bookmarks.push(recipe);
+
+  // Mark Current Recipe as Bookmarked
+  if (recipe.id !== state.recipe.id) return;
+
+  state.recipe.bookmarked = true;
+  storeBookmarks();
+};
+
+export const delBookmark = function (id)
+{
+  // Delete Bookmark
+  const index = state.bookmarks.findIndex(bookmark => bookmark.id === id);
+  state.bookmarks.splice(index, 1);
+
+  // Mark Current Recipe as Not Bookmarked
+  if (id !== state.recipe.id) return;
+
+  state.recipe.bookmarked = false;
+  storeBookmarks();
+};
+
+const init = function ()
+{
+  const storage = localStorage.getItem('bookmarks');
+
+  if (!storage) return;
+
+  state.bookmarks = JSON.parse(storage);
+};
+init();
