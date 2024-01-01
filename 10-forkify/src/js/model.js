@@ -1,7 +1,7 @@
 
 import { async } from 'regenerator-runtime';
-import { API_URL, RESULTS_PER_PAGE } from './config';
-import { getJSON } from './helpers.js';
+import { API_URL, RESULTS_PER_PAGE, KEY } from './config';
+import { AJAX } from './helpers.js';
 
 export const state = {
   bookmarks: [],
@@ -13,6 +13,23 @@ export const state = {
   }
 };
 
+const createRecipeObject = function (data)
+{
+  const { recipe } = data.data;
+
+  return {
+    id: recipe.id,
+    title: recipe.title,
+    publisher: recipe.publisher,
+    sourceUrl: recipe.source_url,
+    image: recipe.image_url,
+    servings: recipe.servings,
+    cookingTime: recipe.cooking_time,
+    ingredients: recipe.ingredients,
+    ...(recipe.key && { key: recipe.key })
+  };
+};
+
 export const loadRecipe = async function (id)
 {
   try
@@ -21,19 +38,8 @@ export const loadRecipe = async function (id)
     // id = '5ed6604591c37cdc054bc886';
 
     // Fetching Data
-    const data = await getJSON(`${ API_URL }/${ id }`);
-
-    let { recipe } = data.data;
-    state.recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients
-    };
+    const data = await AJAX(`${ API_URL }/${ id }?key=${ KEY }`);
+    state.recipe = createRecipeObject(data);
 
     state.recipe.bookmarked = state.bookmarks.some(bookmark => bookmark.id === id);
 
@@ -50,7 +56,7 @@ export const loadSearchResults = async function (query)
 {
   try
   {
-    const data = await getJSON(`${ API_URL }?search=${ query }`);
+    const data = await AJAX(`${ API_URL }?search=${ query }&key=${ KEY }`);
     state.search.page = 1;
 
     state.search.query = query;
@@ -61,6 +67,7 @@ export const loadSearchResults = async function (query)
         title: recipe.title,
         publisher: recipe.publisher,
         image: recipe.image_url,
+        ...(recipe.key && { key: recipe.key })
       };
     });
   }
@@ -122,6 +129,45 @@ export const delBookmark = function (id)
   storeBookmarks();
 };
 
+export const uploadRecipe = async function (newRecipe)
+{
+  try
+  {
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry.at(0).startsWith('ingredient') && entry.at(1) !== '')
+      .map(ing =>
+      {
+        const ingArr = ing.at(1).split(',').map(ing => ing.trim());
+        if (ingArr.length !== 3) throw new Error('Wrong ingredient format');
+
+        const [qt, unit, description] = ingArr;
+        if (description === '') throw new Error('Missing ingredient description');
+
+        return { quantity: qt ? +qt : null, unit, description };
+      });
+    console.log(ingredients);
+
+    const recipe = {
+      title: newRecipe.title,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      publisher: newRecipe.publisher,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      ingredients,
+    };
+
+    const data = await AJAX(`${ API_URL }?key=${ KEY }`, recipe);
+    state.recipe = createRecipeObject(data);
+    addBookmark(state.recipe);
+  }
+  catch (err)
+  {
+    // Re-throwing the Error
+    throw (err);
+  }
+};
+
 const init = function ()
 {
   const storage = localStorage.getItem('bookmarks');
@@ -131,3 +177,9 @@ const init = function ()
   state.bookmarks = JSON.parse(storage);
 };
 init();
+
+const clearBookmarks = function ()
+{
+  localStorage.clear('bookmarks');
+};
+// clearBookmarks()

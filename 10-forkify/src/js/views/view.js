@@ -4,6 +4,14 @@ export default class View
 {
   _data;
 
+  /**
+   * Render the Received Object to the DOM
+   * @param {Object | Object[]} data The Data to be Rendered
+   * @returns {undefined}
+   * @this {Object} View Instance
+   * @author ralvarezdev
+   * @todo Finish Implementation
+   */
   render (data)
   {
     if (!data || (Array.isArray(data) && data.length === 0)) return this.renderError();
