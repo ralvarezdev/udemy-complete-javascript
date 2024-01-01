@@ -1,5 +1,4 @@
-
-import { async } from 'regenerator-runtime';
+// import { async } from 'regenerator-runtime';
 import { API_URL, RESULTS_PER_PAGE, KEY } from './config';
 import { AJAX } from './helpers.js';
 

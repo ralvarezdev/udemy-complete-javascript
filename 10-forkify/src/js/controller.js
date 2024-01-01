@@ -1,5 +1,5 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
 
 import * as model from './model.js';
 import { MODAL_CLOSE_SEC } from './config.js';
