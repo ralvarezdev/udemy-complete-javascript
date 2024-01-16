@@ -16,6 +16,10 @@ Jonas Schmedtmann <a href="https://github.com/jonasschmedtmann">(jonasschmedtman
 
 ## Project Websites
 
+<a href="https://ralvarezdev-guess-my-number.netlify.app/">Guess My Number</a>
+
+<a href="https://ralvarezdev-pig-game.netlify.app/">Pig Game</a>
+
 <a href="https://ralvarezdev-bankist-app.netlify.app/">Bankist Web App</a>
 
 <a href="https://ralvarezdev-bankist-web.netlify.app/">Bankist Website</a>
@@ -25,6 +29,10 @@ Jonas Schmedtmann <a href="https://github.com/jonasschmedtmann">(jonasschmedtman
 <a href="https://ralvarezdev-forkify.netlify.app/">Forkify</a>
 
 ## Notes
+
+### Node Modules
+
+<a href="NODE_MODULES.md">Shrink Node Modules Guide</a>
 
 ### Bankist Web App
 
