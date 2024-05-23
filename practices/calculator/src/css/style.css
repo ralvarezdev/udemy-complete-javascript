@@ -1,0 +1,171 @@
+/* - CLASSES */
+
+/* -- Text */
+
+.calculator__title {
+  padding: 8rem 0 2rem 0;
+
+  color: #343a40;
+  font-size: 4rem;
+  font-weight: 600;
+}
+
+.input__header,
+.result__header {
+  margin-bottom: 1rem;
+
+  color: #343a40;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/* -- Containers */
+
+.calculator__section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 0 8rem;
+  margin-bottom: 10rem;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 3rem;
+  column-gap: 3rem;
+
+  padding: 2rem 3rem 3rem 3rem;
+  width: 100%;
+
+  background-color: #f8f9fa;
+
+  border-style: solid;
+  border-color: #343a40;
+  border-width: 0.5rem;
+  border-radius: 0.5rem
+}
+
+.container--input,
+.container--btns {
+  grid-column: -1/1;
+}
+
+.container--input {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 2rem;
+  column-gap: 4rem;
+}
+
+.container--btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.box {
+  padding: 1rem 3rem;
+}
+
+.box--input,
+.box--result {
+  grid-column-end: span 1;
+}
+
+/* -- IO Elements */
+
+.input-number {
+  padding: 0.75rem 1rem;
+}
+
+.input-number {
+  width: 100%;
+
+  font-size: 2rem;
+
+  background-color: #f8f9fa;
+  color: #343a40;
+
+  border: none;
+  outline-style: solid;
+  outline-color: #343a40;
+  outline-width: 0.2rem;
+}
+
+.input-number:focus {
+  border: none;
+}
+
+.input-number--remove-error {
+  outline-color: #343a40;
+  animation: 400ms toValidOutline 0ms ease-in;
+}
+
+.input-number--error {
+  outline-color: #ff6b6b;
+  animation: 400ms toInvalidOutline 0ms ease-in;
+}
+
+.result {
+  width: 100%;
+
+  background-color: #343a40;
+  color: #f8f9fa;
+
+  font-size: 2rem;
+  font-weight: 600;
+
+  padding: 0.75rem 2rem;
+}
+
+.result--error {
+  background-color: #ff6b6b;
+
+  animation: 400ms toInvalidResult 0ms ease-in;
+}
+
+.result--remove-error {
+  background-color: #343a40;
+
+  animation: 400ms toValidResult 0ms ease-in;
+}
+
+/* -- Operators*/
+
+.btn--op {
+  margin: 0 2rem;
+  padding: 1rem 3rem;
+
+  background-color: #343a40;
+  border-radius: 2.2rem;
+
+  border-style: none;
+
+  scale: 1;
+  animation: 200ms focusOutBtn 0s ease-in-out;
+}
+
+.btn--op:hover {
+  background-color: #868e96;
+
+  box-shadow: 0 0.25rem 0.1rem rgba(134, 142, 150, .25);
+
+  scale: 1.1;
+  animation: 200ms focusOnBtn 0s ease-in-out;
+}
+
+/* -- Icons */
+
+.feather--icon {
+  width: 3rem;
+  height: 3rem;
+
+  stroke: #f8f9fa;
+  stroke-width: 0.2rem;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}

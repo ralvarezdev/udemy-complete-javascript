@@ -1,0 +1,76 @@
+/* 
+--- 01 typography system
+
+- font size system in px
+10 12 14 16 18 20 24 30 36 44 52 62 74 86 96
+
+- line height
+default: 1
+small: 1.05
+medium: 1.2
+paragraph default: 1.6
+large: 1.8
+
+- font weights
+default: 400
+medium: 500
+bold: 700
+
+--- 02 colors
+
+- primary color
+#ff6b6b
+
+- tints
+
+- shades
+
+- accents
+
+- greys
+#343a40
+#868e96
+#ced4da
+#f1f3f5
+
+--- 03 shadows
+
+--- 04 border radius
+default: 9px
+meals section: 11px
+
+--- 05 whitespace
+2 4 8 12 16 24 32 48 64 80 96 128
+
+*/
+
+/* - GLOBAL RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  font-family: 'Roboto';
+  /* 10px/16px = 0.625 */
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+/* - HTML Elements */
+
+body {
+  background-color: #f1f3f5;
+
+  animation: 500ms appear 100ms ease-in-out;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  padding: 2rem 0;
+}
