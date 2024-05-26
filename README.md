@@ -28,6 +28,10 @@ Jonas Schmedtmann <a href="https://github.com/jonasschmedtmann">(jonasschmedtman
 
 <a href="https://ralvarezdev-forkify.netlify.app/">Forkify</a>
 
+## Practices
+
+<a href="https://ralvarezdev-calculator.netlify.app/">Calculator</a>
+
 ## Notes
 
 ### Node Modules
