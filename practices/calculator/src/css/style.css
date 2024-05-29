@@ -5,7 +5,7 @@
 .calculator__title {
   padding: 8rem 0 2rem 0;
 
-  color: #343a40;
+  color: var(--grays--gray4);
   font-size: 4rem;
   font-weight: 600;
 }
@@ -14,7 +14,7 @@
 .result__header {
   margin-bottom: 1rem;
 
-  color: #343a40;
+  color: var(--grays--gray4);
   font-size: 1.5rem;
   font-weight: 400;
 }
@@ -39,10 +39,10 @@
   padding: 2rem 3rem 3rem 3rem;
   width: 100%;
 
-  background-color: #f8f9fa;
+  background-color: var(--grays--gray1);
 
   border-style: solid;
-  border-color: #343a40;
+  border-color: var(--grays--gray4);
   border-width: 0.5rem;
   border-radius: 0.5rem
 }
@@ -87,12 +87,14 @@
   font-size: 2rem;
 
   background-color: #f8f9fa;
-  color: #343a40;
+  color: var(--grays--gray4);
 
   border: none;
   outline-style: solid;
-  outline-color: #343a40;
+  outline-color: var(--grays--gray4);
   outline-width: 0.2rem;
+
+  transition: var(--duration--default) outline-color 0ms ease-in;
 }
 
 .input-number:focus {
@@ -100,37 +102,33 @@
 }
 
 .input-number--remove-error {
-  outline-color: #343a40;
-  animation: 400ms toValidOutline 0ms ease-in;
+  outline-color: var(--grays--gray4);
 }
 
 .input-number--error {
-  outline-color: #ff6b6b;
-  animation: 400ms toInvalidOutline 0ms ease-in;
+  outline-color: var(--primary-color--error);
 }
 
 .result {
   width: 100%;
 
-  background-color: #343a40;
-  color: #f8f9fa;
+  background-color: var(--grays--gray4);
+  color: var(--grays--gray1);
 
   font-size: 2rem;
   font-weight: 600;
 
   padding: 0.75rem 2rem;
+
+  transition: var(--duration--default) background-color 0ms ease-in;
 }
 
 .result--error {
-  background-color: #ff6b6b;
-
-  animation: 400ms toInvalidResult 0ms ease-in;
+  background-color: var(--primary-color--error);
 }
 
 .result--remove-error {
-  background-color: #343a40;
-
-  animation: 400ms toValidResult 0ms ease-in;
+  background-color: var(--grays--gray4);
 }
 
 /* -- Operators*/
@@ -139,22 +137,20 @@
   margin: 0 2rem;
   padding: 1rem 3rem;
 
-  background-color: #343a40;
+  background-color: var(--grays--gray4);
   border-radius: 2.2rem;
 
   border-style: none;
-
   scale: 1;
-  animation: 200ms focusOutBtn 0s ease-in-out;
+
+  transition: var(--duration--short) scale 0s ease-in-out;
 }
 
 .btn--op:hover {
-  background-color: #868e96;
-
+  background-color: var(--grays--gray3);
   box-shadow: 0 0.25rem 0.1rem rgba(134, 142, 150, .25);
 
   scale: 1.1;
-  animation: 200ms focusOnBtn 0s ease-in-out;
 }
 
 /* -- Icons */
@@ -163,7 +159,7 @@
   width: 3rem;
   height: 3rem;
 
-  stroke: #f8f9fa;
+  stroke: var(--grays--gray2);
   stroke-width: 0.2rem;
   stroke-linecap: round;
   stroke-linejoin: round;

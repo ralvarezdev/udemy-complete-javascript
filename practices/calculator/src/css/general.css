@@ -27,7 +27,7 @@ bold: 700
 
 - accents
 
-- greys
+- grays
 #343a40
 #868e96
 #ced4da
@@ -43,6 +43,19 @@ meals section: 11px
 2 4 8 12 16 24 32 48 64 80 96 128
 
 */
+
+/* - VARIABLES */
+:root {
+  --primary-color--error: #ff6b6b;
+  --grays--gray4: #343a40;
+  --grays--gray3: #868e96;
+  --grays--gray2: #ced4da;
+  --grays--gray1: #f1f3f5;
+  --duration--long: 500ms;
+  --duration--default: 400ms;
+  --duration--short: 200ms;
+  --delay--short: 100ms;
+}
 
 /* - GLOBAL RESET */
 * {
@@ -61,9 +74,9 @@ html {
 /* - HTML Elements */
 
 body {
-  background-color: #f1f3f5;
+  background-color: var(--grays--gray1);
 
-  animation: 500ms appear 100ms ease-in-out;
+  animation: var(--duration--long) appear var(--delay--short) ease-in-out;
 }
 
 header {
