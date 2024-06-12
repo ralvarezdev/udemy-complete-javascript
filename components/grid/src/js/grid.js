@@ -1,8 +1,8 @@
 'use strict';
 
-import * as compjs from "./compjs.js";
+import { CompJS } from "./compjs.js";
 
-export class Grid extends compjs.CompJS
+export class Grid extends CompJS
 {
 
   // - Static variables
@@ -10,7 +10,7 @@ export class Grid extends compjs.CompJS
   // Main class name
   static #MAIN_CLASS_NAME = ".grid";
 
-  static #VALID_CLASS_NAMES = [this.#MAIN_CLASS_NAME];
+  static #VALID_CLASS_NAMES = [Grid.#MAIN_CLASS_NAME];
 
   constructor (props)
   {
@@ -30,15 +30,11 @@ export class Grid extends compjs.CompJS
   // General methods for getting CSS classes properties values
   static getClassProperty (className, propertyName)
   {
-    compjs.CompJS._ifIsValidApply(Grid.#VALID_CLASS_NAMES, className,
-      () =>
-      {
-        const propertyValue = compjs.CompJS._getCompStyle(className, propertyName);
-        return (propertyValue === undefined) ? null : propertyValue;
-      });
+    CompJS._ifIsValidApply(Grid.#VALID_CLASS_NAMES, className,
+      () => CompJS._getClassProperty(className, propertyName));
   }
 
-  static getClassProperties (className, ...propertiesName)
+  static getClassProperties (className, propertiesName)
   {
     const propertiesMap = new Map();
 
@@ -48,7 +44,7 @@ export class Grid extends compjs.CompJS
     return propertiesMap;
   }
 
-  static getClassProperties (...propertiesName)
+  static getClassProperties (propertiesName)
   {
     return CompJS._getClassProperties(Grid.#MAIN_CLASS_NAME, propertiesName);
   }
@@ -56,26 +52,23 @@ export class Grid extends compjs.CompJS
   // General methods for setting CSS classes properties values
   static setClassProperty (propertyName, propertyValue)
   {
-    compjs.CompJS._setClassProperty(Grid.#MAIN_CLASS_NAME, propertyName, propertyValue);
+    CompJS._setClassProperty(Grid.#MAIN_CLASS_NAME, propertyName, propertyValue);
   }
 
   static setClassProperty (className, propertyName, propertyValue)
   {
-    compjs.CompJS._setValidClassProperty(Grid.#VALID_CLASS_NAMES, className, propertyName, propertyValue);
+    CompJS._setValidClassProperty(Grid.#VALID_CLASS_NAMES, className, propertyName, propertyValue);
   }
 
   // Reset applied customed styles
   static resetClassAppliedStyles ()
   {
-    compjs.CompJS._resetClassAppliedStyles(Grid.#MAIN_CLASS_NAME);
+    CompJS._resetClassAppliedStyles(Grid.#MAIN_CLASS_NAME);
   }
 
   static resetClassAppliedStyles (className)
   {
-    compjs.CompJS._ifIsValidApply(Grid.#VALID_CLASS_NAMES, className,
-      () =>
-      {
-        compjs.CompJS._resetClassAppliedStyles(className);
-      });
+    CompJS._ifIsValidApply(Grid.#VALID_CLASS_NAMES, className,
+      () => CompJS._resetClassAppliedStyles(className));
   }
 };

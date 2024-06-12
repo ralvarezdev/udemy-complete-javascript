@@ -108,18 +108,15 @@ export class CompJS
   static _getClassStyle (className)
   {
     if (typeof (className) !== 'string')
-      throw new Error(`Parameter '${ className }' of CompJS's '_getClassStyle' method must be of type of 'string'.`);
+      throw new Error(`Parameter '${ className }' of CompJS's '_getClassStyle' method must be of 'string' type.`);
 
     return document.querySelector(className);
   }
 
-  static _getCompStyle (className, propertyName)
+  static _getCompStyle (className)
   {
-    const params = [className, propertyName];
-
-    for (let param of params)
-      if (typeof (param) !== 'string')
-        throw new Error(`Parameter '${ param }' of CompJS's '_getClassProperty' method must be of type of 'string'.`);
+    if (typeof (className) !== 'string')
+      throw new Error(`Parameter '${ className }' of CompJS's '_getCompStyle' method must be of 'string' type.`);
 
     const classStyle = CompJS._getClassStyle(className);
 
@@ -131,69 +128,38 @@ export class CompJS
 
   static _getClassProperty (className, propertyName)
   {
+    const compStyle = CompJS._getCompStyle(className);
+    const propertyValue = compStyle.getPropertyValue(propertyName);
 
-    const propertyValue = CompJS._getCompStyle(className, propertyName);
     return (propertyValue === undefined) ? null : propertyValue;
   }
 
-  static _getClassProperties (className, ...propertiesName)
+  static _getClassProperties (className, propertiesName)
   {
-    const propertiesMap = new Map();
+    const classPropertiesMap = new Map();
 
     for (let propertyName of propertiesName)
-      propertiesMap.set(propertyName, CompJS._getClassProperty(className, property));
+    {
+      let propertyValue = CompJS._getClassProperty(className, propertyName);
 
-    return propertiesMap;
+      if (classPropertiesMap.has(className) === false)
+      {
+        classPropertiesMap.set(className, new Map([[propertyName, propertyValue]]));
+        continue;
+      }
+
+      classPropertiesMap.get(className).set(propertyName, propertyValue);
+    }
+
+    return classPropertiesMap;
   }
 
-  static #getClassProperties (...propertiesName)
+  static #getClassProperties (propertiesName)
   {
     return CompJS._getClassProperties(CompJS.#ROOT, propertiesName);
   }
 
-  // Fonts size
-  getFontsSize ()
-  {
-    return CompJS.#getClassProperties(CompJS.#FONTS_SIZE);
-  }
-
-  // Icons size
-  getIconsSize ()
-  {
-    return CompJS.#getClassProperties(CompJS.#ICONS_SIZE);
-  }
-
-  // Checkboxes size
-  getCheckboxesSize ()
-  {
-    return CompJS.#getClassProperties(CompJS.#CHECKBOXES_SIZE);
-  }
-
-  // Checkboxes size
-  getMargins ()
-  {
-    return CompJS.#getClassProperties(CompJS.#MARGINS);
-  }
-
-  // Gaps
-  getGaps ()
-  {
-    return CompJS.#getClassProperties(CompJS.#GAPS);
-  }
-
-  // Paddings
-  getPaddings ()
-  {
-    return CompJS.#getClassProperties(CompJS.#PADDINGS);
-  }
-
-  // Colors
-  getColors ()
-  {
-    return CompJS.#getClassProperties(CompJS.#COLORS);
-  }
-
-  // General methods for setting CSS classes properties values
+  // General methods for setting CSS class property values
   static #setClassProperty (stylesMap, className, propertyName, propertyValue)
   {
     // Check parameters type
@@ -201,39 +167,41 @@ export class CompJS
 
     for (let param of params)
       if (typeof (param) !== 'string')
-        throw new Error(`Parameter '${ param }' of CompJS's 'addStyleClass' method must be of type of 'string'`);
+        throw new Error(`Parameter '${ param }' of CompJS's '#setClassProperty' method must be of 'string' type`);
 
     if (typeof (stylesMap) !== 'object')
-      throw new Error(`Parameter '${ stylesMap }' of CompJS's 'addStyleClass' method must be of type of 'object' (Map)`);
+      throw new Error(`Parameter '${ stylesMap }' of CompJS's '#setClassProperty' method must be of 'object' (Map) type`);
 
     // Add class property style
     if (stylesMap.has(className) === false)
     {
-      stylesMap.set(className, new Map([propertyName, propertyValue]));
+      stylesMap.set(className, new Map([[propertyName, propertyValue]]));
       return;
     }
 
-    stylesMap[className].set(propertyName, propertyValue);
+    stylesMap.get(className).set(propertyName, propertyValue);
   }
 
-  static _setClassProperty (className, propertyName, propertyValue)
+  static _setCompJSClassProperty (className, propertyName, propertyValue)
   {
     CompJS.#setClassProperty(CompJS.#STYLES_MAP, className, propertyName, propertyValue);
   }
 
-  static _setClassProperty (propertyName, propertyValue)
+  static _setRootClassProperty (propertyName, propertyValue)
   {
-    CompJS.#setClassProperty(CompJS.#ROOT, propertyName, propertyValue);
+    CompJS._setCompJSClassProperty(CompJS.#ROOT, propertyName, propertyValue);
   }
 
-  static _setValidProperty (validPropertyNames, propertyName, propertyValue)
+  static _setValidProperty (className, validPropertyNames, propertyName, propertyValue)
   {
     CompJS._ifIsValidApply(validPropertyNames, propertyName,
-      () =>
-      {
-        CompJS._setClassProperty(propertyName, propertyValue);
-      }
+      () => CompJS._setCompJSClassProperty(className, propertyName, propertyValue)
     );
+  }
+
+  static _setValidRootProperty (validPropertyNames, propertyName, propertyValue)
+  {
+    CompJS._setValidProperty(CompJS.#ROOT, validPropertyNames, propertyName, propertyValue);
   }
 
   static _setValidClassProperty (validClassNames, className, propertyName, propertyValue)
@@ -246,41 +214,119 @@ export class CompJS
     );
   }
 
-  setFontSize (propertyName, propertyValue)
+  // Fonts size
+  static getFontsSize ()
+  {
+    return CompJS.#FONTS_SIZE;
+  }
+
+  static getFontsSizeValues ()
+  {
+    return CompJS.#getClassProperties(CompJS.#FONTS_SIZE);
+  }
+
+  static setFontSizeValue (propertyName, propertyValue)
   {
     CompJS._setValidProperty(CompJS.#FONTS_SIZE, propertyName, propertyValue);
   }
 
-  setIconSize (propertyName, propertyValue)
+  // Icons size
+  static getIconsSize ()
   {
-    CompJS._setValidProperty(CompJS.#ICONS_SIZE, propertyName, propertyValue);
+    return CompJS.#ICONS_SIZE;
   }
 
-  setCheckboxSize (propertyName, propertyValue)
+  static getIconsSizeValues ()
   {
-    CompJS._setValidProperty(CompJS.#CHECKBOXES_SIZE, propertyName, propertyValue);
+    return CompJS.#getClassProperties(CompJS.#ICONS_SIZE);
   }
 
-  setMargin (propertyName, propertyValue)
+  static setIconSizeValue (propertyName, propertyValue)
   {
-    CompJS._setValidProperty(CompJS.#MARGINS, propertyName, propertyValue);
+    CompJS._setValidRootProperty(CompJS.#ICONS_SIZE, propertyName, propertyValue);
   }
 
-  setGap (propertyName, propertyValue)
+  // Checkboxes size
+  static getCheckboxesSize ()
   {
-    CompJS._setValidProperty(CompJS.#GAPS, propertyName, propertyValue);
+    return CompJS.#CHECKBOXES_SIZE;
   }
 
-  setPadding (propertyName, propertyValue)
+  static getCheckboxesSizeValues ()
   {
-    CompJS._setValidProperty(CompJS.#PADDINGS, propertyName, propertyValue);
+    return CompJS.#getClassProperties(CompJS.#CHECKBOXES_SIZE);
   }
 
-  setColor (propertyName, propertyValue)
+  static setCheckboxSizeValue (propertyName, propertyValue)
   {
-    CompJS._setValidProperty(CompJS.#COLORS, propertyName, propertyValue);
+    CompJS._setValidRootProperty(CompJS.#CHECKBOXES_SIZE, propertyName, propertyValue);
   }
 
+  // Margins size
+  static getMargins ()
+  {
+    return CompJS.#MARGINS;
+  }
+
+  static getMarginsValues ()
+  {
+    return CompJS.#getClassProperties(CompJS.#MARGINS);
+  }
+
+  static setMarginValue (propertyName, propertyValue)
+  {
+    CompJS._setValidRootProperty(CompJS.#MARGINS, propertyName, propertyValue);
+  }
+
+  // Gaps
+  static getGaps ()
+  {
+    return CompJS.#GAPS;
+  }
+
+  static getGapsValues ()
+  {
+    return CompJS.#getClassProperties(CompJS.#GAPS);
+  }
+
+  static setGapValue (propertyName, propertyValue)
+  {
+    CompJS._setValidRootProperty(CompJS.#GAPS, propertyName, propertyValue);
+  }
+
+  // Paddings
+  static getPaddings ()
+  {
+    return CompJS.#PADDINGS;
+  }
+
+  static getPaddingsValues ()
+  {
+    return CompJS.#getClassProperties(CompJS.#PADDINGS);
+  }
+
+  static setPaddingValue (propertyName, propertyValue)
+  {
+    CompJS._setValidRootProperty(CompJS.#PADDINGS, propertyName, propertyValue);
+  }
+
+  // Colors
+  static getColors ()
+  {
+    return CompJS.#COLORS;
+  }
+
+  static getColorsValues ()
+  {
+    return CompJS.#getClassProperties(CompJS.#COLORS);
+  }
+
+  static setColorValue (propertyName, propertyValue)
+  {
+    CompJS._setValidRootProperty(CompJS.#COLORS, propertyName, propertyValue);
+  }
+
+  // - Links
   static #addLink (rel, type, href)
   {
     // Create new link element for the stylesheet
@@ -310,11 +356,18 @@ export class CompJS
     }
   }
 
+  // - Resetters
+
   // Reset all applied customed styles
   static resetAllAppliedStyles ()
   {
-    CompJS.#STYLES_MAP = new Map();
     CompJS.#style.textContent = "";
+  }
+
+  // Reset map with customed styles
+  static resetStylesMap ()
+  {
+    CompJS.#STYLES_MAP = new Map();
   }
 
   // Reset applied customed styles for a given class name
@@ -322,10 +375,10 @@ export class CompJS
   {
     // Check parameters type
     if (typeof (className) !== string)
-      throw new Error(`Parameter '${ className }' of CompJS's 'resetAllAppliedStyles' method must be of type of 'string'`);
+      throw new Error(`Parameter '${ className }' of CompJS's '#resetClassAppliedStyles' method must be of 'string' type`);
 
     if (typeof (stylesMap) !== 'object')
-      throw new Error(`Parameter '${ stylesMap }' of CompJS's 'addStyleClass' method must be of type of 'object' (Map)`);
+      throw new Error(`Parameter '${ stylesMap }' of CompJS's '#resetClassAppliedStyles' method must be of 'object' (Map) type`);
 
     // Reset styles for the given class name
     delete stylesMap[className];
@@ -343,12 +396,31 @@ export class CompJS
   }
 
   // Apply customed styles to 'style' element
-  static applyStyles ()
+  static applyStyles (stylesMap)
   {
     // Check styles map
     CompJS.#checkStyleElement();
 
+    // Append customed styles
+    let newContent = "";
+
+    for (let [className, property] of stylesMap.entries())
+    {
+      let newPropertyContent = `${ className } {\n`;
+
+      for (let [propertyName, propertyValue] of property.entries())
+        newPropertyContent += `${ propertyName }: ${ propertyValue };\n`;
+
+      newPropertyContent += "}\n\n";
+      newContent += newPropertyContent;
+    }
+
     // Apply customed styles
-    // TO DEVELOP...
+    CompJS.#style.textContent = newContent;
+  }
+
+  static applyStyles ()
+  {
+    CompJS.applyStyles(CompJS.#STYLES_MAP);
   }
 };
