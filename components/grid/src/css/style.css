@@ -1,77 +1,9 @@
-:root {
-  /* - Variables */
-
-  /* Fonts size */
-  --compjs-font-size-h2: 2.6rem;
-  --compjs-font-size-h3: 1.6rem;
-  --compjs-font-size-text: 1rem;
-
-  /* Icons size */
-  --compjs-icon-size: 2rem;
-
-  /* Checkboxes size */
-  --compjs-checkbox-size: 1rem;
-
-  /* Margins */
-  --compjs-title-margin-bottom: 2rem;
-  --compjs-h2-margin-bottom: 1.6rem;
-  --compjs-h3-margin-bottom: 1rem;
-
-  /* Gaps */
-  --compjs-column-gap: 0.5rem;
-
-  /* Padding */
-  --compjs-pagination-padding: 1rem;
-
-  /* Border radius */
-  --compjs-title-border-radius: 5px;
-
-  /* Colors */
-  --compjs-grey-dark: #343a40;
-  --compjs-grey-medium: #adb5bd;
-  --compjs-grey-light: #f1f3f5;
-
-  --compjs-primary-dark: #099268;
-  --compjs-primary-medium: #20c997;
-  --compjs-primary-light: #c3fae8;
+@font-face {
+  font-family: "Open Sans";
+  src: url('../fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf') format("truetype");
 }
 
-.grid .grid--title {
-  font-size: var(--compjs-font-size-h2);
-  color: var(--compjs-grey-dark);
+html {
+  font-family: "Open Sans", sans-serif;
+  font-size: 62.5%;
 }
-
-/*
-// Padding
-static #DEF_PAGINATION_PADDING="1rem";
-
-// - Static variables
-static #className="grid";
-
-// - Instance variables
-
-// Icons size
-#columnIconSize=Grid.#DEF_ICON_SIZE; // Add and edit icon size
-#rowIconSize=Grid.#DEF_ICON_SIZE; // Add and edit icon size
-#paginationIconSize=Grid.#DEF_ICON_SIZE;
-
-// Fonts size
-#titleFontSize=Grid.#DEF_H2_SIZE;
-#headingFontSize=Grid.#DEF_H3_SIZE;
-#textFontSize=Grid.#DEF_TEXT_SIZE;
-#footerFontSize=Grid.#DEF_H3_SIZE;
-
-// Checkbox size
-#checkboxSize=Grid.#DEF_CHECKBOX_SIZE;
-
-// Margins
-#titleMarginBottom=Grid.#DEF_TITLE_MARGIN_BOTTOM;
-#titleHeadingMarginBottom=Grid.#DEF_HEADING_MARGIN_BOTTOM;
-
-// Gaps
-.grid 
-#rowColumnGap=Grid.#DEF_ROW_COLUMN_GAP;
-
-// Padding
-#paginationPadding=Grid.#DEF_PAGINATION_PADDING */
-;

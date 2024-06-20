@@ -1,0 +1,109 @@
+@import url('keyframes-grid.css');
+
+/* - Grid class names */
+.grid {
+  display: grid;
+  grid-template-columns: fit-content(50%) 1fr;
+}
+
+.grid__header {
+  display: grid;
+  grid-column: 1/-1;
+  grid-template-columns: subgrid;
+
+  margin: var(--compjs-big-margin) 0;
+}
+
+.grid__header__title {
+  font-size: var(--compjs-font-size-h2);
+  text-align: center;
+
+  color: var(--compjs-grey-dark);
+}
+
+.grid__header__icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--compjs-big-icon-gap);
+  padding: var(--compjs-medium-padding) var(--compjs-huge-padding);
+}
+
+.grid__header__icon {
+  width: var(--compjs-big-icon-size);
+}
+
+.grid__header__icons__lock {
+  position: relative;
+
+  width: var(--compjs-big-icon-size);
+}
+
+.grid__header__icons__lock>img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+
+  animation: 400ms ease-out 0ms bigIconLostFocus;
+}
+
+.grid__header__icons__lock>img:hover,
+.grid__header__icons__lock>img:active {
+  transform: translate(-50%, -60%);
+
+  animation: 400ms ease-out 0ms bigIconFocus;
+}
+
+.grid__body {
+  display: grid;
+  grid-column: 1/-1;
+  grid-template-columns: subgrid;
+}
+
+.grid__body__header {
+  color: var(--compjs-primary-light);
+  background-color: var(--compjs-primary-dark);
+  border-radius: var(--compjs-border-radius) var(--compjs-border-radius) 0 0;
+}
+
+.grid__body__header__column {
+  font-size: var(--compjs-font-size-h2);
+  padding: var(--compjs-column-padding);
+}
+
+.grid__body__icons,
+.grid__footer__icons {
+  color: var(--compjs-grey-medium);
+}
+
+.grid__body__row {
+  font-size: var(--compjs-font-size-text);
+  color: var(--compjs-grey-dark);
+}
+
+.grid__body__row:focus {
+  background-color: var(--compjs-primary-medium);
+}
+
+.grid__body__row:nth-child(odd) {
+  background-color: var(--compjs-primary-light);
+}
+
+.grid__body__row:nth-child(even) {
+  background-color: var(--compjs-white);
+}
+
+.grid__body__row__cell {
+  padding: var(--compjs-cell-padding);
+}
+
+.grid__footer {
+  margin-top: var(--compjs-footer-margin-top);
+}
+
+.grid__footer__pagination {
+  padding: var(--compjs-pagination-padding);
+}

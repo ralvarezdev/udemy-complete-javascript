@@ -1,11 +1,8 @@
-import { Grid } from "./grid.js";
-import * as compjs from "./compjs.js";
+import { Grid } from "../compjs/js/grid.js";
+import { CompJS } from "../compjs/js/compjs.js";
+import { COMPJS_VARIABLES } from "../compjs/js/compjs-props.js";
+
 
 // Add grid to page
-const grid = new Grid();
-
-// Testing
-compjs.CompJS.setFontSizeValue(compjs.FONT_SIZE_H2, "5rem");
-compjs.CompJS.setColorValue(compjs.GREY_DARK, "#100");
-
-compjs.CompJS.applyStyles();
+const compjs = new CompJS("src/compjs");
+const grid = new Grid("Grid Test", document.body);
