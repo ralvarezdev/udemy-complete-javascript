@@ -8,7 +8,8 @@ class Matrix
   #y = 0;
   #EMPTY = 0;
   #PRECISION = 3;
-  #maxLength = 0;
+  #SPACING = 3;
+  #maxNumber = 0;
 
   constructor (name, x, y)
   {
@@ -167,13 +168,29 @@ class Matrix
   {
     let matrixMsg = `- '${ this.#NAME.toUpperCase() }' MATRIX -\n`;
 
+    // Get the length of the biggest whole number
+    let maxLength = this.#PRECISION + 1;
+    for (let tempValue = Math.abs(Math.round(this.#maxNumber)); tempValue >= 1; maxLength++)
+      tempValue /= 10;
+
     for (let [_, columnsMap] of this.#matrix.entries())
     {
       for (let [_, element] of columnsMap.entries())
       {
-        const elementStr = "" + element;
-        const [wholeStr, decimalStr] = elementStr.split(".");
-        matrixMsg += wholeStr + '.' + decimalStr.substring(0, this.#PRECISION) + ' '.repeat(this.#maxLength - elementStr.length + 2);
+        const [wholeNumber, decimalNumber] = String(element).split(".");
+        let elementStr = wholeNumber;
+        let diff = this.#SPACING + 1;
+
+        if (decimalNumber !== undefined)
+          elementStr += '.' + decimalNumber.substring(0, this.#PRECISION);
+
+        if (element >= 0)
+        {
+          matrixMsg += ' ';
+          diff -= 1;
+        }
+
+        matrixMsg += elementStr + ' '.repeat(maxLength - elementStr.length + diff);
       }
 
       matrixMsg += '\n';
@@ -232,10 +249,8 @@ class Matrix
     if (!this.#checkCoordinates(parsedX, parsedY))
       return;
 
-    let parsedValueStr = "" + parsedValue;
-
-    if (this.#maxLength < parsedValueStr.length)
-      this.#maxLength = parsedValueStr.length;
+    if (this.#maxNumber < parsedValue)
+      this.#maxNumber = parsedValue;
 
     this.#matrix.get(parsedY).set(parsedX, parsedValue);
   }
@@ -411,9 +426,6 @@ class Matrix
 }
 
 // - Testing
-
-const nullMatrix = new Matrix("NULL", 2, 2);
-nullMatrix.printMatrix();
 
 const matrix1 = new Matrix("N1");
 matrix1.loadJSON('./src/json/matrix1.json').then(() => matrix1.printMatrix());
