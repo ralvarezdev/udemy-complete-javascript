@@ -7,7 +7,7 @@ class Matrix
   #x = 0;
   #y = 0;
   #EMPTY = 0;
-  #PRECISION = 3;
+  #PRECISION = 6;
   #SPACING = 3;
   #maxNumber = 0;
 
@@ -39,7 +39,7 @@ class Matrix
   async loadJSON (url)
   {
     this.#y = this.#x = 0;
-    this.#resetMatrix;
+    this.#resetMatrix();
 
     const fetchPromise =
       fetch(url)
@@ -177,17 +177,19 @@ class Matrix
     {
       for (let [_, element] of columnsMap.entries())
       {
-        const [wholeNumber, decimalNumber] = String(element).split(".");
-        let elementStr = wholeNumber;
-        let diff = this.#SPACING + 1;
+        const [wholeNumberStr, decimalNumberStr] = element.toFixed(this.#PRECISION).split(".");
+        const wholeNumber=parseInt(wholeNumberStr)
+        const decimalNumber=parseInt(decimalNumberStr)
 
-        if (decimalNumber !== undefined)
-          elementStr += '.' + decimalNumber.substring(0, this.#PRECISION);
+        let elementStr = String(wholeNumber);
+        let diff = this.#SPACING +1;
 
-        if (element >= 0)
-        {
-          matrixMsg += ' ';
-          diff -= 1;
+        if (!isNaN(decimalNumber)&&decimalNumber >0)
+          elementStr += '.' + decimalNumberStr.substring(0, this.#PRECISION);
+
+        if (wholeNumber >= 0) {
+          matrixMsg += (wholeNumberStr[0]==='-'&&decimalNumber>0)?'-' :' ';
+          diff--;
         }
 
         matrixMsg += elementStr + ' '.repeat(maxLength - elementStr.length + diff);
@@ -419,9 +421,20 @@ class Matrix
       return null;
 
     const cofactorMatrix = this.cofactorMatrix('COFACTOR');
-    cofactorMatrix.printMatrix();
-
     return cofactorMatrix.scalarProduct(resultMatrixName, 1 / this.determinant());
+  }
+
+  division(resultMatrixName, matrix)
+  {
+    if (matrix.determinant() === 0)
+      return null;
+
+    const matrixInverse=matrix.inverse('INVERSE 1')
+
+    const result1=matrixInverse.product(`${resultMatrixName} RESULT 1`, this)
+    const result2=this.product(`${resultMatrixName} RESULT 2`, matrixInverse)
+
+    return [result1, result2];
   }
 }
 
@@ -458,6 +471,13 @@ matrix2.loadJSON('./src/json/matrix2.json').then(() => matrix2.printMatrix()).th
     productMatrix.printMatrix();
 
     // Inverse
-    const inverseMatrix = matrix1.inverse("INVERSE", matrix2);
-    inverseMatrix.printMatrix();
+    const inverseMatrix = matrix2.inverse("INVERSE");
+    if(inverseMatrix!==null)
+      inverseMatrix.printMatrix();
+
+
+    // Division
+    const divisionMatrixResults = matrix1.division("DIVISION", matrix2);
+    if(divisionMatrixResults!==null)
+      divisionMatrixResults.forEach(divisionMatrix=>divisionMatrix.printMatrix());
   });
