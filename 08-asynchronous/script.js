@@ -5,60 +5,54 @@ const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 
-const renderError = function (msg)
-{
-  countriesContainer.insertAdjacentHTML('beforeend', msg);
+const renderError = function (msg) {
+    countriesContainer.insertAdjacentHTML('beforeend', msg);
 };
 
-const getJSON = function (url, errMsg = 'Something Went Wrong')
-{
-  return fetch(url).then(response =>
-  {
-    if (!response.ok) throw new Error(`${ errMsg } ${ response.status }`);
+const getJSON = function (url, errMsg = 'Something Went Wrong') {
+    return fetch(url).then(response => {
+        if (!response.ok) throw new Error(`${errMsg} ${response.status}`);
 
-    return response.json();
-  });
+        return response.json();
+    });
 };
 
-const renderCountry = function (country, className = '')
-{
-  console.log(country);
+const renderCountry = function (country, className = '') {
+    console.log(country);
 
-  const html = `
-    <article class="country ${ className }">
-      <img class="country__img" src="${ country.flag }" />
+    const html = `
+    <article class="country ${className}">
+      <img class="country__img" src="${country.flag}" />
       <div class="country__data">
-            <h3 class="country__name">${ country.name }</h3>
-            <h4 class="country__region">${ country.region }</h4>
-            <p class="country__row"><span>👫</span>${ (+country.population / 1000000).toFixed(3) }M</p>
-            <p class="country__row"><span>🗣️</span>${ country.languages[0].name }</p>
-            <p class="country__row"><span>💰</span>${ country.currencies[0].name }</p>
+            <h3 class="country__name">${country.name}</h3>
+            <h4 class="country__region">${country.region}</h4>
+            <p class="country__row"><span>👫</span>${(+country.population / 1000000).toFixed(3)}M</p>
+            <p class="country__row"><span>🗣️</span>${country.languages[0].name}</p>
+            <p class="country__row"><span>💰</span>${country.currencies[0].name}</p>
       </div>
     </article>
   `;
 
-  countriesContainer.insertAdjacentHTML('beforeend', html);
+    countriesContainer.insertAdjacentHTML('beforeend', html);
 };
 
-const getCountryData = function (country)
-{
-  const mainLink = 'https://countries-api-836d.onrender.com/countries/';
+const getCountryData = function (country) {
+    const mainLink = 'https://countries-api-836d.onrender.com/countries/';
 
-  getJSON(`${ mainLink }name/${ country }`, 'Country Not Found')
-    .then(data => 
-    {
-      const [country] = data;
+    getJSON(`${mainLink}name/${country}`, 'Country Not Found')
+        .then(data => {
+            const [country] = data;
 
-      renderCountry(country);
-      const neighbour = country.borders?.[0];
+            renderCountry(country);
+            const neighbour = country.borders?.[0];
 
-      if (!neighbour) throw new Error('No Neighbour Found');
+            if (!neighbour) throw new Error('No Neighbour Found');
 
-      return getJSON(`${ mainLink }alpha/${ neighbour }`, 'Country Not Found');
-    })
-    .then(neighbour => renderCountry(neighbour, 'neighbour'))
-    .catch(err => renderError(`An Error Ocurred: ${ err }`))
-    .finally(() => countriesContainer.style.opacity = 1);
+            return getJSON(`${mainLink}alpha/${neighbour}`, 'Country Not Found');
+        })
+        .then(neighbour => renderCountry(neighbour, 'neighbour'))
+        .catch(err => renderError(`An Error Ocurred: ${err}`))
+        .finally(() => countriesContainer.style.opacity = 1);
 };
 
 // getCountryData('spain');
@@ -111,21 +105,18 @@ const [lat3, lng3] = [-33.933, 18.474];
 // Personal Geocode API Key
 const apiKey = '';
 
-const whereAmI = function (lat, lng)
-{
-  fetch(`https://geocode.xyz/${ lat },${ lng }?geoit=json&auth=${ apiKey }`)
-    .then(response =>
-    {
-      if (!response.ok) throw new Error(`Reverse Geocoding Failed (${ response.status })`);
+const whereAmI = function (lat, lng) {
+    fetch(`https://geocode.xyz/${lat},${lng}?geoit=json&auth=${apiKey}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`Reverse Geocoding Failed (${response.status})`);
 
-      return response.json();
-    })
-    .then(data =>
-    {
-      console.log(`You're in ${ data.state }, ${ data.country }`);
-      getCountryData(data.country);
-    })
-    .catch(err => console.log(`An Error Ocurred: ${ err }`));
+            return response.json();
+        })
+        .then(data => {
+            console.log(`You're in ${data.state}, ${data.country}`);
+            getCountryData(data.country);
+        })
+        .catch(err => console.log(`An Error Ocurred: ${err}`));
 };
 
 // whereAmI(lat1, lng1);
@@ -167,34 +158,28 @@ let currImg;
 
 const imgsContainer = document.querySelector('.images');
 
-const hideImg = () =>
-{
-  currImg.style.display = 'none';
+const hideImg = () => {
+    currImg.style.display = 'none';
 };
 
-const wait = function (seconds)
-{
-  return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+const wait = function (seconds) {
+    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
 };
 
-const createImage = function (imgPath)
-{
-  return new Promise(function (resolve, reject)
-  {
-    const img = document.createElement('img');
-    img.src = imgPath;
-    currImg = img;
+const createImage = function (imgPath) {
+    return new Promise(function (resolve, reject) {
+        const img = document.createElement('img');
+        img.src = imgPath;
+        currImg = img;
 
-    img.addEventListener('load', function ()
-    {
-      imgsContainer.insertAdjacentElement('afterbegin', img);
-      resolve(img);
+        img.addEventListener('load', function () {
+            imgsContainer.insertAdjacentElement('afterbegin', img);
+            resolve(img);
+        });
+        img.addEventListener('error', function () {
+            reject('Error: Image Not Found');
+        });
     });
-    img.addEventListener('error', function ()
-    {
-      reject('Error: Image Not Found');
-    });
-  });
 };
 
 // createImage('img/img-1.jpg')
@@ -230,38 +215,30 @@ Test data Part 2: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-
 3.jpg']. To test, turn off the 'loadNPause' function
 */
 
-const loadNPause = async function (imgPath)
-{
-  try
-  {
-    const img = await createImage(imgPath);
-    await wait(2);
-    hideImg(img);
-  }
-  catch (err)
-  {
-    console.error(err);
-  }
+const loadNPause = async function (imgPath) {
+    try {
+        const img = await createImage(imgPath);
+        await wait(2);
+        hideImg(img);
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 // loadNPause('img/img-1.jpg');
 
-const loadAll = async function (...imgArr)
-{
-  try
-  {
-    const imgs = imgArr.map(async img => await createImage(img));
-    console.log(imgs);
+const loadAll = async function (...imgArr) {
+    try {
+        const imgs = imgArr.map(async img => await createImage(img));
+        console.log(imgs);
 
-    const imgsEl = await Promise.all(imgs);
-    console.log(imgsEl);
+        const imgsEl = await Promise.all(imgs);
+        console.log(imgsEl);
 
-    imgsEl.forEach(img => img.classList.add('parallel'));
-  }
-  catch (err)
-  {
-    console.error(err);
-  }
+        imgsEl.forEach(img => img.classList.add('parallel'));
+    } catch (err) {
+        console.error(err);
+    }
 
 };
 

@@ -1,22 +1,18 @@
 // Challenge 9
 
-function printForecast (temperatures)
-{
-  let message = "";
-  let counter = 1;
+function printForecast(temperatures) {
+    let message = "";
+    let counter = 1;
 
-  if (Array.isArray(temperatures))
-  {
-    for (let temperature of temperatures)
-    {
-      if (!isNaN(temperature))
-      {
-        message = message.concat(`... ${ temperature }ºC in ${ counter } days `);
-        counter++;
-      }
+    if (Array.isArray(temperatures)) {
+        for (let temperature of temperatures) {
+            if (!isNaN(temperature)) {
+                message = message.concat(`... ${temperature}ºC in ${counter} days `);
+                counter++;
+            }
+        }
+        console.log(message);
     }
-    console.log(message);
-  }
 }
 
 let testData1 = [17, 21, 23];

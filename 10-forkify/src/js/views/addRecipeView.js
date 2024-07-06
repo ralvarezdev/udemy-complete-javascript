@@ -2,55 +2,47 @@ import View from './view';
 
 import icons from 'url:../../img/icons.svg';
 
-class AddRecipeView extends View
-{
-  _parentElement = document.querySelector('.upload');
-  _successMessage = 'Recipe was sucessfully uploaded';
+class AddRecipeView extends View {
+    _parentElement = document.querySelector('.upload');
+    _successMessage = 'Recipe was sucessfully uploaded';
 
-  _window = document.querySelector('.add-recipe-window');
-  _overlay = document.querySelector('.overlay');
-  _btnOpen = document.querySelector('.nav__btn--add-recipe');
-  _btnClose = document.querySelector('.btn--close-modal');
+    _window = document.querySelector('.add-recipe-window');
+    _overlay = document.querySelector('.overlay');
+    _btnOpen = document.querySelector('.nav__btn--add-recipe');
+    _btnClose = document.querySelector('.btn--close-modal');
 
-  constructor ()
-  {
-    super();
-    this._addHandlerWindow();
-  }
+    constructor() {
+        super();
+        this._addHandlerWindow();
+    }
 
-  addHandlerUpload (handler)
-  {
-    this._parentElement.addEventListener('submit', function (event)
-    {
-      event.preventDefault();
+    addHandlerUpload(handler) {
+        this._parentElement.addEventListener('submit', function (event) {
+            event.preventDefault();
 
-      // Get Form Data
-      const dataArr = [...new FormData(this)];
-      const data = Object.fromEntries(dataArr);
-      handler(data);
-    });
-  }
+            // Get Form Data
+            const dataArr = [...new FormData(this)];
+            const data = Object.fromEntries(dataArr);
+            handler(data);
+        });
+    }
 
-  isWindowActive ()
-  {
-    return !(this._overlay.classList.contains('hidden') && this._window.classList.contains('hidden'));
-  }
+    isWindowActive() {
+        return !(this._overlay.classList.contains('hidden') && this._window.classList.contains('hidden'));
+    }
 
-  toggleWindow ()
-  {
-    this._overlay.classList.toggle('hidden');
-    this._window.classList.toggle('hidden');
-  }
+    toggleWindow() {
+        this._overlay.classList.toggle('hidden');
+        this._window.classList.toggle('hidden');
+    }
 
-  showForm ()
-  {
-    this._renderUploadForm();
-    this.toggleWindow();
-  }
+    showForm() {
+        this._renderUploadForm();
+        this.toggleWindow();
+    }
 
-  _renderUploadForm ()
-  {
-    const markup = `
+    _renderUploadForm() {
+        const markup = `
     <div class="upload__column">
       <h3 class="upload__heading">Recipe data</h3>
       <label>Title</label>
@@ -85,24 +77,23 @@ class AddRecipeView extends View
 
     <button class="btn upload__btn">
       <svg>
-        <use href="${ icons }g#icon-upload-cloud"></use>
+        <use href="${icons}g#icon-upload-cloud"></use>
       </svg>
       <span>Upload</span>
     </button>
     `;
 
-    this._parentElement.innerHTML = '';
-    this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
+        this._parentElement.innerHTML = '';
+        this._parentElement.insertAdjacentHTML('afterbegin', markup);
+    }
 
-  _addHandlerWindow ()
-  {
-    // Open Modal Window, 
-    this._btnOpen.addEventListener('click', this.showForm.bind(this));
+    _addHandlerWindow() {
+        // Open Modal Window,
+        this._btnOpen.addEventListener('click', this.showForm.bind(this));
 
-    // Close Modal Window
-    [this._btnClose, this._overlay].forEach(btn => btn.addEventListener('click', this.toggleWindow.bind(this)));
-  }
+        // Close Modal Window
+        [this._btnClose, this._overlay].forEach(btn => btn.addEventListener('click', this.toggleWindow.bind(this)));
+    }
 }
 
 export default new AddRecipeView();

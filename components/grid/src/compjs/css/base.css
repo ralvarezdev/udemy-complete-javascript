@@ -1,59 +1,62 @@
 :root {
-  /* - Variables */
+    /* - Variables */
 
-  /* Fonts size */
-  --compjs-font-size-h2: 5rem;
-  --compjs-font-size-h3: 1.6rem;
-  --compjs-font-size-text: 1rem;
+    /* Fonts size */
+    --compjs-font-size-h2: 5rem;
+    --compjs-font-size-h3: 2.5rem;
+    --compjs-font-size-h4: 1.5rem;
+    --compjs-font-size-text: 1rem;
 
-  /* Icons size */
-  --compjs-big-icon-size: 4rem;
-  --compjs-medium-icon-size: 2.6rem;
-  --compjs-small-icon-size: 2rem;
+    /* Icons size */
+    --compjs-big-icon-size: 4rem;
+    --compjs-medium-icon-size: 2.6rem;
+    --compjs-small-icon-size: 2rem;
 
-  /* Checkboxes size */
-  --compjs-big-checkbox-size: 1rem;
-  --compjs-medium-checkbox-size: 0.8rem;
-  --compjs-small-checkbox-size: 0.6rem;
+    /* Checkboxes size */
+    --compjs-big-checkbox-size: 1rem;
+    --compjs-medium-checkbox-size: 0.8rem;
+    --compjs-small-checkbox-size: 0.6rem;
 
-  /* Margins */
-  --compjs-big-margin: 3rem;
-  --compjs-medium-margin: 2rem;
-  --compjs-small-margin: 1.6rem;
+    /* Margins */
+    --compjs-huge-margin: 3rem;
+    --compjs-big-margin: 2.2rem;
+    --compjs-medium-margin: 1.6rem;
+    --compjs-small-margin: 0.8rem;
+    --compjs-micro-margin: 0.25rem;
 
-  /* Gaps */
-  --compjs-big-icon-gap: 0.5rem;
+    /* Gaps */
+    --compjs-big-icon-gap: 0.5rem;
 
-  /* Padding */
-  --compjs-huge-padding: 3rem;
-  --compjs-big-padding: 2rem;
-  --compjs-medium-padding: 1rem;
-  --compjs-small-padding: 0.5rem;
-  --compjs-micro-padding: 0.25rem;
-  --compjs-cell-padding: 0.5rem;
+    /* Padding */
+    --compjs-huge-padding: 3rem;
+    --compjs-big-padding: 2rem;
+    --compjs-medium-padding: 1.6rem;
+    --compjs-small-padding: 0.8rem;
+    --compjs-micro-padding: 0.25rem;
+    --compjs-cell-padding: 0.5rem;
 
-  /* Border radius */
-  --compjs-border-radius: 5px;
+    /* Border radius */
+    --compjs-medium-border-radius: 10px;
 
-  /* Colors */
-  --compjs-grey-dark: #343a40;
-  --compjs-grey-medium: #868e96;
-  --compjs-grey-light: #dee2e6;
-  --compjs-white: #f8f9fa;
+    /* Colors */
+    --compjs-grey-dark: #343a40;
+    --compjs-grey-medium: #868e96;
+    --compjs-grey-light: #dee2e6;
+    --compjs-white: #f8f9fa;
 
-  --compjs-primary-dark: #099268;
-  --compjs-primary-medium: #20c997;
-  --compjs-primary-light: #c3fae8;
+    --compjs-primary-dark: #099268;
+    --compjs-primary-medium: #20c997;
+    --compjs-primary-light: #e6fcf5;
 }
 
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 /* - Utilities */
 .hide {
-  z-index: -1;
-  opacity: 0;
-  visibility: hidden;
+    z-index: -1;
+    opacity: 0;
+    visibility: hidden;
 }

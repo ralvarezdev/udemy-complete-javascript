@@ -3,165 +3,165 @@
 /* -- Text */
 
 .calculator__title {
-  padding: 8rem 0 2rem 0;
+    padding: 8rem 0 2rem 0;
 
-  color: var(--grays--gray4);
-  font-size: 4rem;
-  font-weight: 600;
+    color: var(--grays--gray4);
+    font-size: 4rem;
+    font-weight: 600;
 }
 
 .input__header,
 .result__header {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 
-  color: var(--grays--gray4);
-  font-size: 1.5rem;
-  font-weight: 400;
+    color: var(--grays--gray4);
+    font-size: 1.5rem;
+    font-weight: 400;
 }
 
 /* -- Containers */
 
 .calculator__section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  padding: 0 8rem;
-  margin-bottom: 10rem;
+    padding: 0 8rem;
+    margin-bottom: 10rem;
 }
 
 .container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  row-gap: 3rem;
-  column-gap: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 3rem;
+    column-gap: 3rem;
 
-  padding: 2rem 3rem 3rem 3rem;
-  width: 100%;
+    padding: 2rem 3rem 3rem 3rem;
+    width: 100%;
 
-  background-color: var(--grays--gray1);
+    background-color: var(--grays--gray1);
 
-  border-style: solid;
-  border-color: var(--grays--gray4);
-  border-width: 0.5rem;
-  border-radius: 0.5rem
+    border-style: solid;
+    border-color: var(--grays--gray4);
+    border-width: 0.5rem;
+    border-radius: 0.5rem
 }
 
 .container--input,
 .container--btns {
-  grid-column: -1/1;
+    grid-column: -1/1;
 }
 
 .container--input {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  row-gap: 2rem;
-  column-gap: 4rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 2rem;
+    column-gap: 4rem;
 }
 
 .container--btns {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
 }
 
 .box {
-  padding: 1rem 3rem;
+    padding: 1rem 3rem;
 }
 
 .box--input,
 .box--result {
-  grid-column-end: span 1;
+    grid-column-end: span 1;
 }
 
 /* -- IO Elements */
 
 .input-number {
-  padding: 0.75rem 1rem;
+    padding: 0.75rem 1rem;
 }
 
 .input-number {
-  width: 100%;
+    width: 100%;
 
-  font-size: 2rem;
+    font-size: 2rem;
 
-  background-color: #f8f9fa;
-  color: var(--grays--gray4);
+    background-color: #f8f9fa;
+    color: var(--grays--gray4);
 
-  border: none;
-  outline-style: solid;
-  outline-color: var(--grays--gray4);
-  outline-width: 0.2rem;
+    border: none;
+    outline-style: solid;
+    outline-color: var(--grays--gray4);
+    outline-width: 0.2rem;
 
-  transition: var(--duration--default) outline-color 0ms ease-in;
+    transition: var(--duration--default) outline-color 0ms ease-in;
 }
 
 .input-number:focus {
-  border: none;
+    border: none;
 }
 
 .input-number--remove-error {
-  outline-color: var(--grays--gray4);
+    outline-color: var(--grays--gray4);
 }
 
 .input-number--error {
-  outline-color: var(--primary-color--error);
+    outline-color: var(--primary-color--error);
 }
 
 .result {
-  width: 100%;
+    width: 100%;
 
-  background-color: var(--grays--gray4);
-  color: var(--grays--gray1);
+    background-color: var(--grays--gray4);
+    color: var(--grays--gray1);
 
-  font-size: 2rem;
-  font-weight: 600;
+    font-size: 2rem;
+    font-weight: 600;
 
-  padding: 0.75rem 2rem;
+    padding: 0.75rem 2rem;
 
-  transition: var(--duration--default) background-color 0ms ease-in;
+    transition: var(--duration--default) background-color 0ms ease-in;
 }
 
 .result--error {
-  background-color: var(--primary-color--error);
+    background-color: var(--primary-color--error);
 }
 
 .result--remove-error {
-  background-color: var(--grays--gray4);
+    background-color: var(--grays--gray4);
 }
 
 /* -- Operators*/
 
 .btn--op {
-  margin: 0 2rem;
-  padding: 1rem 3rem;
+    margin: 0 2rem;
+    padding: 1rem 3rem;
 
-  background-color: var(--grays--gray4);
-  border-radius: 2.2rem;
+    background-color: var(--grays--gray4);
+    border-radius: 2.2rem;
 
-  border-style: none;
-  scale: 1;
+    border-style: none;
+    scale: 1;
 
-  transition: var(--duration--short) scale 0s ease-in-out;
+    transition: var(--duration--short) scale 0s ease-in-out;
 }
 
 .btn--op:hover {
-  background-color: var(--grays--gray3);
-  box-shadow: 0 0.25rem 0.1rem rgba(134, 142, 150, .25);
+    background-color: var(--grays--gray3);
+    box-shadow: 0 0.25rem 0.1rem rgba(134, 142, 150, .25);
 
-  scale: 1.1;
+    scale: 1.1;
 }
 
 /* -- Icons */
 
 .feather--icon {
-  width: 3rem;
-  height: 3rem;
+    width: 3rem;
+    height: 3rem;
 
-  stroke: var(--grays--gray2);
-  stroke-width: 0.2rem;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
+    stroke: var(--grays--gray2);
+    stroke-width: 0.2rem;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
 }

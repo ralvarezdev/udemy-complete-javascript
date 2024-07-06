@@ -40,7 +40,8 @@ Jonas Schmedtmann <a href="https://github.com/jonasschmedtmann">(jonasschmedtman
 
 ### Bankist Web App
 
-The Bankist Web App project is really simple. There's no way to create new users without manipulating the script.js file.
+The Bankist Web App project is really simple. There's no way to create new users without manipulating the script.js
+file.
 
 Available accounts with the user's full name, username and password are:
 <ol>
@@ -48,4 +49,5 @@ Available accounts with the user's full name, username and password are:
 <li>Jessica Davis, <strong>jd</strong>, <strong>2222</strong></li>
 </ol>
 
-For example, to log in as Jonas Schmedtmann, you must type js in the <strong>user field</strong> and 1111 in the <strong>password field</strong>
+For example, to log in as Jonas Schmedtmann, you must type js in the <strong>user field</strong> and 1111 in
+the <strong>password field</strong>

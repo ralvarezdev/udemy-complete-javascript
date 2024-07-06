@@ -2,108 +2,141 @@
 
 /* - Grid class names */
 .grid {
-  display: grid;
-  grid-template-columns: fit-content(50%) 1fr;
+    display: grid;
+    grid-template-columns: fit-content(50%) 1fr;
 }
 
 .grid__header {
-  display: grid;
-  grid-column: 1/-1;
-  grid-template-columns: subgrid;
+    display: grid;
+    grid-column: 1/-1;
+    grid-template-columns: subgrid;
+    column-gap: var(--compjs-big-margin);
 
-  margin: var(--compjs-big-margin) 0;
+    margin: var(--compjs-huge-margin) 0 var(--compjs-big-margin) 0;
 }
 
 .grid__header__title {
-  font-size: var(--compjs-font-size-h2);
-  text-align: center;
+    grid-row: 1;
+    grid-column: 2/-1;
 
-  color: var(--compjs-grey-dark);
+    font-size: var(--compjs-font-size-h2);
+    text-align: center;
+    padding: 0 var(--compjs-big-padding);
+
+    color: var(--compjs-grey-dark);
+}
+
+.grid__header__title--no-icons {
+    grid-column: 1/-1;
 }
 
 .grid__header__icons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    grid-row: 1;
+    grid-column: 1/2;
 
-  gap: var(--compjs-big-icon-gap);
-  padding: var(--compjs-medium-padding) var(--compjs-huge-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: var(--compjs-big-icon-gap);
+    padding: var(--compjs-medium-padding) var(--compjs-huge-padding);
 }
 
 .grid__header__icon {
-  width: var(--compjs-big-icon-size);
+    width: var(--compjs-big-icon-size);
 }
 
 .grid__header__icons__lock {
-  position: relative;
+    position: relative;
 
-  width: var(--compjs-big-icon-size);
+    width: var(--compjs-big-icon-size);
 }
 
-.grid__header__icons__lock>img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
+.grid__header__icons__lock > img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
 
-  animation: 400ms ease-out 0ms bigIconLostFocus;
+    animation: 400ms ease-out 0ms bigIconLostFocus;
 }
 
-.grid__header__icons__lock>img:hover,
-.grid__header__icons__lock>img:active {
-  transform: translate(-50%, -60%);
+.grid__header__icons__lock > img:hover,
+.grid__header__icons__lock > img:active {
+    transform: translate(-50%, -60%);
 
-  animation: 400ms ease-out 0ms bigIconFocus;
+    animation: 400ms ease-out 0ms bigIconFocus;
 }
 
 .grid__body {
-  display: grid;
-  grid-column: 1/-1;
-  grid-template-columns: subgrid;
+    display: grid;
+    grid-column: 1/-1;
+    grid-template-columns: subgrid;
+    column-gap: var(--compjs-big-margin);
 }
 
 .grid__body__header {
-  color: var(--compjs-primary-light);
-  background-color: var(--compjs-primary-dark);
-  border-radius: var(--compjs-border-radius) var(--compjs-border-radius) 0 0;
+    grid-column: 2/-1;
+
+    display: grid;
+    grid-auto-columns: 1fr;
+    padding: 0 var(--compjs-medium-padding);
+}
+
+.grid__body__header--no-icons {
+    grid-column: 1/-1;
 }
 
 .grid__body__header__column {
-  font-size: var(--compjs-font-size-h2);
-  padding: var(--compjs-column-padding);
+    grid-row: 1;
+
+    font-size: var(--compjs-font-size-h3);
+    padding: var(--compjs-micro-padding) var(--compjs-small-padding);
+    text-align: center;
+
+    color: var(--compjs-primary-light);
+    background-color: var(--compjs-primary-dark);
+}
+
+.grid__body__header__column:last-child {
+    border-radius: 0 var(--compjs-medium-border-radius) 0 0;
+}
+
+.grid__body__header__column:first-child {
+    border-radius: var(--compjs-medium-border-radius) 0 0 0;
 }
 
 .grid__body__icons,
 .grid__footer__icons {
-  color: var(--compjs-grey-medium);
+    color: var(--compjs-grey-medium);
 }
 
 .grid__body__row {
-  font-size: var(--compjs-font-size-text);
-  color: var(--compjs-grey-dark);
+    font-size: var(--compjs-font-size-text);
+    color: var(--compjs-grey-dark);
 }
 
 .grid__body__row:focus {
-  background-color: var(--compjs-primary-medium);
+    background-color: var(--compjs-primary-medium);
 }
 
 .grid__body__row:nth-child(odd) {
-  background-color: var(--compjs-primary-light);
+    background-color: var(--compjs-primary-light);
 }
 
 .grid__body__row:nth-child(even) {
-  background-color: var(--compjs-white);
+    background-color: var(--compjs-white);
 }
 
 .grid__body__row__cell {
-  padding: var(--compjs-cell-padding);
+    padding: var(--compjs-cell-padding);
 }
 
 .grid__footer {
-  margin-top: var(--compjs-footer-margin-top);
+    margin-top: var(--compjs-big-margin);
 }
 
 .grid__footer__pagination {
-  padding: var(--compjs-pagination-padding);
+    padding: var(--compjs-medium-padding);
 }

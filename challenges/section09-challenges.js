@@ -31,71 +31,70 @@ The Complete JavaScript Course 16;
 */
 
 const game = {
-  team1: 'Bayern Munich',
-  team2: 'Borrussia Dortmund',
-  players: [
-    [
-      'Neuer',
-      'Pavard',
-      'Martinez',
-      'Alaba',
-      'Davies',
-      'Kimmich',
-      'Goretzka',
-      'Coman',
-      'Muller',
-      'Gnarby',
-      'Lewandowski',
+    team1: 'Bayern Munich',
+    team2: 'Borrussia Dortmund',
+    players: [
+        [
+            'Neuer',
+            'Pavard',
+            'Martinez',
+            'Alaba',
+            'Davies',
+            'Kimmich',
+            'Goretzka',
+            'Coman',
+            'Muller',
+            'Gnarby',
+            'Lewandowski',
+        ],
+        [
+            'Burki',
+            'Schulz',
+            'Hummels',
+            'Akanji',
+            'Hakimi',
+            'Weigl',
+            'Witsel',
+            'Hazard',
+            'Brandt',
+            'Sancho',
+            'Gotze',
+        ],
     ],
-    [
-      'Burki',
-      'Schulz',
-      'Hummels',
-      'Akanji',
-      'Hakimi',
-      'Weigl',
-      'Witsel',
-      'Hazard',
-      'Brandt',
-      'Sancho',
-      'Gotze',
-    ],
-  ],
-  score: '4:0',
-  scored: ['Lewandowski', 'Gnarby', 'Lewandowski',
-    'Hummels'],
-  date: 'Nov 9th, 2037',
-  odds: {
-    team1: 1.33,
-    x: 3.25,
-    team2: 6.5,
-  },
+    score: '4:0',
+    scored: ['Lewandowski', 'Gnarby', 'Lewandowski',
+        'Hummels'],
+    date: 'Nov 9th, 2037',
+    odds: {
+        team1: 1.33,
+        x: 3.25,
+        team2: 6.5,
+    },
 };
 
 const [players1, players2] = game.players;
-console.log(`Team 1 Players: ${ players1 }`);
-console.log(`Team 2 Players: ${ players2 }`);
+console.log(`Team 1 Players: ${players1}`);
+console.log(`Team 2 Players: ${players2}`);
 
 const [gk, ...fieldPlayers] = [...players1];
-console.log(`Goalkeeper: ${ gk }`);
-console.log(`Field Players: ${ fieldPlayers }`);
+console.log(`Goalkeeper: ${gk}`);
+console.log(`Field Players: ${fieldPlayers}`);
 
 const players = [...players1, ...players2];
-console.log(`All Players: ${ players }`);
+console.log(`All Players: ${players}`);
 
 const players1Final = [...players1, 'Thiago', 'Coutinho', 'Perisic'];
-console.log(`Team 1 Players Final: ${ players1Final }`);
+console.log(`Team 1 Players Final: ${players1Final}`);
 
-const { team1, x: draw, team2 } = game.odds;
-console.log(`Odds\nTeam 1: ${ team1 }\nDraw: ${ draw }\nTeam 2: ${ team2 }`);
+const {team1, x: draw, team2} = game.odds;
+console.log(`Odds\nTeam 1: ${team1}\nDraw: ${draw}\nTeam 2: ${team2}`);
 
-function printGoals (...players)
-{
-  let goals = 'Goals';
+function printGoals(...players) {
+    let goals = 'Goals';
 
-  for (let player of players) goals = goals.concat('\n', player);
+    for (let player of players) goals = goals.concat('\n', player);
 
-  console.log(`${ goals }\n\nTotal: ${ players.length }`);
+    console.log(`${goals}\n\nTotal: ${players.length}`);
 }
 
 printGoals('Davies', 'Muller', 'Lewandowski', 'Kimmich');
@@ -133,36 +132,35 @@ game, it will look like this:
 */
 
 const scorers = {};
-for (let [index, player] of game.scored.entries())
-{
-  console.log(`\nGoal ${ index + 1 }: ${ player }`);
+for (let [index, player] of game.scored.entries()) {
+    console.log(`\nGoal ${index + 1}: ${player}`);
 
-  if (scorers?.[player])
-    scorers[player]++;
-  else
-    scorers[player] = 1;
+    if (scorers?.[player])
+        scorers[player]++;
+    else
+        scorers[player] = 1;
 }
 
 let odds = Object.values(game.odds);
 let avr = 0;
 
 for (let odd of odds)
-  avr += odd;
+    avr += odd;
 avr /= odds.length;
 
-console.log(`Odds Average: ${ avr }`);
+console.log(`Odds Average: ${avr}`);
 
 odds = Object.entries(game.odds);
 
 for (let [key, value] of odds)
-  if (game?.[key])
-    console.log(`Odd of victory ${ game[key] }: ${ value }`);
-  else
-    console.log(`Odd of draw: ${ value }`);
+    if (game?.[key])
+        console.log(`Odd of victory ${game[key]}: ${value}`);
+    else
+        console.log(`Odd of draw: ${value}`);
 
 let scorersMsg = 'Scorers';
 for (let [key, value] of Object.entries(scorers))
-  scorersMsg = scorersMsg.concat(`\n${ key }: ${ value }`);
+    scorersMsg = scorersMsg.concat(`\n${key}: ${value}`);
 console.log(scorersMsg);
 
 // Coding Challenge 3
@@ -181,17 +179,17 @@ whether it's in the first half or second half (after 45 min) of the game, like t
 */
 
 const gameEvents = new Map([
-  [17, '⚽ GOAL'],
-  [36, '🔁 Substitution'],
-  [47, '⚽ GOAL'],
-  [61, '🔁 Substitution'],
-  [64, '🔶 Yellow card'],
-  [69, '🔴 Red card'],
-  [70, '🔁 Substitution'],
-  [72, '🔁 Substitution'],
-  [76, '⚽ GOAL'],
-  [80, '⚽ GOAL'],
-  [92, '🔶 Yellow card'],
+    [17, '⚽ GOAL'],
+    [36, '🔁 Substitution'],
+    [47, '⚽ GOAL'],
+    [61, '🔁 Substitution'],
+    [64, '🔶 Yellow card'],
+    [69, '🔴 Red card'],
+    [70, '🔁 Substitution'],
+    [72, '🔁 Substitution'],
+    [76, '⚽ GOAL'],
+    [80, '⚽ GOAL'],
+    [92, '🔶 Yellow card'],
 ]);
 console.log(gameEvents);
 
@@ -201,10 +199,10 @@ console.log(uniqueEvents);
 gameEvents.delete(64);
 console.log(gameEvents);
 
-console.log(`An event happened, on average, every ${ 90 / gameEvents.size } minutes`);
+console.log(`An event happened, on average, every ${90 / gameEvents.size} minutes`);
 
 for (let [key, value] of gameEvents)
-  console.log(`[${ key <= 45 ? 'FIRST' : 'SECOND' } HALF] ${ key }: ${ value }`);
+    console.log(`[${key <= 45 ? 'FIRST' : 'SECOND'} HALF] ${key}: ${value}`);
 
 // Coding Challenge 4
 
@@ -244,29 +242,27 @@ document.body.append(document.createElement('button'));
 const textArea = document.querySelector('textarea');
 const button = document.querySelector('button');
 
-button.addEventListener('click', () =>
-{
-  const params = textArea.value.split('\n');
-  const modParams = [];
+button.addEventListener('click', () => {
+    const params = textArea.value.split('\n');
+    const modParams = [];
 
-  for (let param of params)
-  {
-    param = param.toLowerCase();
+    for (let param of params) {
+        param = param.toLowerCase();
 
-    const words = param.split('_');
-    const modWords = [];
+        const words = param.split('_');
+        const modWords = [];
 
-    modWords.push(words[0]);
+        modWords.push(words[0]);
 
-    for (let i = 1; i < words.length; i++)
-      modWords.push(words[i][0].toUpperCase() + words[i].slice(1));
+        for (let i = 1; i < words.length; i++)
+            modWords.push(words[i][0].toUpperCase() + words[i].slice(1));
 
-    modParams.push(modWords.join(''));
-  }
+        modParams.push(modWords.join(''));
+    }
 
-  let msg = '';
-  for (let i = 0; i < modParams.length; i++)
-    msg = msg.concat(`${ modParams[i] } ${ '✅'.repeat(i + 1) }\n`);
+    let msg = '';
+    for (let i = 0; i < modParams.length; i++)
+        msg = msg.concat(`${modParams[i]} ${'✅'.repeat(i + 1)}\n`);
 
-  console.log(msg);
+    console.log(msg);
 });

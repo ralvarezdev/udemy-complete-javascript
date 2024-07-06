@@ -46,44 +46,44 @@ meals section: 11px
 
 /* - VARIABLES */
 :root {
-  --primary-color--error: #ff6b6b;
-  --grays--gray4: #343a40;
-  --grays--gray3: #868e96;
-  --grays--gray2: #ced4da;
-  --grays--gray1: #f1f3f5;
-  --duration--long: 500ms;
-  --duration--default: 400ms;
-  --duration--short: 200ms;
-  --delay--short: 100ms;
+    --primary-color--error: #ff6b6b;
+    --grays--gray4: #343a40;
+    --grays--gray3: #868e96;
+    --grays--gray2: #ced4da;
+    --grays--gray1: #f1f3f5;
+    --duration--long: 500ms;
+    --duration--default: 400ms;
+    --duration--short: 200ms;
+    --delay--short: 100ms;
 }
 
 /* - GLOBAL RESET */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
 }
 
 html {
-  font-family: 'Roboto';
-  /* 10px/16px = 0.625 */
-  font-size: 62.5%;
-  box-sizing: border-box;
+    font-family: 'Roboto';
+    /* 10px/16px = 0.625 */
+    font-size: 62.5%;
+    box-sizing: border-box;
 }
 
 /* - HTML Elements */
 
 body {
-  background-color: var(--grays--gray1);
+    background-color: var(--grays--gray1);
 
-  animation: var(--duration--long) appear var(--delay--short) ease-in-out;
+    animation: var(--duration--long) appear var(--delay--short) ease-in-out;
 }
 
 header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-  width: 100%;
-  padding: 2rem 0;
+    width: 100%;
+    padding: 2rem 0;
 }

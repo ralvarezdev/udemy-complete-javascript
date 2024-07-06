@@ -1,9 +1,9 @@
 @font-face {
-  font-family: "Open Sans";
-  src: url('../fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf') format("truetype");
+    font-family: "Open Sans";
+    src: url('../fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf') format("truetype");
 }
 
 html {
-  font-family: "Open Sans", sans-serif;
-  font-size: 62.5%;
+    font-family: "Open Sans", sans-serif;
+    font-size: 62.5%;
 }

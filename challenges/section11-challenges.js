@@ -30,22 +30,20 @@ const dogsKate1 = [4, 1, 15, 8, 3];
 const dogsJulia2 = [9, 16, 6, 8, 3];
 const dogsKate2 = [10, 5, 6, 1, 4];
 
-const checkDogs = (dogsJulia, dogsKate) =>
-{
-  const dogsJuliaCorr = dogsJulia.slice(1, -2);
-  //console.log(`Dogs Julia: ${ dogsJulia }`);
-  //console.log(`Dogs Julia (Cats Removed): ${ dogsJuliaReal }`);
+const checkDogs = (dogsJulia, dogsKate) => {
+    const dogsJuliaCorr = dogsJulia.slice(1, -2);
+    //console.log(`Dogs Julia: ${ dogsJulia }`);
+    //console.log(`Dogs Julia (Cats Removed): ${ dogsJuliaReal }`);
 
-  const allDogs = dogsJuliaCorr.concat(dogsKate);
+    const allDogs = dogsJuliaCorr.concat(dogsKate);
 
-  let msg = '';
-  allDogs.forEach((dog, i, arr) =>
-  {
-    const type = (dog < 3) ? `still a puppy 🐶` : `an adult, and is ${ dog } years old`;
+    let msg = '';
+    allDogs.forEach((dog, i, arr) => {
+        const type = (dog < 3) ? `still a puppy 🐶` : `an adult, and is ${dog} years old`;
 
-    msg = msg.concat(`Dog number ${ i + 1 } is ${ type }\n`);
-  });
-  console.log(msg);
+        msg = msg.concat(`Dog number ${i + 1} is ${type}\n`);
+    });
+    console.log(msg);
 };
 
 console.log('----- TEST 1 -----');
@@ -75,15 +73,14 @@ Test data:
 const dogsAge1 = [5, 2, 4, 1, 15, 8, 3];
 const dogsAge2 = [16, 6, 10, 5, 6, 1, 4];
 
-const calcAverageHumanAge = ages =>
-{
-  const humanYears = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4);
-  const humanYearsFiltered = humanYears.filter(age => age >= 18);
-  console.log(humanYearsFiltered);
+const calcAverageHumanAge = ages => {
+    const humanYears = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4);
+    const humanYearsFiltered = humanYears.filter(age => age >= 18);
+    console.log(humanYearsFiltered);
 
-  let avr = humanYearsFiltered.reduce((acc, age) => acc += age, 0);
-  avr /= humanYearsFiltered.length;
-  console.log(`Human Years Average: ${ avr }`);
+    let avr = humanYearsFiltered.reduce((acc, age) => acc += age, 0);
+    avr /= humanYearsFiltered.length;
+    console.log(`Human Years Average: ${avr}`);
 };
 
 console.log('----- TEST 1 -----');
@@ -103,12 +100,11 @@ Test data:
 GOOD LUCK 😀
 */
 
-const calcAverageHumanAgeRev = ages =>
-{
-  let avr = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4)
-    .filter(age => age >= 18)
-    .reduce((acc, age, i, arr) => acc + age / arr.length, 0);
-  console.log(`Human Years Average: ${ avr }`);
+const calcAverageHumanAgeRev = ages => {
+    let avr = ages.map(age => (age <= 2) ? age * 2 : 16 + age * 4)
+        .filter(age => age >= 18)
+        .reduce((acc, age, i, arr) => acc + age / arr.length, 0);
+    console.log(`Human Years Average: ${avr}`);
 };
 
 console.log('----- TEST 1 REV -----');
@@ -162,10 +158,10 @@ GOOD LUCK 😀
 */
 
 const dogs = [
-  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
-  { weight: 8, curFood: 200, owners: ['Matilda'] },
-  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
-  { weight: 32, curFood: 340, owners: ['Michael'] },
+    {weight: 22, curFood: 250, owners: ['Alice', 'Bob']},
+    {weight: 8, curFood: 200, owners: ['Matilda']},
+    {weight: 13, curFood: 275, owners: ['Sarah', 'John']},
+    {weight: 32, curFood: 340, owners: ['Michael']},
 ];
 
 dogs.forEach(dog => dog.recFood = dog.weight ** 0.75 * 28);
@@ -175,12 +171,11 @@ const tooLittle = -1;
 const normal = 0;
 const tooMuch = 1;
 
-const checkEating = dog =>
-{
-  if (dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1)
-    return normal;
-  else
-    return (dog.curFood <= dog.recFood * 0.9) ? tooLittle : tooMuch;
+const checkEating = dog => {
+    if (dog.curFood > dog.recFood * 0.9 && dog.curFood < dog.recFood * 1.1)
+        return normal;
+    else
+        return (dog.curFood <= dog.recFood * 0.9) ? tooLittle : tooMuch;
 };
 
 dogOwners = dogs.map(dog => dog.owners);
@@ -190,36 +185,36 @@ const check = checkEating(sarahDog);
 let msg = '';
 
 if (check === 0)
-  msg = 'normal';
+    msg = 'normal';
 else
-  msg = (check === tooLittle) ? 'too Little' : 'too Much';
+    msg = (check === tooLittle) ? 'too Little' : 'too Much';
 
-console.log(`Sarah's Dog is Eating ${ msg }`);;
+console.log(`Sarah's Dog is Eating ${msg}`);
+;
 
 const dogOwnersEatTooMuch = [];
 const dogOwnersEatTooLittle = [];
 const dogOwnersEatOkay = [];
 
-dogs.forEach(dog =>
-{
-  const check = checkEating(dog);
+dogs.forEach(dog => {
+    const check = checkEating(dog);
 
-  if (check === tooLittle)
-    dogOwnersEatTooLittle.push(dog.owners);
-  else if (check === tooMuch)
-    dogOwnersEatTooMuch.push(dog.owners);
-  else
-    dogOwnersEatOkay.push(dog.owners);
+    if (check === tooLittle)
+        dogOwnersEatTooLittle.push(dog.owners);
+    else if (check === tooMuch)
+        dogOwnersEatTooMuch.push(dog.owners);
+    else
+        dogOwnersEatOkay.push(dog.owners);
 });
-console.log(`Dogs that Eat too Much: ${ dogOwnersEatTooMuch }\n\
-Dogs that Eat too Little: ${ dogOwnersEatTooLittle }\n\
-Dogs that Eat an Okay Amount: ${ dogOwnersEatOkay }`);
+console.log(`Dogs that Eat too Much: ${dogOwnersEatTooMuch}\n\
+Dogs that Eat too Little: ${dogOwnersEatTooLittle}\n\
+Dogs that Eat an Okay Amount: ${dogOwnersEatOkay}`);
 
-console.log(`${ dogOwnersEatTooMuch.flat().join(' and ') }'s dogs eat too much!`);
-console.log(`${ dogOwnersEatTooLittle.flat().join(' and ') }'s dogs eat too little!`);
+console.log(`${dogOwnersEatTooMuch.flat().join(' and ')}'s dogs eat too much!`);
+console.log(`${dogOwnersEatTooLittle.flat().join(' and ')}'s dogs eat too little!`);
 
-console.log(`Is there any Dog Eating Exactly the Recommended Amount? ${ dogs.find(dog => dog.curFood == dog.recFood) ? 'Yes' : 'No' }`);
-console.log(`Is there any Dog Eating an Okay Amount? ${ dogOwnersEatOkay.length > 0 ? 'Yes' : 'No' }`);
+console.log(`Is there any Dog Eating Exactly the Recommended Amount? ${dogs.find(dog => dog.curFood == dog.recFood) ? 'Yes' : 'No'}`);
+console.log(`Is there any Dog Eating an Okay Amount? ${dogOwnersEatOkay.length > 0 ? 'Yes' : 'No'}`);
 
 const dogsSorted = dogs.slice().sort((a, b) => a.recFood - b.recFood);
 console.log(`Dogs Sorted by Recommended Food Amount (below)`);

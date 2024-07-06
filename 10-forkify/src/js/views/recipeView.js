@@ -3,66 +3,58 @@ import View from './view';
 import icons from 'url:../../img/icons.svg';
 import fracty from 'fracty';
 
-class RecipeView extends View
-{
-  _parentElement = document.querySelector('.recipe');
-  _data;
-  _errorMessage = 'We couldn\'t find that recipe';
-  _successMessage = '';
+class RecipeView extends View {
+    _parentElement = document.querySelector('.recipe');
+    _data;
+    _errorMessage = 'We couldn\'t find that recipe';
+    _successMessage = '';
 
-  addHandlerRender (handler)
-  {
-    ['hashchange', 'load'].forEach(eventName => window.addEventListener(eventName, handler));
-  }
+    addHandlerRender(handler) {
+        ['hashchange', 'load'].forEach(eventName => window.addEventListener(eventName, handler));
+    }
 
-  addHandlerUpdateServings (handler)
-  {
-    this._parentElement.addEventListener('click', event =>
-    {
-      const btn = event.target.closest('.btn--update-servings');
+    addHandlerUpdateServings(handler) {
+        this._parentElement.addEventListener('click', event => {
+            const btn = event.target.closest('.btn--update-servings');
 
-      if (!btn) return;
+            if (!btn) return;
 
-      const updateTo = +btn.dataset.update;
-      if (updateTo > 0) handler(updateTo);
-    });
-  }
+            const updateTo = +btn.dataset.update;
+            if (updateTo > 0) handler(updateTo);
+        });
+    }
 
-  addHandlerBookmark (handler)
-  {
-    this._parentElement.addEventListener('click', event =>
-    {
-      const btn = event.target.closest('.btn--bookmark');
+    addHandlerBookmark(handler) {
+        this._parentElement.addEventListener('click', event => {
+            const btn = event.target.closest('.btn--bookmark');
 
-      if (!btn) return;
+            if (!btn) return;
 
-      handler();
-    });
-  }
+            handler();
+        });
+    }
 
-  _generateMarkupIngredient (ing)
-  {
-    return `
+    _generateMarkupIngredient(ing) {
+        return `
     <li class="recipe__ingredient">
       <svg class="recipe__icon">
-        <use href="${ icons }#icon-check"></use>
+        <use href="${icons}#icon-check"></use>
       </svg>
-      <div class="recipe__quantity">${ ing.quantity ? fracty(ing.quantity).toString() : '' }</div>
+      <div class="recipe__quantity">${ing.quantity ? fracty(ing.quantity).toString() : ''}</div>
       <div class="recipe__description">
-        <span class="recipe__unit">${ ing.unit }</span>
-        ${ ing.description }
+        <span class="recipe__unit">${ing.unit}</span>
+        ${ing.description}
       </div>
     </li>
     `;
-  }
+    }
 
-  _generateMarkup ()
-  {
-    return `
+    _generateMarkup() {
+        return `
     <figure class="recipe__fig">
-      <img src="${ this._data.image }" alt="${ this._data.title }" class="recipe__img" />
+      <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
       <h1 class="recipe__title">
-        <span>${ this._data.title }</span>
+        <span>${this._data.title}</span>
       </h1>
     </figure>
 
@@ -71,38 +63,38 @@ class RecipeView extends View
         <svg class="recipe__info-icon">
           <use href="c"></use>
         </svg>
-        <span class="recipe__info-data recipe__info-data--minutes">${ this._data.cookingTime }</span>
+        <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
         <span class="recipe__info-text">minutes</span>
       </div>
       <div class="recipe__info">
         <svg class="recipe__info-icon">
-          <use href="${ icons }#icon-users"></use>
+          <use href="${icons}#icon-users"></use>
         </svg>
-        <span class="recipe__info-data recipe__info-data--people">${ this._data.servings }</span>
+        <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button data-update="${ this._data.servings - 1 }" class="btn--tiny btn--update-servings">
+          <button data-update="${this._data.servings - 1}" class="btn--tiny btn--update-servings">
             <svg>
-              <use href="${ icons }#icon-minus-circle"></use>
+              <use href="${icons}#icon-minus-circle"></use>
             </svg>
           </button>
-          <button data-update="${ this._data.servings + 1 }" class="btn--tiny btn--update-servings">
+          <button data-update="${this._data.servings + 1}" class="btn--tiny btn--update-servings">
             <svg>
-              <use href="${ icons }#icon-plus-circle"></use>
+              <use href="${icons}#icon-plus-circle"></use>
             </svg>
           </button>
         </div>
       </div>
 
-      <div class="recipe__user-generated ${ this._data.key ? '' : 'hidden' }">
+      <div class="recipe__user-generated ${this._data.key ? '' : 'hidden'}">
         <svg>
-          <use href="${ icons }#icon-user"></use>
+          <use href="${icons}#icon-user"></use>
         </svg>
       </div>
       <button class="btn--round btn--bookmark">
         <svg class="">
-          <use href="${ icons }#icon-bookmark${ this._data.bookmarked ? '-fill' : '' }"></use>
+          <use href="${icons}#icon-bookmark${this._data.bookmarked ? '-fill' : ''}"></use>
         </svg>
       </button>
     </div>
@@ -110,7 +102,7 @@ class RecipeView extends View
     <div class="recipe__ingredients">
       <h2 class="heading--2">Recipe ingredients</h2>
       <ul class="recipe__ingredient-list">
-      ${ this._data.ingredients.map(ing => this._generateMarkupIngredient(ing)).join('\n') }
+      ${this._data.ingredients.map(ing => this._generateMarkupIngredient(ing)).join('\n')}
       </ul >
     </div >
 
@@ -118,21 +110,21 @@ class RecipeView extends View
       <h2 class="heading--2">How to cook it</h2>
       <p class="recipe__directions-text">
         This recipe was carefully designed and tested by
-        <span class="recipe__publisher">${ this._data.publisher }</span>. Please check out
+        <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
         directions at their website.
       </p>
       <a
         class="btn--small recipe__btn"
-        href="${ this._data.sourceUrl }"
+        href="${this._data.sourceUrl}"
         target="_blank">
         <span>Directions</span>
         <svg class="search__icon">
-          <use href="${ icons }#icon-arrow-right"></use>
+          <use href="${icons}#icon-arrow-right"></use>
         </svg>
       </a>
     </div>;
     `;
-  }
+    }
 };
 
 export default new RecipeView();

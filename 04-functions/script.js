@@ -37,44 +37,39 @@ GOOD LUCK 😀
 */
 
 const poll = {
-  question: "What is your favourite programming language?",
-  options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
-  // This generates [0, 0, 0, 0]. More in the next section!
-  answers: new Array(4).fill(0),
-  registernewAnswer ()
-  {
-    let answer = Number(prompt(`${ this.question }\n${ this.options.join('\n') }`));
+    question: "What is your favourite programming language?",
+    options: ["0: JavaScript", "1: Python", "2: Rust", "3: C++"],
+    // This generates [0, 0, 0, 0]. More in the next section!
+    answers: new Array(4).fill(0),
+    registernewAnswer() {
+        let answer = Number(prompt(`${this.question}\n${this.options.join('\n')}`));
 
-    if (!isNaN(answer))
-    {
-      if (answer >= 0 && answer < poll.options.length)
-      {
-        console.log(`Valid Answer: ${ poll.options[answer] }`);
-        poll.answers[answer]++;
-      }
+        if (!isNaN(answer)) {
+            if (answer >= 0 && answer < poll.options.length) {
+                console.log(`Valid Answer: ${poll.options[answer]}`);
+                poll.answers[answer]++;
+            }
 
-      this.displayResults('string');
+            this.displayResults('string');
+        }
+    },
+    displayResults(type = 'array') {
+        if (type === 'array')
+            console.log(this.answers);
+        else if (type === 'string')
+            console.log(`Poll results are ${this.answers.join(', ')}`);
     }
-  },
-  displayResults (type = 'array')
-  {
-    if (type === 'array')
-      console.log(this.answers);
-    else if (type === 'string')
-      console.log(`Poll results are ${ this.answers.join(', ') }`);
-  }
 };
 
 const answerPollDom = document.querySelector('.poll');
 
-answerPollDom.addEventListener('click', () =>
-{
-  poll.registernewAnswer();
+answerPollDom.addEventListener('click', () => {
+    poll.registernewAnswer();
 });
 
 const displayResults = poll.displayResults;
-displayResults.bind({ answers: [5, 2, 3] }, 'string')();
-displayResults.bind({ answers: [1, 5, 3, 9, 6, 1] })();
+displayResults.bind({answers: [5, 2, 3]}, 'string')();
+displayResults.bind({answers: [1, 5, 3, 9, 6, 1]})();
 
 // Coding Challenge 2
 
@@ -88,14 +83,12 @@ and what that means for the variables involved in this example.
 GOOD LUCK 😀
 */
 
-(function ()
-{
-  const header = document.querySelector('h1');
-  header.style.color = 'red';
+(function () {
+    const header = document.querySelector('h1');
+    header.style.color = 'red';
 
-  header.addEventListener('click', () =>
-  {
-    header.style.color = 'blue';
-    console.log('blue');
-  });
+    header.addEventListener('click', () => {
+        header.style.color = 'blue';
+        console.log('blue');
+    });
 })();
