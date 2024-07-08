@@ -1,0 +1,92 @@
+{
+  "locked": true,
+  "title": "Students",
+  "columns": [
+     {
+      "columnId": "name",
+      "title": "Name",
+      "index": 3,
+      "type": "string"
+    },
+    {
+        "columnId": "age",
+      "title": "Age",
+      "index": 1,
+      "type": "int"
+    },
+     {
+        "columnId": "id",
+      "title": "ID",
+      "index": 2,
+      "type": "int"
+    },
+    {
+        "columnId": "country",
+      "title": "Country",
+      "index": 0,
+      "type": "string"
+    }],
+  "pageSize": 10,
+  "data": [
+    {
+      "name": "John Doe",
+      "age": 20,
+      "id": 1,
+      "country": "USA"
+    },
+    {
+      "name": "Jane Doe",
+      "age": 21,
+      "id": 2,
+      "country": "USA"
+    },
+    {
+      "name": "Alice",
+      "age": 22,
+      "id": 3,
+      "country": "UK"
+    },
+    {
+      "name": "Bob",
+      "age": 23,
+      "id": 4,
+      "country": "UK"
+    },
+    {
+      "name": "Charlie",
+      "age": 24,
+      "id": 5,
+      "country": "UK"
+    },
+    {
+      "name": "David",
+      "age": 25,
+      "id": 6,
+      "country": "UK"
+    },
+    {
+      "name": "Eve",
+      "age": 26,
+      "id": 7,
+      "country": "UK"
+    },
+    {
+      "name": "Frank",
+      "age": 27,
+      "id": 8,
+      "country": "UK"
+    },
+    {
+      "name": "Grace",
+      "age": 28,
+      "id": 9,
+      "country": "UK"
+    },
+    {
+      "name": "Heidi",
+      "age": 29,
+      "id": 10,
+      "country": "UK"
+    }
+  ]
+}

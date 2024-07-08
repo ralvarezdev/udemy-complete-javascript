@@ -2,25 +2,34 @@
 export const GRID_CLASSES = {
     // Root class name
     ROOT: "grid",
+    ROOT_NO_TRASH: "grid--no-trash",
 
     // Header class names
     HEADER: "grid__header",
     HEADER_ICON: "grid__header__icon",
-    HEADER_ICONS: "grid__header__icons",
-    HEADER_ICONS_LOCK: "grid__header__icons__lock",
+    HEADER_ICON_LOCK: "grid__header__icon--lock",
+    HEADER_LEFT_ICONS: "grid__header__left-side-icons",
+    HEADER_RIGHT_ICONS: "grid__header__right-side-icons",
+    HEADER_LOCK: "grid__header__left-side-icons__lock",
     HEADER_TITLE: "grid__header__title",
-    HEADER_TITLE_NO_ICONS: "grid__header__title--no-icons",
+    HEADER_TITLE_NO_LOCK: "grid__header__title--no-lock",
+    HEADER_TITLE_NO_TRASH: "grid__header__title--no-trash",
 
     // Column class names
     BODY: "grid__body",
     BODY_HEADER: "grid__body__header",
-    BODY_HEADER_NO_ICONS: "grid__body__header--no-icons",
     BODY_HEADER_COLUMN: "grid__body__header__column",
-    BODY_ICONS: "grid__body__icons",
+    BODY_HEADER_NO_LOCK: "grid__body__header--no-lock",
+    BODY_HEADER_NO_TRASH: "grid__body__header--no-trash",
+    BODY_CONTENT: "grid__body__content",
+    BODY_CONTENT_DATA: "grid__body__content__data",
+    BODY_CONTENT_DATA_NO_LOCK: "grid__body__content__data--no-lock",
+    BODY_CONTENT_DATA_NO_TRASH: "grid__body__content__data--no-trash",
+    BODY_CONTENT_CHECKBOXES: "grid__body__content__checkboxes",
 
     // Row class names
-    BODY_ROW: "grid__body__row",
-    BODY_CELL: "grid__body__row__cell",
+    BODY_CONTENT_DATA_ROW: "grid__body__content__data__row",
+    BODY_CONTENT_DATA_ROW_CELL: "grid__body__content__data__row__cell",
 
     // Footer class names
     FOOTER: "grid__footer",

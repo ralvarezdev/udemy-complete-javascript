@@ -7,14 +7,21 @@ import {getMapFromObject} from "./utils.js";
 
 export class Grid {
     static #COMPJS;
-    static #DEFAULT_HAS_ICONS = false
+    static #DEFAULT_LOCK_STATUS=false
+    static #DEFAULT_HAS_LOCK = false
+    static #DEFAULT_HAS_TRASH = false
+    static #DEFAULT_HAS_INSERTION = false
 
     #TITLE = "Grid"
-    #LOCK_STATUS = true;
+    #LOCK_STATUS = Grid.#DEFAULT_LOCK_STATUS;
     #PAGE_SIZE = 10
     #COLUMNS = []
     #COLUMNS_SORTED_KEYS = []
     #DATA = []
+
+    #HAS_LOCK=Grid.#DEFAULT_HAS_LOCK
+    #HAS_TRASH=Grid.#DEFAULT_HAS_TRASH
+    #HAS_INSERTION=Grid.#DEFAULT_HAS_INSERTION
 
     #JSON_COLUMNS = "columns"
     #JSON_LOCKED = "locked"
@@ -35,12 +42,16 @@ export class Grid {
     #ROOT;
     #HEADER;
     #HEADER_TITLE;
-    #HEADER_ICONS;
-    #HEADER_ICONS_LOCK;
+    #HEADER_LEFT_ICONS;
+     #HEADER_RIGHT_ICONS;
+    #HEADER_LOCK;
     #HEADER_ICON_UNLOCK;
     #HEADER_ICON_LOCK;
     #BODY;
     #BODY_HEADER;
+    #BODY_CONTENT
+    #BODY_CONTENT_DATA
+    #BODY_CONTENT_CHECKBOXES
 
     static {
         Grid.#COMPJS = new CompJS();
@@ -59,6 +70,12 @@ export class Grid {
 
     // Main initializer
     mainInitializer() {
+        // Root
+        this.#ROOT = Grid.#COMPJS.createElement("div", this.#PARENT_ELEMENT, GRID_CLASSES.ROOT);
+
+        if(!this.#HAS_TRASH)
+            this.#ROOT.classList.add(GRID_CLASSES.ROOT_NO_TRASH)
+
         this.#initializeHeader();
         this.#initializeBody();
     }
@@ -66,7 +83,6 @@ export class Grid {
     // Header initializer
     #initializeHeader() {
         // Header
-        this.#ROOT = Grid.#COMPJS.createElement("div", this.#PARENT_ELEMENT, GRID_CLASSES.ROOT);
         this.#HEADER = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_CLASSES.HEADER);
 
         // Title
@@ -74,8 +90,15 @@ export class Grid {
         this.#HEADER_TITLE.innerHTML = String(this.#TITLE);
 
         // Additional classes
-        if (!Grid.#DEFAULT_HAS_ICONS)
-            this.#HEADER_TITLE.classList.add(GRID_CLASSES.HEADER_TITLE_NO_ICONS)
+        if (this.#HAS_TRASH)
+            this.addTrashIcon()
+        else
+            this.#HEADER_TITLE.classList.add(GRID_CLASSES.HEADER_TITLE_NO_TRASH)
+
+        if (this.#HAS_LOCK)
+            this.addLockIcon()
+        else
+            this.#HEADER_TITLE.classList.add(GRID_CLASSES.HEADER_TITLE_NO_LOCK)
     }
 
     // Body initializer
@@ -83,37 +106,45 @@ export class Grid {
         // Body
         this.#BODY = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_CLASSES.BODY);
         this.#BODY_HEADER = Grid.#COMPJS.createElement("div", this.#BODY, GRID_CLASSES.BODY_HEADER);
+        this.#BODY_CONTENT = Grid.#COMPJS.createElement("div", this.#BODY, GRID_CLASSES.BODY_CONTENT);
+        this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_CLASSES.BODY_CONTENT_DATA);
 
         // Additional classes
-        if (!Grid.#DEFAULT_HAS_ICONS)
-            this.#BODY_HEADER.classList.add(GRID_CLASSES.BODY_HEADER_NO_ICONS)
+        if (!this.#HAS_TRASH){
+            this.#BODY_HEADER.classList.add(GRID_CLASSES.BODY_HEADER_NO_TRASH)
+            this.#BODY_CONTENT_DATA.classList.add(GRID_CLASSES.BODY_CONTENT_DATA_NO_TRASH)
+        }
+
+        if (!this.#HAS_LOCK){
+            this.#BODY_HEADER.classList.add(GRID_CLASSES.BODY_HEADER_NO_LOCK)
+            this.#BODY_CONTENT_DATA.classList.add(GRID_CLASSES.BODY_CONTENT_DATA_NO_LOCK)
+        }
 
         this.#updateBodyHeader();
     }
 
-    #removeNoIconsClasses() {
+    addLockIcon() {
+        if (this.#HAS_LOCK)
+            return;
+
+        this.#HAS_LOCK=true
+
         // Title
-        this.#HEADER_TITLE.classList.remove(GRID_CLASSES.HEADER_TITLE_NO_ICONS);
+        this.#HEADER_TITLE.classList.remove(GRID_CLASSES.HEADER_TITLE_NO_LOCK);
 
         // Body
-        this.#BODY_HEADER.classList.remove(GRID_CLASSES.BODY_HEADER_NO_ICONS)
-    }
-
-    addLockIcon() {
-        if (this.#HEADER_ICONS !== undefined)
-            return
-
-        this.#removeNoIconsClasses()
+        this.#BODY_HEADER.classList.remove(GRID_CLASSES.BODY_HEADER_NO_LOCK)
+        this.#BODY_CONTENT_DATA.classList.remove(GRID_CLASSES.BODY_CONTENT_DATA_NO_LOCK)
 
         // Icons
-        this.#HEADER_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_CLASSES.HEADER_ICONS);
+        this.#HEADER_LEFT_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_CLASSES.HEADER_LEFT_ICONS);
 
         // Lock icons
-        this.#HEADER_ICONS_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_ICONS, GRID_CLASSES.HEADER_ICONS_LOCK);
+        this.#HEADER_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_LEFT_ICONS, GRID_CLASSES.HEADER_LOCK);
 
-        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_ICONS_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_CLASSES.HEADER_ICON);
+        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_CLASSES.HEADER_ICON);
 
-        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_ICONS_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_CLASSES.HEADER_ICON, COMPJS_CLASSES.HIDE);
+        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_CLASSES.HEADER_ICON, COMPJS_CLASSES.HIDE);
 
         // Add event listener to lock icons
         for (let icon of [this.#HEADER_ICON_LOCK, this.#HEADER_ICON_UNLOCK])
@@ -124,6 +155,23 @@ export class Grid {
                 this.#HEADER_ICON_LOCK.classList.toggle(COMPJS_CLASSES.HIDE);
                 this.#HEADER_ICON_UNLOCK.classList.toggle(COMPJS_CLASSES.HIDE);
             });
+    }
+
+    addTrashIcon() {
+        if (this.#HAS_TRASH)
+            return;
+
+        this.#HAS_TRASH = true
+
+        // Root
+        this.#ROOT.classList.remove(GRID_CLASSES.ROOT_NO_TRASH);
+
+        // Title
+        this.#HEADER_TITLE.classList.remove(GRID_CLASSES.HEADER_TITLE_NO_TRASH);
+
+        // Body
+        this.#BODY_HEADER.classList.remove(GRID_CLASSES.BODY_HEADER_NO_TRASH)
+        this.#BODY_CONTENT_DATA.classList.remove(GRID_CLASSES.BODY_CONTENT_DATA_NO_TRASH)
     }
 
     // - JSON
@@ -210,12 +258,20 @@ export class Grid {
     }
 
     #updateBody() {
+        // Clear rows
+        while(this.#BODY_CONTENT_DATA.firstChild)
+            this.#BODY_CONTENT_DATA.removeChild(this.#BODY.firstChild)
+
+        if(this.#HAS_TRASH)
+            while(this.#BODY_CONTENT_CHECKBOXES.firstChild)
+                this.#BODY_CONTENT_CHECKBOXES.removeChild(this.#BODY.firstChild)
+
         // UPDATE ROWS DATA
         this.#DATA.forEach(rowData => {
-                const rowElement = Grid.#COMPJS.createElement("div", this.#BODY, GRID_CLASSES.BODY_ROW);
+                const rowElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_CLASSES.BODY_CONTENT_DATA_ROW);
 
                 this.#COLUMNS_SORTED_KEYS.forEach(column=> {
-                    const cellElement=Grid.#COMPJS.createElement("div", rowElement, GRID_CLASSES.BODY_CELL);
+                    const cellElement=Grid.#COMPJS.createElement("div", rowElement, GRID_CLASSES.BODY_CONTENT_DATA_ROW_CELL);
                     cellElement.innerHTML = rowData.get(column.get(this.#JSON_COLUMN_ID));
             })
         })
