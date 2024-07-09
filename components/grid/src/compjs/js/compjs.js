@@ -1,4 +1,4 @@
-import {COMPJS_PATHS, COMPJS_SELECTORS, COMPJS_VARIABLES_LIST} from "./compjs-props.js";
+import {COMPJS_SELECTORS, COMPJS_PATHS, COMPJS_VARIABLES_LIST} from "./compjs-props.js";
 
 export class CompJS {
     // Unique instance
@@ -43,7 +43,7 @@ export class CompJS {
 
     // Method to convert pixels to rem
     convertPixelsToRem(pixels) {
-        return pixels/ parseFloat(getComputedStyle(document.documentElement).fontSize);
+        return pixels / parseFloat(getComputedStyle(document.documentElement).fontSize);
     }
 
     // Method to check if the style element exists and is inside the head element
@@ -62,37 +62,58 @@ export class CompJS {
         return variable instanceof String || typeof (variable) === 'string';
     }
 
-    // Method to check class names
-    checkClassName(className) {
-        if (!this.isString(className))
+    // Method to check selectors
+    checkSelector(selector) {
+        if (!this.isString(selector))
             throw new Error('Class name must be a string...');
     }
 
-    getFormattedClassName(className) {
-        return className.startsWith(".") ? className : ("."+className);
+    getFormattedClassName(selector) {
+        this.checkSelector(selector)
+        return selector.startsWith(".") ? selector : ("." + selector);
     }
 
-    checkClassNames(classNames) {
-        if (classNames === undefined)
-            throw new Error('Class names are undefined...');
+    getFormattedId(selector) {
+        this.checkSelector(selector)
+        return selector.startsWith("#") ? selector : ("#" + selector);
+    }
 
-        if (classNames.length === 0)
-            throw new Error('Class names list is empty...');
+    getSelectorWithElementId(selector, id) {
+        this.checkSelector(id)
+        return [COMPJS_SELECTORS.BASE, selector, id].join('--')
+    }
+
+    getFormattedClassNameWithElementId(selector, id) {
+        const selectorWithId = this.getSelectorWithElementId(selector, id)
+        return this.getFormattedClassName(selectorWithId)
+    }
+
+    getFormattedIdWithElementId(selector, id) {
+        const selectorWithId = this.getSelectorWithElementId(selector, id)
+        return this.getFormattedId(selectorWithId);
+    }
+
+    checkSelectors(selectors) {
+        if (selectors === undefined)
+            throw new Error('Selectors are undefined...');
+
+        if (selectors.length === 0)
+            throw new Error('Selectors list is empty...');
 
 
-        classNames.forEach(className=>this.checkClassName(className))
+        selectors.forEach(selector => this.checkSelector(selector))
     }
 
     getFormattedClassNames(classNames) {
-        this.checkClassNames(classNames)
+        this.checkSelectors(classNames)
 
-        const checkedClassNames=new Array(classNames.length)
+        const formattedClassNames = new Array(classNames.length)
 
-        classNames.forEach((className, i)=>{
-            checkedClassNames[i]=this.getFormattedClassName(className);
+        classNames.forEach((className, i) => {
+            formattedClassNames[i] = this.getFormattedClassName(className);
         })
 
-        return checkedClassNames
+        return formattedClassNames
     }
 
     // Methods to check property names
@@ -123,84 +144,80 @@ export class CompJS {
     // - Setters and getters
 
     // General methods for getting CSS classes properties values
-    getClassElement(className) {
-        this.checkClassName(className)
-        className=this.getFormattedClassName(className);
-
-        return document.querySelector(className);
+    getElement(selector) {
+        this.checkSelector(selector)
+        return document.querySelector(selector);
     }
 
-    getCompStyle(className) {
-        const classElement = this.getClassElement(className);
+    getCompStyle(selector) {
+        const element = this.getElement(selector);
 
-        return (classElement === null) ? null : window.getComputedStyle(classElement);
+        return (element === null) ? null : window.getComputedStyle(element);
     }
 
-    #getClassPropertyValue(className, propertyName) {
+    #getSelectorPropertyValue(selector, propertyName) {
         this.checkPropertyName(propertyName);
-        const compStyle = this.getCompStyle(className);
+
+        const compStyle = this.getCompStyle(selector);
         const propertyValue = compStyle.getPropertyValue(propertyName);
 
         return (propertyValue === undefined) ? null : propertyValue;
     }
 
-    getClassPropertiesValues(className, propertiesName) {
-        this.checkClassName(className);
-        className=this.getFormattedClassName(className);
+    getSelectorPropertiesValues(selector, propertiesName) {
+        this.checkSelector(selector);
 
-        const classPropertiesMap = new Map();
+        const selectorPropertiesMap = new Map();
 
         for (let propertyName of propertiesName) {
-            let propertyValue = this.#getClassPropertyValue(className, propertyName);
+            let propertyValue = this.#getSelectorPropertyValue(selector, propertyName);
 
-            if (classPropertiesMap.has(className) === false) {
-                classPropertiesMap.set(className, new Map([[propertyName, propertyValue]]));
+            if (selectorPropertiesMap.has(selector) === false) {
+                selectorPropertiesMap.set(selector, new Map([[propertyName, propertyValue]]));
                 continue;
             }
 
-            classPropertiesMap.get(className).set(propertyName, propertyValue);
+            selectorPropertiesMap.get(selector).set(propertyName, propertyValue);
         }
 
-        return classPropertiesMap;
+        return selectorPropertiesMap;
     }
 
     getCompJSRootPropertiesValues() {
-        return this.getClassPropertiesValues(COMPJS_SELECTORS.ROOT, COMPJS_VARIABLES_LIST);
+        return this.getSelectorPropertiesValues(COMPJS_SELECTORS.ROOT, COMPJS_VARIABLES_LIST);
     }
 
     // General methods for setting CSS class property values
-    #setClassPropertyValue(className, propertyName, propertyValue) {
+    setCompJSSelectorPropertyValue(selector, propertyName, propertyValue) {
         // Check parameters
+        this.checkSelector(selector)
         this.checkPropertyName(propertyName);
         this.checkPropertyValue(propertyValue);
 
         // Add class property style
-        if (this.#STYLES_MAP.has(className) === false) {
-            this.#STYLES_MAP.set(className, new Map([[propertyName, propertyValue]]));
+        if (this.#STYLES_MAP.has(selector) === false) {
+            this.#STYLES_MAP.set(selector, new Map([[propertyName, propertyValue]]));
             return;
         }
 
-        this.#STYLES_MAP.get(className).set(propertyName, propertyValue);
-    }
-
-    setCompJSPropertyValue(className, propertyName, propertyValue) {
-        this.checkClassName(className)
-        className=this.getFormattedClassName(className);
-
-        /*
-        if (!this.isCompJSPropertyNameValid(propertyName))
-            throw new Error(`'${propertyName}' is an invalid property name...`);
-         */
-
-        this.#setClassPropertyValue(className, propertyName, propertyValue);
+        this.#STYLES_MAP.get(selector).set(propertyName, propertyValue);
     }
 
     setCompJSRootPropertyValue(propertyName, propertyValue) {
-        this.setCompJSPropertyValue(COMPJS_SELECTORS.ROOT, propertyName, propertyValue);
+        this.setCompJSSelectorPropertyValue(COMPJS_SELECTORS.ROOT, propertyName, propertyValue);
+    }
+
+    setElementID(elementId, element) {
+        this.checkSelector(elementId);
+
+        if (this.#ELEMENTS_ID.get(elementId))
+            throw new Error("Element ID has already being assigned...");
+
+        this.#ELEMENTS_ID.set(elementId, element);
     }
 
     // - Links
-    #addLink(rel, type, href) {
+    #addLink(rel, type, href, id) {
         // Create new link element for the stylesheet
         let link = document.createElement('link');
 
@@ -208,6 +225,9 @@ export class CompJS {
         link.rel = rel;
         link.type = type;
         link.href = href;
+
+        if (id)
+            this.setElementID(id, link);
 
         // Append link element to HTML head
         this.#head.appendChild(link);
@@ -233,12 +253,12 @@ export class CompJS {
     }
 
     // Reset applied customized styles for a given class name
-    resetAppliedClassStyles(className) {
-        className=this.checkClassName(className);
+    resetAppliedStyles(selector) {
+        this.checkSelector(selector);
 
         // Reset styles for the given class name
-        if (this.#STYLES_MAP.has(className)) {
-            this.#STYLES_MAP.delete(className);
+        if (this.#STYLES_MAP.has(selector)) {
+            this.#STYLES_MAP.delete(selector);
 
             // Reset style element content
             this.#STYLES_MAP.resetAllAppliedStyles();
@@ -256,8 +276,8 @@ export class CompJS {
         // Append customized styles
         let newContent = "";
 
-        for (let [className, property] of this.#STYLES_MAP.entries()) {
-            let newPropertyContent = `${className} {\n`;
+        for (let [selector, property] of this.#STYLES_MAP.entries()) {
+            let newPropertyContent = `${selector} {\n`;
 
             for (let [propertyName, propertyValue] of property.entries())
                 newPropertyContent += `${propertyName}: ${propertyValue};\n`;
@@ -275,11 +295,14 @@ export class CompJS {
 
     // - Element initializers
 
-    createElement(tagName, parentElement, ...classNames) {
+    createElementWithId(tagName, parentElement, id, classNames) {
         const element = document.createElement(tagName);
 
-        if (classNames !== undefined && classNames.length > 0) {
-            this.checkClassNames(classNames);
+        if (id)
+            this.setElementID(id, element)
+
+        if (classNames && classNames.length > 0) {
+            this.checkSelectors(classNames);
             element.classList.add(...classNames);
         }
 
@@ -288,24 +311,24 @@ export class CompJS {
         return element;
     }
 
-    setElementID(elementId, element) {
-        if (this.#ELEMENTS_ID.get(elementId) !== undefined)
-            throw new Error("Element ID has already being assigned...");
-
-        this.#ELEMENTS_ID.set(elementId, element);
+    createElement(tagName, parentElement, ...classNames) {
+        return this.createElementWithId(tagName, parentElement, null, classNames);
     }
 
     // - Loaders
 
-    loadImg(parentElement, url, alt, classNames) {
+    loadImgWithId(parentElement, url, alt, id, classNames) {
         const imgElement = document.createElement("img");
         imgElement.src = url;
 
-        if (alt !== undefined)
+        if (alt)
             imgElement.alt = alt;
 
-        if (classNames !== undefined && classNames.length > 0) {
-            this.checkClassNames(classNames);
+        if (id)
+            this.setElementID(id, imgElement)
+
+        if (classNames && classNames.length > 0) {
+            this.checkSelectors(classNames);
             imgElement.classList.add(...classNames);
         }
 
@@ -314,17 +337,24 @@ export class CompJS {
         return imgElement;
     }
 
-    loadObject(parentElement, data, type, classNames) {
+    loadImg(parentElement, url, alt, classNames) {
+        return this.loadImgWithId(parentElement, url, alt, null, classNames);
+    }
+
+    loadObjectWithId(parentElement, data, type, id, classNames) {
         const objectElement = document.createElement('object');
 
-        if (data !== undefined)
+        if (data)
             objectElement.data = data;
 
-        if (type !== undefined)
+        if (type)
             objectElement.type = type;
 
-        if (classNames !== undefined && classNames.length > 0) {
-            this.checkClassNames(classNames);
+        if (id)
+            this.setElementID(id, objectElement)
+
+        if (classNames && classNames.length > 0) {
+            this.checkSelectors(classNames);
             objectElement.classList.add(...classNames);
         }
 
@@ -332,8 +362,16 @@ export class CompJS {
         return objectElement;
     }
 
-    loadSVG(parentElement, url, alt, ...classNames) {
+    loadObject(parentElement, data, type, ...classNames) {
+        return this.loadObjectWithId(parentElement, data, type, null, classNames);
+    }
+
+    loadSVGWithId(parentElement, url, alt, id, ...classNames) {
         // Create SVG img element
+        return this.loadImgWithId(parentElement, url, alt, id, classNames);
+    }
+
+    loadSVG(parentElement, url, alt, ...classNames) {
         return this.loadImg(parentElement, url, alt, classNames);
     }
 }

@@ -1,13 +1,13 @@
 'use strict';
 
-import {COMPJS_PATHS, COMPJS_CLASSES} from "./compjs-props.js";
+import {COMPJS_PATHS, COMPJS_SELECTORS} from "./compjs-props.js";
 import {CompJS} from "./compjs.js";
-import {GRID_CLASSES, GRID_CLASSES_LIST, GRID_URLS} from "./grid-props.js";
+import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_URLS} from "./grid-props.js";
 import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid {
     static #COMPJS;
-    static #DEFAULT_LOCK_STATUS=false
+    static #DEFAULT_LOCK_STATUS = false
     static #DEFAULT_HAS_LOCK = false
     static #DEFAULT_HAS_TRASH = false
     static #DEFAULT_HAS_INSERTION = false
@@ -23,9 +23,9 @@ export class Grid {
     #COLUMNS_SORTED_KEYS = []
     #DATA = []
 
-    #HAS_LOCK=Grid.#DEFAULT_HAS_LOCK
-    #HAS_TRASH=Grid.#DEFAULT_HAS_TRASH
-    #HAS_INSERTION=Grid.#DEFAULT_HAS_INSERTION
+    #HAS_LOCK = Grid.#DEFAULT_HAS_LOCK
+    #HAS_TRASH = Grid.#DEFAULT_HAS_TRASH
+    #HAS_INSERTION = Grid.#DEFAULT_HAS_INSERTION
 
     // JSON
     #JSON_COLUMNS = "columns"
@@ -58,7 +58,8 @@ export class Grid {
     #BODY_CONTENT_CHECKBOXES
 
     // Pagination
-    #CURRENT_PAGE=0
+    #NUMBER_PAGES
+    #CURRENT_PAGE = 0
 
     static {
         Grid.#COMPJS = new CompJS();
@@ -67,10 +68,10 @@ export class Grid {
 
     constructor(elementId, parentElement) {
         this.#PARENT_ELEMENT = (parentElement === undefined) ? document.body : parentElement;
-        this.#ELEMENT_ID = parseInt(elementId);
-        Grid.#COMPJS.setElementID(this.#ELEMENT_ID, this);
+        this.#ELEMENT_ID = String(elementId)
 
-        this.mainInitializer();
+        // Initialize
+        this.mainInitializer(elementId);
     }
 
     // - Initializers
@@ -78,10 +79,14 @@ export class Grid {
     // Main initializer
     mainInitializer() {
         // Root
-        this.#ROOT = Grid.#COMPJS.createElement("div", this.#PARENT_ELEMENT, GRID_CLASSES.ROOT);
+        this.#ROOT = Grid.#COMPJS.createElement("div", this.#PARENT_ELEMENT, GRID_SELECTORS.ROOT);
 
-        if(!this.#HAS_TRASH)
-            this.#ROOT.classList.add(GRID_CLASSES.ROOT_NO_TRASH)
+        // Set root element ID
+        const rootId = this.getSelectorWithElementId(GRID_SELECTORS.ROOT);
+        Grid.#COMPJS.setElementID(rootId, this.#ROOT);
+
+        if (!this.#HAS_TRASH)
+            this.#ROOT.classList.add(GRID_SELECTORS.ROOT_NO_TRASH)
 
         this.#initializeHeader();
         this.#initializeBody();
@@ -90,41 +95,45 @@ export class Grid {
     // Header initializer
     #initializeHeader() {
         // Header
-        this.#HEADER = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_CLASSES.HEADER);
+        this.#HEADER = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_SELECTORS.HEADER);
 
         // Title
-        this.#HEADER_TITLE = Grid.#COMPJS.createElement("h2", this.#HEADER, GRID_CLASSES.HEADER_TITLE);
+        this.#HEADER_TITLE = Grid.#COMPJS.createElement("h2", this.#HEADER, GRID_SELECTORS.HEADER_TITLE);
         this.#HEADER_TITLE.innerHTML = String(this.#TITLE);
 
         // Additional classes
         if (this.#HAS_TRASH)
             this.addTrashIcon()
         else
-            this.#HEADER_TITLE.classList.add(GRID_CLASSES.HEADER_TITLE_NO_TRASH)
+            this.#HEADER_TITLE.classList.add(GRID_SELECTORS.HEADER_TITLE_NO_TRASH)
 
         if (this.#HAS_LOCK)
             this.addLockIcon()
         else
-            this.#HEADER_TITLE.classList.add(GRID_CLASSES.HEADER_TITLE_NO_LOCK)
+            this.#HEADER_TITLE.classList.add(GRID_SELECTORS.HEADER_TITLE_NO_LOCK)
     }
 
     // Body initializer
     #initializeBody() {
         // Body
-        this.#BODY = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_CLASSES.BODY);
-        this.#BODY_HEADER = Grid.#COMPJS.createElement("div", this.#BODY, GRID_CLASSES.BODY_HEADER);
-        this.#BODY_CONTENT = Grid.#COMPJS.createElement("div", this.#BODY, GRID_CLASSES.BODY_CONTENT);
-        this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_CLASSES.BODY_CONTENT_DATA);
+        this.#BODY = Grid.#COMPJS.createElement("div", this.#ROOT, GRID_SELECTORS.BODY);
+        this.#BODY_HEADER = Grid.#COMPJS.createElement("div", this.#BODY, GRID_SELECTORS.BODY_HEADER);
+
+        const contentSelectorFromId = this.getSelectorWithElementId(GRID_SELECTORS.BODY_CONTENT)
+        this.#BODY_CONTENT = Grid.#COMPJS.createElement("div", this.#BODY, GRID_SELECTORS.BODY_CONTENT, contentSelectorFromId);
+
+        const contentDataSelectorFromId = this.getSelectorWithElementId(GRID_SELECTORS.BODY_CONTENT_DATA)
+        this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_DATA, contentDataSelectorFromId);
 
         // Additional classes
-        if (!this.#HAS_TRASH){
-            this.#BODY_HEADER.classList.add(GRID_CLASSES.BODY_HEADER_NO_TRASH)
-            this.#BODY_CONTENT_DATA.classList.add(GRID_CLASSES.BODY_CONTENT_DATA_NO_TRASH)
+        if (!this.#HAS_TRASH) {
+            this.#BODY_HEADER.classList.add(GRID_SELECTORS.BODY_HEADER_NO_TRASH)
+            this.#BODY_CONTENT_DATA.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_NO_TRASH)
         }
 
-        if (!this.#HAS_LOCK){
-            this.#BODY_HEADER.classList.add(GRID_CLASSES.BODY_HEADER_NO_LOCK)
-            this.#BODY_CONTENT_DATA.classList.add(GRID_CLASSES.BODY_CONTENT_DATA_NO_LOCK)
+        if (!this.#HAS_LOCK) {
+            this.#BODY_HEADER.classList.add(GRID_SELECTORS.BODY_HEADER_NO_LOCK)
+            this.#BODY_CONTENT_DATA.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_NO_LOCK)
         }
 
         this.#updateBodyHeader();
@@ -134,24 +143,24 @@ export class Grid {
         if (this.#HAS_LOCK)
             return;
 
-        this.#HAS_LOCK=true
+        this.#HAS_LOCK = true
 
         // Title
-        this.#HEADER_TITLE.classList.remove(GRID_CLASSES.HEADER_TITLE_NO_LOCK);
+        this.#HEADER_TITLE.classList.remove(GRID_SELECTORS.HEADER_TITLE_NO_LOCK);
 
         // Body
-        this.#BODY_HEADER.classList.remove(GRID_CLASSES.BODY_HEADER_NO_LOCK)
-        this.#BODY_CONTENT_DATA.classList.remove(GRID_CLASSES.BODY_CONTENT_DATA_NO_LOCK)
+        this.#BODY_HEADER.classList.remove(GRID_SELECTORS.BODY_HEADER_NO_LOCK)
+        this.#BODY_CONTENT_DATA.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_NO_LOCK)
 
         // Icons
-        this.#HEADER_LEFT_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_CLASSES.HEADER_LEFT_ICONS);
+        this.#HEADER_LEFT_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_SELECTORS.HEADER_LEFT_ICONS);
 
         // Lock icons
-        this.#HEADER_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_LEFT_ICONS, GRID_CLASSES.HEADER_LOCK);
+        this.#HEADER_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_LEFT_ICONS, GRID_SELECTORS.HEADER_LOCK);
 
-        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_CLASSES.HEADER_ICON_LOCK);
+        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_SELECTORS.HEADER_ICON_LOCK);
 
-        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_CLASSES.HEADER_ICON_LOCK,COMPJS_CLASSES.HIDE, GRID_CLASSES.HEADER_ICON_LOCK_HIDDEN);
+        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_SELECTORS.HEADER_ICON_LOCK, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_LOCK_HIDDEN);
 
         // Add event listener to lock icons
         for (let icon of [this.#HEADER_ICON_LOCK, this.#HEADER_ICON_UNLOCK])
@@ -159,9 +168,9 @@ export class Grid {
                 event.preventDefault();
 
                 this.#LOCK_STATUS = !this.#LOCK_STATUS;
-                for(let className of [GRID_CLASSES.HEADER_ICON_LOCK_HIDDEN, COMPJS_CLASSES.HIDE]){
-                this.#HEADER_ICON_LOCK.classList.toggle(className);
-                this.#HEADER_ICON_UNLOCK.classList.toggle(className);
+                for (let className of [GRID_SELECTORS.HEADER_ICON_LOCK_HIDDEN, COMPJS_SELECTORS.HIDE]) {
+                    this.#HEADER_ICON_LOCK.classList.toggle(className);
+                    this.#HEADER_ICON_UNLOCK.classList.toggle(className);
                 }
             });
     }
@@ -173,14 +182,14 @@ export class Grid {
         this.#HAS_TRASH = true
 
         // Root
-        this.#ROOT.classList.remove(GRID_CLASSES.ROOT_NO_TRASH);
+        this.#ROOT.classList.remove(GRID_SELECTORS.ROOT_NO_TRASH);
 
         // Title
-        this.#HEADER_TITLE.classList.remove(GRID_CLASSES.HEADER_TITLE_NO_TRASH);
+        this.#HEADER_TITLE.classList.remove(GRID_SELECTORS.HEADER_TITLE_NO_TRASH);
 
         // Body
-        this.#BODY_HEADER.classList.remove(GRID_CLASSES.BODY_HEADER_NO_TRASH)
-        this.#BODY_CONTENT_DATA.classList.remove(GRID_CLASSES.BODY_CONTENT_DATA_NO_TRASH)
+        this.#BODY_HEADER.classList.remove(GRID_SELECTORS.BODY_HEADER_NO_TRASH)
+        this.#BODY_CONTENT_DATA.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_NO_TRASH)
     }
 
     // - JSON
@@ -217,8 +226,8 @@ export class Grid {
     #loadJSONBodyData(dataObject) {
         const dataList = getListFromObject(dataObject)
 
-        dataList.forEach((dataMap, i)=>{
-            dataList[i]= getMapFromObject(dataMap)
+        dataList.forEach((dataMap, i) => {
+            dataList[i] = getMapFromObject(dataMap)
         })
 
         return dataList
@@ -260,7 +269,7 @@ export class Grid {
 
         // Set columns' data
         this.#COLUMNS_SORTED_KEYS.forEach(column => {
-            const columnElement = Grid.#COMPJS.createElement("div", this.#BODY_HEADER, GRID_CLASSES.BODY_HEADER_COLUMN);
+            const columnElement = Grid.#COMPJS.createElement("div", this.#BODY_HEADER, GRID_SELECTORS.BODY_HEADER_COLUMN);
 
             columnElement.innerHTML = column.get(this.#JSON_COLUMN_TITLE)
             columnElement.style.order = column.get(this.#JSON_COLUMN_INDEX);
@@ -269,65 +278,73 @@ export class Grid {
 
     #updateBody() {
         // Clear rows
-        let firstChild=null
-        while((firstChild=this.#BODY_CONTENT_DATA.firstChild))
+        let firstChild = null
+        while ((firstChild = this.#BODY_CONTENT_DATA.firstChild))
             this.#BODY_CONTENT_DATA.removeChild(firstChild)
 
-        if(this.#HAS_TRASH)
-            while((firstChild=this.#BODY_CONTENT_CHECKBOXES.firstChild))
+        if (this.#HAS_TRASH)
+            while ((firstChild = this.#BODY_CONTENT_CHECKBOXES.firstChild))
                 this.#BODY_CONTENT_CHECKBOXES.removeChild(firstChild)
 
         // Update rows data
-        this.#BODY_CONTENT_DATA_PAGES=new Array(Math.floor(this.#DATA.length/this.#PAGE_SIZE))
-        let maxHeight=0
+        this.#NUMBER_PAGES = Math.floor(this.#DATA.length / this.#PAGE_SIZE)
+        this.#BODY_CONTENT_DATA_PAGES = new Array(this.#NUMBER_PAGES)
 
-        for(let i=0; i<this.#DATA.length; i+=this.#PAGE_SIZE) {
-            const pageElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_CLASSES.BODY_CONTENT_DATA_PAGE, COMPJS_CLASSES.HIDE,GRID_CLASSES.BODY_CONTENT_DATA_PAGE_HIDDEN);
-            const pageIdx=Math.floor(i/this.#PAGE_SIZE)
-            this.#BODY_CONTENT_DATA_PAGES[pageIdx]=pageElement
+        // Get total height size in rems
+        for (let i = 0; i < this.#DATA.length; i += this.#PAGE_SIZE) {
+            const pageElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDDEN);
+            const pageIdx = Math.floor(i / this.#PAGE_SIZE)
+            this.#BODY_CONTENT_DATA_PAGES[pageIdx] = pageElement
 
-            if(pageIdx===this.#CURRENT_PAGE)
-                pageElement.classList.remove(COMPJS_CLASSES.HIDE,GRID_CLASSES.BODY_CONTENT_DATA_PAGE_HIDDEN)
+            if (pageIdx === this.#CURRENT_PAGE)
+                pageElement.classList.remove(COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDDEN)
 
             for (let j = i; j < i + this.#PAGE_SIZE; j++)
                 if (j < this.#DATA.length)
                     this.#updateBodyContentDataRow(pageElement, j)
-
-                if (pageElement.offsetHeight > maxHeight)
-                    maxHeight = pageElement.offsetHeight
         }
 
-        // Get total height size in rems
-        const pageStyle=Grid.#COMPJS.getCompStyle(GRID_CLASSES.BODY_CONTENT)
-        maxHeight+=parseInt(pageStyle.marginTop)+parseInt(pageStyle.marginBottom)
+        let maxHeight = 0
 
-        const remsMaxHeight=Grid.#COMPJS.convertPixelsToRem(maxHeight)+"rem"
+        for (let pageElement of this.#BODY_CONTENT_DATA_PAGES)
+            if (pageElement.offsetHeight > maxHeight)
+                maxHeight = pageElement.offsetHeight
+
+        const selector = Grid.#COMPJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT)
+        const pageStyle = Grid.#COMPJS.getCompStyle(selector)
+
+        maxHeight += parseInt(pageStyle.marginTop) + parseInt(pageStyle.marginBottom)
+
+        const remsMaxHeight = Grid.#COMPJS.convertPixelsToRem(maxHeight) + "rem"
 
         // Set body content data height
-        for(let className of [GRID_CLASSES.BODY_CONTENT, GRID_CLASSES.BODY_CONTENT_DATA])
-        Grid.#COMPJS.setCompJSPropertyValue(className, "height", remsMaxHeight)
+        for (let selector of [GRID_SELECTORS.BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_DATA]) {
+            selector = this.getFormattedClassNameWithElementId(selector)
+            Grid.#COMPJS.setCompJSSelectorPropertyValue(selector, "height", remsMaxHeight)
+        }
+
         Grid.#COMPJS.applyStyles()
     }
 
     #updateBodyContentDataRow(pageElement, rowIndex) {
-        const rowData=this.#DATA[rowIndex]
-        const rowElement = Grid.#COMPJS.createElement("div", pageElement, GRID_CLASSES.BODY_CONTENT_DATA_PAGE_ROW);
+        const rowData = this.#DATA[rowIndex]
+        const rowElement = Grid.#COMPJS.createElement("div", pageElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW);
 
         this.#COLUMNS_SORTED_KEYS.forEach(column => {
-            const cellElement = Grid.#COMPJS.createElement("div", rowElement, GRID_CLASSES.BODY_CONTENT_DATA_PAGE_ROW_CELL);
+            const cellElement = Grid.#COMPJS.createElement("div", rowElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL);
             cellElement.innerHTML = rowData.get(column.get(this.#JSON_COLUMN_ID));
         })
     }
 
     // - Utilities
 
-    // Method to check class names
-    isGridClassNameValid(className) {
+    // Method to check class simple selector
+    isGridSelectorValid(selector) {
         // Check if the given class name is valid
-        Grid.#COMPJS.checkClassName(className);
+        Grid.#COMPJS.checkSelector(selector);
 
-        for (let validClassName of GRID_CLASSES_LIST)
-            if (validClassName === className)
+        for (let validSelector of GRID_SELECTORS_LIST)
+            if (validSelector === selector)
                 return true;
 
         return false;
@@ -335,34 +352,44 @@ export class Grid {
 
     // - Setters and Getters
 
-    // General methods for getting CSS classes properties values
-    getClassPropertiesValues(className, propertiesName) {
-        if (!this.isGridClassNameValid(className))
-            throw new Error(`'${className}' is an invalid class name...`);
+    // Get selector only valid for this element
+    getSelectorWithElementId(selector) {
+        return Grid.#COMPJS.getSelectorWithElementId(selector, this.#ELEMENT_ID)
+    }
 
-        return this.#COMPJS.getClassPropertiesValues(className, propertiesName);
+    getFormattedClassNameWithElementId(selector) {
+        const selectorWithId = this.getSelectorWithElementId(selector)
+        return Grid.#COMPJS.getFormattedClassName(selectorWithId)
+    }
+
+    // General methods for getting CSS selectors properties values
+    getSelectorPropertiesValues(selector, propertiesName) {
+        if (!this.isGridSelectorValid(selector))
+            throw new Error(`'${selector}' is an invalid selector name...`);
+
+        return Grid.#COMPJS.getSelectorPropertiesValues(selector, propertiesName);
     }
 
     getGridPropertiesValues() {
-        return this.getClassPropertiesValues(GRID_CLASSES.ROOT, GRID_CLASSES_LIST);
+        return this.getSelectorPropertiesValues(GRID_SELECTORS.ROOT, GRID_SELECTORS_LIST);
     }
 
-    // General methods for setting CSS classes properties values
-    setClassPropertyValue(className, propertyName, propertyValue) {
+    // General methods for setting CSS selector properties values
+    setSelectorPropertyValue(selector, propertyName, propertyValue) {
         // Check if the given class name is valid
-        if (!this.isGridClassNameValid(className))
-            throw new Error(`'${className}' is an invalid class name...`);
+        if (!this.isGridSelectorValid(selector))
+            throw new Error(`'${selector}' is an invalid class name...`);
 
-        Grid.#COMPJS.setCompJSPropertyValue(className, propertyName, propertyValue);
+        Grid.#COMPJS.setCompJSSelectorPropertyValue(selector, propertyName, propertyValue);
     }
 
-    setGridClassPropertyValue(propertyName, propertyValue) {
-        this.setClassPropertyValue(GRID_CLASSES.ROOT, propertyName, propertyValue);
+    setGridSelectorPropertyValue(propertyName, propertyValue) {
+        this.setSelectorPropertyValue(GRID_SELECTORS.ROOT, propertyName, propertyValue);
     }
 
     // Reset applied customized styles
-    resetAppliedClassStyles(className) {
-        this.#COMPJS.checkClassName(className);
-        this.#COMPJS.resetAppliedClassStyles(className);
+    resetAppliedStyles(selector) {
+        Grid.#COMPJS.checkSelector(selector);
+        Grid.#COMPJS.resetAppliedStyles(selector);
     }
 }

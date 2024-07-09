@@ -16,8 +16,14 @@ export const COMPJS_SELECTORS = {
     // Root selector
     ROOT: ":root",
 
-    // Style selector element
-    STYLE: "#compjs-style"
+    // Base element id
+    BASE: "compjs",
+
+    // Style element id
+    STYLE: "compjs-style",
+
+    // Utilities class names
+    HIDE: "hide",
 };
 Object.freeze(COMPJS_SELECTORS);
 
@@ -76,14 +82,3 @@ Object.freeze(COMPJS_VARIABLES);
 // - List that contains all values from 'COMPJS_VARIABLES'
 export const COMPJS_VARIABLES_LIST = [...Object.values(COMPJS_VARIABLES)];
 Object.freeze(COMPJS_VARIABLES_LIST);
-
-// - Class names that are related with CompJS
-export const COMPJS_CLASSES = {
-    // Utilities class names
-    HIDE: "hide",
-};
-Object.freeze(COMPJS_CLASSES);
-
-// - List that contains all values from 'COMPJS_CLASSES'
-export const COMPJS_CLASSES_LIST = [...Object.values(COMPJS_CLASSES)];
-Object.freeze(COMPJS_CLASSES_LIST);

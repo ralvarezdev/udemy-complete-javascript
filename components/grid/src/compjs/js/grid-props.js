@@ -1,5 +1,5 @@
 // - Class names that are related with the grid component
-export const GRID_CLASSES = {
+export const GRID_SELECTORS = {
     // Root class name
     ROOT: "grid",
     ROOT_NO_TRASH: "grid--no-trash",
@@ -39,11 +39,11 @@ export const GRID_CLASSES = {
     FOOTER_PAGINATION: "grid__footer__pagination",
     FOOTER_ICONS: "grid__footer__icons",
 };
-Object.freeze(GRID_CLASSES);
+Object.freeze(GRID_SELECTORS);
 
-// - List that contains all values from 'GRID_CLASSES'
-export const GRID_CLASSES_LIST = [...Object.values(GRID_CLASSES)];
-Object.freeze(GRID_CLASSES_LIST);
+// - List that contains all values from 'GRID_SELECTORS'
+export const GRID_SELECTORS_LIST = [...Object.values(GRID_SELECTORS)];
+Object.freeze(GRID_SELECTORS_LIST);
 
 // - URLs that are related with the grid component
 export const GRID_URLS = {

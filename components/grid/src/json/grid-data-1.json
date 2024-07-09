@@ -2,31 +2,32 @@
   "locked": true,
   "title": "Students",
   "columns": [
-     {
+    {
       "columnId": "name",
       "title": "Name",
       "index": 3,
       "type": "string"
     },
     {
-        "columnId": "age",
+      "columnId": "age",
       "title": "Age",
       "index": 1,
       "type": "int"
     },
-     {
-        "columnId": "id",
+    {
+      "columnId": "id",
       "title": "ID",
       "index": 2,
       "type": "int"
     },
     {
-        "columnId": "country",
+      "columnId": "country",
       "title": "Country",
       "index": 0,
       "type": "string"
-    }],
-  "pageSize": 5,
+    }
+  ],
+  "pageSize": 10,
   "data": [
     {
       "name": "John Doe",
