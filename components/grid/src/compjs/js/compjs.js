@@ -41,6 +41,11 @@ export class CompJS {
 
     // - Utilities
 
+    // Method to convert pixels to rem
+    convertPixelsToRem(pixels) {
+        return pixels/ parseFloat(getComputedStyle(document.documentElement).fontSize);
+    }
+
     // Method to check if the style element exists and is inside the head element
     #checkStyleElement() {
         if (this.#style === undefined) {
@@ -63,6 +68,10 @@ export class CompJS {
             throw new Error('Class name must be a string...');
     }
 
+    getFormattedClassName(className) {
+        return className.startsWith(".") ? className : ("."+className);
+    }
+
     checkClassNames(classNames) {
         if (classNames === undefined)
             throw new Error('Class names are undefined...');
@@ -70,8 +79,20 @@ export class CompJS {
         if (classNames.length === 0)
             throw new Error('Class names list is empty...');
 
-        for (let className of classNames)
-            this.checkClassName(className);
+
+        classNames.forEach(className=>this.checkClassName(className))
+    }
+
+    getFormattedClassNames(classNames) {
+        this.checkClassNames(classNames)
+
+        const checkedClassNames=new Array(classNames.length)
+
+        classNames.forEach((className, i)=>{
+            checkedClassNames[i]=this.getFormattedClassName(className);
+        })
+
+        return checkedClassNames
     }
 
     // Methods to check property names
@@ -80,6 +101,7 @@ export class CompJS {
             throw new Error('Property name must be a string...');
     }
 
+    /*
     isCompJSPropertyNameValid(propertyName) {
         // Check if the given property name is valid
         this.checkPropertyName(propertyName);
@@ -90,6 +112,7 @@ export class CompJS {
 
         return false;
     }
+    */
 
     // Methods to check property value
     checkPropertyValue(propertyValue) {
@@ -100,16 +123,17 @@ export class CompJS {
     // - Setters and getters
 
     // General methods for getting CSS classes properties values
-    getClassStyle(className) {
-        this.checkClassName(className);
+    getClassElement(className) {
+        this.checkClassName(className)
+        className=this.getFormattedClassName(className);
+
         return document.querySelector(className);
     }
 
     getCompStyle(className) {
-        this.checkClassName(className);
-        const classStyle = this.getClassStyle(className);
+        const classElement = this.getClassElement(className);
 
-        return (classStyle === undefined) ? null : window.getComputedStyle(classStyle);
+        return (classElement === null) ? null : window.getComputedStyle(classElement);
     }
 
     #getClassPropertyValue(className, propertyName) {
@@ -122,6 +146,7 @@ export class CompJS {
 
     getClassPropertiesValues(className, propertiesName) {
         this.checkClassName(className);
+        className=this.getFormattedClassName(className);
 
         const classPropertiesMap = new Map();
 
@@ -159,10 +184,13 @@ export class CompJS {
     }
 
     setCompJSPropertyValue(className, propertyName, propertyValue) {
-        this.checkClassName(className);
+        this.checkClassName(className)
+        className=this.getFormattedClassName(className);
 
+        /*
         if (!this.isCompJSPropertyNameValid(propertyName))
             throw new Error(`'${propertyName}' is an invalid property name...`);
+         */
 
         this.#setClassPropertyValue(className, propertyName, propertyValue);
     }
@@ -206,7 +234,7 @@ export class CompJS {
 
     // Reset applied customized styles for a given class name
     resetAppliedClassStyles(className) {
-        this.checkClassName(className);
+        className=this.checkClassName(className);
 
         // Reset styles for the given class name
         if (this.#STYLES_MAP.has(className)) {

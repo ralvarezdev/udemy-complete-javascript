@@ -8,3 +8,10 @@ export const getMapFromObject = (obj) => {
 
     return map;
 }
+
+export const getListFromObject = (obj) => {
+    if (typeof obj !== 'object')
+        throw new Error("Object must be an instance of Object.");
+
+    return [...obj];
+}

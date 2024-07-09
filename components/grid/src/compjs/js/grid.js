@@ -3,7 +3,7 @@
 import {COMPJS_PATHS, COMPJS_CLASSES} from "./compjs-props.js";
 import {CompJS} from "./compjs.js";
 import {GRID_CLASSES, GRID_CLASSES_LIST, GRID_URLS} from "./grid-props.js";
-import {getMapFromObject} from "./utils.js";
+import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid {
     static #COMPJS;
@@ -12,6 +12,10 @@ export class Grid {
     static #DEFAULT_HAS_TRASH = false
     static #DEFAULT_HAS_INSERTION = false
 
+    // Element ID
+    #ELEMENT_ID;
+
+    // Configuration
     #TITLE = "Grid"
     #LOCK_STATUS = Grid.#DEFAULT_LOCK_STATUS;
     #PAGE_SIZE = 10
@@ -23,8 +27,10 @@ export class Grid {
     #HAS_TRASH=Grid.#DEFAULT_HAS_TRASH
     #HAS_INSERTION=Grid.#DEFAULT_HAS_INSERTION
 
+    // JSON
     #JSON_COLUMNS = "columns"
     #JSON_LOCKED = "locked"
+    #JSON_PAGE_SIZE = "pageSize"
     #JSON_TITLE = "title"
 
     #JSON_COLUMN_ID = "columnId"
@@ -32,18 +38,15 @@ export class Grid {
     #JSON_COLUMN_INDEX = "index"
     #JSON_COLUMN_TYPE = "type"
 
-    #JSON_PAGE_SIZE = "pageSize"
     #JSON_DATA = "data"
 
-    #ELEMENT_ID;
-
-    #ELEMENTS
+    // DOM Elements
     #PARENT_ELEMENT;
     #ROOT;
     #HEADER;
     #HEADER_TITLE;
     #HEADER_LEFT_ICONS;
-     #HEADER_RIGHT_ICONS;
+    #HEADER_RIGHT_ICONS;
     #HEADER_LOCK;
     #HEADER_ICON_UNLOCK;
     #HEADER_ICON_LOCK;
@@ -51,7 +54,11 @@ export class Grid {
     #BODY_HEADER;
     #BODY_CONTENT
     #BODY_CONTENT_DATA
+    #BODY_CONTENT_DATA_PAGES
     #BODY_CONTENT_CHECKBOXES
+
+    // Pagination
+    #CURRENT_PAGE=0
 
     static {
         Grid.#COMPJS = new CompJS();
@@ -142,9 +149,9 @@ export class Grid {
         // Lock icons
         this.#HEADER_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_LEFT_ICONS, GRID_CLASSES.HEADER_LOCK);
 
-        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_CLASSES.HEADER_ICON);
+        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_CLASSES.HEADER_ICON_LOCK);
 
-        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_CLASSES.HEADER_ICON, COMPJS_CLASSES.HIDE);
+        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_CLASSES.HEADER_ICON_LOCK,COMPJS_CLASSES.HIDE, GRID_CLASSES.HEADER_ICON_LOCK_HIDDEN);
 
         // Add event listener to lock icons
         for (let icon of [this.#HEADER_ICON_LOCK, this.#HEADER_ICON_UNLOCK])
@@ -152,8 +159,10 @@ export class Grid {
                 event.preventDefault();
 
                 this.#LOCK_STATUS = !this.#LOCK_STATUS;
-                this.#HEADER_ICON_LOCK.classList.toggle(COMPJS_CLASSES.HIDE);
-                this.#HEADER_ICON_UNLOCK.classList.toggle(COMPJS_CLASSES.HIDE);
+                for(let className of [GRID_CLASSES.HEADER_ICON_LOCK_HIDDEN, COMPJS_CLASSES.HIDE]){
+                this.#HEADER_ICON_LOCK.classList.toggle(className);
+                this.#HEADER_ICON_UNLOCK.classList.toggle(className);
+                }
             });
     }
 
@@ -206,12 +215,13 @@ export class Grid {
     }
 
     #loadJSONBodyData(dataObject) {
-        const dataMap = getMapFromObject(dataObject)
+        const dataList = getListFromObject(dataObject)
 
-        for (let key of dataMap.keys())
-            dataMap.set(key, getMapFromObject(dataMap.get(key)))
+        dataList.forEach((dataMap, i)=>{
+            dataList[i]= getMapFromObject(dataMap)
+        })
 
-        return dataMap
+        return dataList
     }
 
     #sortJSONColumnsKeys() {
@@ -259,21 +269,53 @@ export class Grid {
 
     #updateBody() {
         // Clear rows
-        while(this.#BODY_CONTENT_DATA.firstChild)
-            this.#BODY_CONTENT_DATA.removeChild(this.#BODY.firstChild)
+        let firstChild=null
+        while((firstChild=this.#BODY_CONTENT_DATA.firstChild))
+            this.#BODY_CONTENT_DATA.removeChild(firstChild)
 
         if(this.#HAS_TRASH)
-            while(this.#BODY_CONTENT_CHECKBOXES.firstChild)
-                this.#BODY_CONTENT_CHECKBOXES.removeChild(this.#BODY.firstChild)
+            while((firstChild=this.#BODY_CONTENT_CHECKBOXES.firstChild))
+                this.#BODY_CONTENT_CHECKBOXES.removeChild(firstChild)
 
-        // UPDATE ROWS DATA
-        this.#DATA.forEach(rowData => {
-                const rowElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_CLASSES.BODY_CONTENT_DATA_ROW);
+        // Update rows data
+        this.#BODY_CONTENT_DATA_PAGES=new Array(Math.floor(this.#DATA.length/this.#PAGE_SIZE))
+        let maxHeight=0
 
-                this.#COLUMNS_SORTED_KEYS.forEach(column=> {
-                    const cellElement=Grid.#COMPJS.createElement("div", rowElement, GRID_CLASSES.BODY_CONTENT_DATA_ROW_CELL);
-                    cellElement.innerHTML = rowData.get(column.get(this.#JSON_COLUMN_ID));
-            })
+        for(let i=0; i<this.#DATA.length; i+=this.#PAGE_SIZE) {
+            const pageElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_CLASSES.BODY_CONTENT_DATA_PAGE, COMPJS_CLASSES.HIDE,GRID_CLASSES.BODY_CONTENT_DATA_PAGE_HIDDEN);
+            const pageIdx=Math.floor(i/this.#PAGE_SIZE)
+            this.#BODY_CONTENT_DATA_PAGES[pageIdx]=pageElement
+
+            if(pageIdx===this.#CURRENT_PAGE)
+                pageElement.classList.remove(COMPJS_CLASSES.HIDE,GRID_CLASSES.BODY_CONTENT_DATA_PAGE_HIDDEN)
+
+            for (let j = i; j < i + this.#PAGE_SIZE; j++)
+                if (j < this.#DATA.length)
+                    this.#updateBodyContentDataRow(pageElement, j)
+
+                if (pageElement.offsetHeight > maxHeight)
+                    maxHeight = pageElement.offsetHeight
+        }
+
+        // Get total height size in rems
+        const pageStyle=Grid.#COMPJS.getCompStyle(GRID_CLASSES.BODY_CONTENT)
+        maxHeight+=parseInt(pageStyle.marginTop)+parseInt(pageStyle.marginBottom)
+
+        const remsMaxHeight=Grid.#COMPJS.convertPixelsToRem(maxHeight)+"rem"
+
+        // Set body content data height
+        for(let className of [GRID_CLASSES.BODY_CONTENT, GRID_CLASSES.BODY_CONTENT_DATA])
+        Grid.#COMPJS.setCompJSPropertyValue(className, "height", remsMaxHeight)
+        Grid.#COMPJS.applyStyles()
+    }
+
+    #updateBodyContentDataRow(pageElement, rowIndex) {
+        const rowData=this.#DATA[rowIndex]
+        const rowElement = Grid.#COMPJS.createElement("div", pageElement, GRID_CLASSES.BODY_CONTENT_DATA_PAGE_ROW);
+
+        this.#COLUMNS_SORTED_KEYS.forEach(column => {
+            const cellElement = Grid.#COMPJS.createElement("div", rowElement, GRID_CLASSES.BODY_CONTENT_DATA_PAGE_ROW_CELL);
+            cellElement.innerHTML = rowData.get(column.get(this.#JSON_COLUMN_ID));
         })
     }
 

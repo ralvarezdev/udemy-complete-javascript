@@ -8,6 +8,7 @@ export const GRID_CLASSES = {
     HEADER: "grid__header",
     HEADER_ICON: "grid__header__icon",
     HEADER_ICON_LOCK: "grid__header__icon--lock",
+    HEADER_ICON_LOCK_HIDDEN: "grid__header__icon--lock--hidden",
     HEADER_LEFT_ICONS: "grid__header__left-side-icons",
     HEADER_RIGHT_ICONS: "grid__header__right-side-icons",
     HEADER_LOCK: "grid__header__left-side-icons__lock",
@@ -23,13 +24,15 @@ export const GRID_CLASSES = {
     BODY_HEADER_NO_TRASH: "grid__body__header--no-trash",
     BODY_CONTENT: "grid__body__content",
     BODY_CONTENT_DATA: "grid__body__content__data",
+    BODY_CONTENT_DATA_PAGE: "grid__body__content__data__page",
+    BODY_CONTENT_DATA_PAGE_HIDDEN: "grid__body__content__data__page--hidden",
     BODY_CONTENT_DATA_NO_LOCK: "grid__body__content__data--no-lock",
     BODY_CONTENT_DATA_NO_TRASH: "grid__body__content__data--no-trash",
     BODY_CONTENT_CHECKBOXES: "grid__body__content__checkboxes",
 
     // Row class names
-    BODY_CONTENT_DATA_ROW: "grid__body__content__data__row",
-    BODY_CONTENT_DATA_ROW_CELL: "grid__body__content__data__row__cell",
+    BODY_CONTENT_DATA_PAGE_ROW: "grid__body__content__data__page__row",
+    BODY_CONTENT_DATA_PAGE_ROW_CELL: "grid__body__content__data__page__row__cell",
 
     // Footer class names
     FOOTER: "grid__footer",
