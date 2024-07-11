@@ -1,6 +1,6 @@
 import {Grid} from "../compjs/js/grid.js";
 import {CompJS} from "../compjs/js/compjs.js";
-import {COMPJS_SELECTORS} from "../compjs/js/compjs-props.js";
+import {COMPJS_SELECTORS, COMPJS_VARIABLES} from "../compjs/js/compjs-props.js";
 
 
 // Add grid to page

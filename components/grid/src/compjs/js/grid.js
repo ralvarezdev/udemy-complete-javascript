@@ -54,8 +54,13 @@ export class Grid {
     #BODY_HEADER;
     #BODY_CONTENT
     #BODY_CONTENT_DATA
-    #BODY_CONTENT_DATA_PAGES
     #BODY_CONTENT_CHECKBOXES
+
+    // Body content data pages map that contains the given page element (key) and its height (value)
+    #BODY_CONTENT_DATA_PAGES
+
+    // List that contains the page element with the maximum height
+    #MAX_HEIGHT_ELEMENT = null
 
     // Pagination
     #NUMBER_PAGES
@@ -288,33 +293,72 @@ export class Grid {
 
         // Update rows data
         this.#NUMBER_PAGES = Math.floor(this.#DATA.length / this.#PAGE_SIZE)
-        this.#BODY_CONTENT_DATA_PAGES = new Array(this.#NUMBER_PAGES)
+        this.#BODY_CONTENT_DATA_PAGES = new Map()
+
+        // Page element resize observer callback
+        const pageElementResizeObserverCallback=entries => {
+            for (let entry of entries) {
+                let maxHeight
+                const height=Grid.#COMPJS.getElementTotalHeight(entry.target)
+                const isNull=this.#MAX_HEIGHT_ELEMENT===null
+
+                if(!isNull)
+                    maxHeight = this.#getBodyContentDataPageHeight(this.#MAX_HEIGHT_ELEMENT)
+
+                if (isNull||height > maxHeight) {
+                    // Update page element with the maximum height
+                    this.#MAX_HEIGHT_ELEMENT =entry.target
+
+                    // Update body content data page height
+                    this.#BODY_CONTENT_DATA_PAGES.set(this.#MAX_HEIGHT_ELEMENT,height)
+
+                    this.#resizeBodyContent()
+                    continue
+                }
+
+                if(height===maxHeight)
+                    continue
+
+                if(entry.target===this.#MAX_HEIGHT_ELEMENT){
+                    // Update body content data page height
+                    this.#BODY_CONTENT_DATA_PAGES.set(this.#MAX_HEIGHT_ELEMENT,height)
+
+                    // Update page element with the maximum height
+                        for(let [element, height] of this.#BODY_CONTENT_DATA_PAGES.entries())
+                            if(height>maxHeight) {
+                                this.#MAX_HEIGHT_ELEMENT = element
+                                maxHeight=height
+                            }
+
+                        this.#resizeBodyContent()
+                }
+            }}
 
         // Get total height size in rems
         for (let i = 0; i < this.#DATA.length; i += this.#PAGE_SIZE) {
             const pageElement = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT_DATA, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDDEN);
             const pageIdx = Math.floor(i / this.#PAGE_SIZE)
-            this.#BODY_CONTENT_DATA_PAGES[pageIdx] = pageElement
+            this.#BODY_CONTENT_DATA_PAGES.set(pageElement,Grid.#COMPJS.getElementTotalHeight(pageElement))
 
+            // Remove hide class from current page
             if (pageIdx === this.#CURRENT_PAGE)
                 pageElement.classList.remove(COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDDEN)
+
+            // Add resize observer
+            const pageElementResizeObserver= new ResizeObserver(pageElementResizeObserverCallback)
+            pageElementResizeObserver.observe(pageElement)
 
             for (let j = i; j < i + this.#PAGE_SIZE; j++)
                 if (j < this.#DATA.length)
                     this.#updateBodyContentDataRow(pageElement, j)
         }
+    }
 
-        let maxHeight = 0
+    #getBodyContentDataPageHeight(element) {
+        return this.#BODY_CONTENT_DATA_PAGES.get(element)}
 
-        for (let pageElement of this.#BODY_CONTENT_DATA_PAGES)
-            if (pageElement.offsetHeight > maxHeight)
-                maxHeight = pageElement.offsetHeight
-
-        const selector = Grid.#COMPJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT)
-        const pageStyle = Grid.#COMPJS.getCompStyle(selector)
-
-        maxHeight += parseInt(pageStyle.marginTop) + parseInt(pageStyle.marginBottom)
-
+    #resizeBodyContent() {
+        const maxHeight=this.#getBodyContentDataPageHeight(this.#MAX_HEIGHT_ELEMENT)
         const remsMaxHeight = Grid.#COMPJS.convertPixelsToRem(maxHeight) + "rem"
 
         // Set body content data height

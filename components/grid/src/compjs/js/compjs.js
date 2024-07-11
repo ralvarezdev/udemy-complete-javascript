@@ -149,16 +149,20 @@ export class CompJS {
         return document.querySelector(selector);
     }
 
-    getCompStyle(selector) {
+    getCompStyle(element){
+        return (element === null) ? null : window.getComputedStyle(element);
+    }
+
+    getCompStyleFromSelector(selector) {
         const element = this.getElement(selector);
 
-        return (element === null) ? null : window.getComputedStyle(element);
+        return  getComputedStyle(element);
     }
 
     #getSelectorPropertyValue(selector, propertyName) {
         this.checkPropertyName(propertyName);
 
-        const compStyle = this.getCompStyle(selector);
+        const compStyle = this.getCompStyleFromSelector(selector);
         const propertyValue = compStyle.getPropertyValue(propertyName);
 
         return (propertyValue === undefined) ? null : propertyValue;
@@ -185,6 +189,12 @@ export class CompJS {
 
     getCompJSRootPropertiesValues() {
         return this.getSelectorPropertiesValues(COMPJS_SELECTORS.ROOT, COMPJS_VARIABLES_LIST);
+    }
+
+    // Get element total height
+    getElementTotalHeight(element) {
+        const elementStyle = this.getCompStyle(element)
+        return parseInt(elementStyle.marginTop) + parseInt(elementStyle.marginBottom) + element.offsetHeight
     }
 
     // General methods for setting CSS class property values
