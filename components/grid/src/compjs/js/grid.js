@@ -7,7 +7,6 @@ import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid {
     static #COMPJS;
-    static #DEFAULT_LOCK_STATUS = false
     static #DEFAULT_HAS_LOCK = false
     static #DEFAULT_HAS_TRASH = false
     static #DEFAULT_HAS_INSERTION = false
@@ -16,12 +15,12 @@ export class Grid {
     #ELEMENT_ID;
 
     // Configuration
-    #TITLE = "Grid"
-    #LOCK_STATUS = Grid.#DEFAULT_LOCK_STATUS;
-    #PAGE_SIZE = 10
-    #COLUMNS = []
-    #COLUMNS_SORTED_KEYS = []
-    #DATA = []
+    #TITLE="Start creating!"
+    #LOCK_STATUS
+    #PAGE_SIZE
+    #COLUMNS
+    #COLUMNS_SORTED_KEYS
+    #DATA
 
     #HAS_LOCK = Grid.#DEFAULT_HAS_LOCK
     #HAS_TRASH = Grid.#DEFAULT_HAS_TRASH
@@ -118,13 +117,14 @@ export class Grid {
 
         const contentDataSelectorFromId = this.getSelectorWithElementId(GRID_SELECTORS.BODY_CONTENT_DATA)
         this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_DATA, contentDataSelectorFromId);
-
-        this.#updateBodyHeader();
     }
 
     addLockIcon() {
         if (this.#HAS_LOCK)
             return;
+
+        if(this.#LOCK_STATUS===undefined)
+            throw new Error("JSON Grid locked property is not defined...")
 
         this.#HAS_LOCK = true
 
@@ -135,35 +135,41 @@ export class Grid {
         const headerIconLockContainer = Grid.#COMPJS.createElement("div", this.#HEADER_ICONS, GRID_SELECTORS.HEADER_ICON_CONTAINER);
 
         // Load lock SVG click event function
+        const makeDivEditable=child => {child.contentEditable=String(!this.#LOCK_STATUS)}
+
         headerIconLockContainer.addEventListener('click', event => {
             event.preventDefault();
 
+            // Change lock status
             this.#LOCK_STATUS = !this.#LOCK_STATUS;
+
+            const bodyHeaderColumns=this.#BODY_HEADER.querySelectorAll(`.${GRID_SELECTORS.BODY_HEADER_COLUMN}`)
+            const bodyContentDataCells=this.#BODY_CONTENT_DATA.querySelectorAll(`.${GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL}`)
+
+            bodyHeaderColumns.forEach(makeDivEditable)
+            bodyContentDataCells.forEach(makeDivEditable)
+
             for (let className of [GRID_SELECTORS.HEADER_ICON_HIDDEN, COMPJS_SELECTORS.HIDE])
                 headerIconLockContainer.childNodes.forEach(child =>child.classList.toggle(className))
         })
 
         Grid.#COMPJS.loadHiddenSVG(COMPJS_URLS.UNLOCK_SVG,COMPJS_CONSTANTS.VIEW_BOX, GRID_SELECTORS.ICON_UNLOCK)
             .then(r=>{
-                console.log(r)
-
                 const svgElement=Grid.#COMPJS.loadSVG(headerIconLockContainer, GRID_SELECTORS.ICON_UNLOCK, GRID_SELECTORS.HEADER_ICON)
 
                 if(this.#LOCK_STATUS)
                     Grid.#COMPJS.addClassNames(svgElement, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_HIDDEN)
             })
-            .catch(err=>console.log(err))
+            .catch(err=>console.error(err))
 
         Grid.#COMPJS.loadHiddenSVG(COMPJS_URLS.LOCK_SVG,COMPJS_CONSTANTS.VIEW_BOX, GRID_SELECTORS.ICON_LOCK)
             .then(r=>{
-                console.log(r)
-
                 const svgElement=Grid.#COMPJS.loadSVG(headerIconLockContainer, GRID_SELECTORS.ICON_LOCK, GRID_SELECTORS.HEADER_ICON)
 
                 if(!this.#LOCK_STATUS)
                     Grid.#COMPJS.addClassNames(svgElement, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_HIDDEN)
             })
-            .catch(err=>console.log(err))
+            .catch(err=>console.error(err))
     }
 
     addTrashIcon() {
@@ -171,26 +177,24 @@ export class Grid {
             return;
 
         this.#HAS_TRASH = true
-
-        // Root
-        this.#ROOT.classList.remove(GRID_SELECTORS.ROOT_NO_TRASH);
     }
 
     // - JSON
 
     // Read JSON props
-    loadJSON(jsonObject) {
+    async loadJSON(jsonObject) {
         if (!jsonObject instanceof Object)
             throw new Error("JSON Grid is not an object...")
 
         // Header
-        this.#LOCK_STATUS = (jsonObject.locked === undefined) ? this.#LOCK_STATUS : Boolean(jsonObject[this.#JSON_LOCKED]);
-        this.#TITLE = (jsonObject.title === undefined) ? this.#TITLE : String(jsonObject[this.#JSON_TITLE]);
+        this.#LOCK_STATUS = Boolean(jsonObject[this.#JSON_LOCKED]);
+        this.#TITLE = String(jsonObject[this.#JSON_TITLE]);
 
         // Data
-        this.#PAGE_SIZE = (jsonObject.pageSize === undefined) ? this.#PAGE_SIZE : parseInt(jsonObject[this.#JSON_PAGE_SIZE]);
-        this.#COLUMNS = (jsonObject.columns === undefined) ? this.#COLUMNS : this.#loadJSONColumnsData(jsonObject[this.#JSON_COLUMNS]);
-        this.#DATA = (jsonObject.data === undefined) ? this.#DATA : this.#loadJSONBodyData(jsonObject[this.#JSON_DATA]);
+        this.#PAGE_SIZE =  parseInt(jsonObject[this.#JSON_PAGE_SIZE]);
+        this.#COLUMNS = this.#loadJSONColumnsData(jsonObject[this.#JSON_COLUMNS]);
+        this.#DATA =  this.#loadJSONBodyData(jsonObject[this.#JSON_DATA]);
+
         this.#sortJSONColumnsKeys();
 
         // Updates
@@ -244,12 +248,18 @@ export class Grid {
     // - Updates
 
     #updateHeader() {
+        if(this.#TITLE===undefined)
+            throw new Error("JSON Grid title property is not defined...")
+
         this.#HEADER_TITLE.innerHTML = String(this.#TITLE);
     }
 
     #updateBodyHeader() {
         while (this.#BODY_HEADER.firstChild)
             this.#BODY_HEADER.removeChild(this.#BODY_HEADER.firstChild)
+
+        if(this.#COLUMNS_SORTED_KEYS===undefined)
+            throw new Error("JSON Grid columns property is not defined...")
 
         // Set columns' data
         this.#COLUMNS_SORTED_KEYS.forEach(column => {
@@ -269,6 +279,12 @@ export class Grid {
         if (this.#HAS_TRASH)
             while ((firstChild = this.#BODY_CONTENT_CHECKBOXES.firstChild))
                 this.#BODY_CONTENT_CHECKBOXES.removeChild(firstChild)
+
+        if(this.#PAGE_SIZE===undefined)
+            throw new Error("JSON Grid page size property is not defined...")
+
+        if(this.#DATA===undefined)
+            throw new Error("JSON Grid data property is not defined...")
 
         // Update rows data
         this.#NUMBER_PAGES = Math.floor(this.#DATA.length / this.#PAGE_SIZE)
