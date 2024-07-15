@@ -1,8 +1,8 @@
 'use strict';
 
-import {COMPJS_PATHS, COMPJS_SELECTORS} from "./compjs-props.js";
+import {COMPJS_CONSTANTS,COMPJS_PATHS, COMPJS_SELECTORS, COMPJS_URLS} from "./compjs-props.js";
 import {CompJS} from "./compjs.js";
-import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_URLS} from "./grid-props.js";
+import {GRID_SELECTORS, GRID_SELECTORS_LIST} from "./grid-props.js";
 import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid {
@@ -45,11 +45,7 @@ export class Grid {
     #ROOT;
     #HEADER;
     #HEADER_TITLE;
-    #HEADER_LEFT_ICONS;
-    #HEADER_RIGHT_ICONS;
-    #HEADER_LOCK;
-    #HEADER_ICON_UNLOCK;
-    #HEADER_ICON_LOCK;
+    #HEADER_ICONS;
     #BODY;
     #BODY_HEADER;
     #BODY_CONTENT
@@ -88,10 +84,7 @@ export class Grid {
 
         // Set root element ID
         const rootId = this.getSelectorWithElementId(GRID_SELECTORS.ROOT);
-        Grid.#COMPJS.setElementID(rootId, this.#ROOT);
-
-        if (!this.#HAS_TRASH)
-            this.#ROOT.classList.add(GRID_SELECTORS.ROOT_NO_TRASH)
+        Grid.#COMPJS.setCompJSElementID(this.#ROOT,rootId);
 
         this.#initializeHeader();
         this.#initializeBody();
@@ -109,13 +102,9 @@ export class Grid {
         // Additional classes
         if (this.#HAS_TRASH)
             this.addTrashIcon()
-        else
-            this.#HEADER_TITLE.classList.add(GRID_SELECTORS.HEADER_TITLE_NO_TRASH)
 
         if (this.#HAS_LOCK)
             this.addLockIcon()
-        else
-            this.#HEADER_TITLE.classList.add(GRID_SELECTORS.HEADER_TITLE_NO_LOCK)
     }
 
     // Body initializer
@@ -130,17 +119,6 @@ export class Grid {
         const contentDataSelectorFromId = this.getSelectorWithElementId(GRID_SELECTORS.BODY_CONTENT_DATA)
         this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_DATA, contentDataSelectorFromId);
 
-        // Additional classes
-        if (!this.#HAS_TRASH) {
-            this.#BODY_HEADER.classList.add(GRID_SELECTORS.BODY_HEADER_NO_TRASH)
-            this.#BODY_CONTENT_DATA.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_NO_TRASH)
-        }
-
-        if (!this.#HAS_LOCK) {
-            this.#BODY_HEADER.classList.add(GRID_SELECTORS.BODY_HEADER_NO_LOCK)
-            this.#BODY_CONTENT_DATA.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_NO_LOCK)
-        }
-
         this.#updateBodyHeader();
     }
 
@@ -150,34 +128,42 @@ export class Grid {
 
         this.#HAS_LOCK = true
 
-        // Title
-        this.#HEADER_TITLE.classList.remove(GRID_SELECTORS.HEADER_TITLE_NO_LOCK);
-
-        // Body
-        this.#BODY_HEADER.classList.remove(GRID_SELECTORS.BODY_HEADER_NO_LOCK)
-        this.#BODY_CONTENT_DATA.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_NO_LOCK)
-
         // Icons
-        this.#HEADER_LEFT_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_SELECTORS.HEADER_LEFT_ICONS);
+        this.#HEADER_ICONS = Grid.#COMPJS.createElement("div", this.#HEADER, GRID_SELECTORS.HEADER_ICONS);
 
         // Lock icons
-        this.#HEADER_LOCK = Grid.#COMPJS.createElement("div", this.#HEADER_LEFT_ICONS, GRID_SELECTORS.HEADER_LOCK);
+        const headerIconLockContainer = Grid.#COMPJS.createElement("div", this.#HEADER_ICONS, GRID_SELECTORS.HEADER_ICON_CONTAINER);
 
-        this.#HEADER_ICON_UNLOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.LOCK_SVG, "Lock SVG", GRID_SELECTORS.HEADER_ICON_LOCK);
+        // Load lock SVG click event function
+        headerIconLockContainer.addEventListener('click', event => {
+            event.preventDefault();
 
-        this.#HEADER_ICON_LOCK = Grid.#COMPJS.loadSVG(this.#HEADER_LOCK, GRID_URLS.UNLOCK_SVG, "Unlock SVG", GRID_SELECTORS.HEADER_ICON_LOCK, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_LOCK_HIDDEN);
+            this.#LOCK_STATUS = !this.#LOCK_STATUS;
+            for (let className of [GRID_SELECTORS.HEADER_ICON_HIDDEN, COMPJS_SELECTORS.HIDE])
+                headerIconLockContainer.childNodes.forEach(child =>child.classList.toggle(className))
+        })
 
-        // Add event listener to lock icons
-        for (let icon of [this.#HEADER_ICON_LOCK, this.#HEADER_ICON_UNLOCK])
-            icon.addEventListener("click", event => {
-                event.preventDefault();
+        Grid.#COMPJS.loadHiddenSVG(COMPJS_URLS.UNLOCK_SVG,COMPJS_CONSTANTS.VIEW_BOX, GRID_SELECTORS.ICON_UNLOCK)
+            .then(r=>{
+                console.log(r)
 
-                this.#LOCK_STATUS = !this.#LOCK_STATUS;
-                for (let className of [GRID_SELECTORS.HEADER_ICON_LOCK_HIDDEN, COMPJS_SELECTORS.HIDE]) {
-                    this.#HEADER_ICON_LOCK.classList.toggle(className);
-                    this.#HEADER_ICON_UNLOCK.classList.toggle(className);
-                }
-            });
+                const svgElement=Grid.#COMPJS.loadSVG(headerIconLockContainer, GRID_SELECTORS.ICON_UNLOCK, GRID_SELECTORS.HEADER_ICON)
+
+                if(this.#LOCK_STATUS)
+                    Grid.#COMPJS.addClassNames(svgElement, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_HIDDEN)
+            })
+            .catch(err=>console.log(err))
+
+        Grid.#COMPJS.loadHiddenSVG(COMPJS_URLS.LOCK_SVG,COMPJS_CONSTANTS.VIEW_BOX, GRID_SELECTORS.ICON_LOCK)
+            .then(r=>{
+                console.log(r)
+
+                const svgElement=Grid.#COMPJS.loadSVG(headerIconLockContainer, GRID_SELECTORS.ICON_LOCK, GRID_SELECTORS.HEADER_ICON)
+
+                if(!this.#LOCK_STATUS)
+                    Grid.#COMPJS.addClassNames(svgElement, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.HEADER_ICON_HIDDEN)
+            })
+            .catch(err=>console.log(err))
     }
 
     addTrashIcon() {
@@ -188,13 +174,6 @@ export class Grid {
 
         // Root
         this.#ROOT.classList.remove(GRID_SELECTORS.ROOT_NO_TRASH);
-
-        // Title
-        this.#HEADER_TITLE.classList.remove(GRID_SELECTORS.HEADER_TITLE_NO_TRASH);
-
-        // Body
-        this.#BODY_HEADER.classList.remove(GRID_SELECTORS.BODY_HEADER_NO_TRASH)
-        this.#BODY_CONTENT_DATA.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_NO_TRASH)
     }
 
     // - JSON

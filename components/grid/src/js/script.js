@@ -10,16 +10,12 @@ const grid1 = new Grid(1);
 grid1.addLockIcon()
 
 const grid2 = new Grid(2);
-//grid2.addLockIcon()
+// grid2.addLockIcon()
 
 fetch("src/json/grid-data-1.json")
     .then(response => response.json())
-    .then(json => {
-        grid1.loadJSON(json)
-    })
+    .then(json => grid1.loadJSON(json))
     .then(() => fetch("src/json/grid-data-2.json"))
     .then(response => response.json())
-    .then(json => {
-        grid2.loadJSON(json)
-    });
+    .then(json => grid2.loadJSON(json));
 

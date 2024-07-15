@@ -11,6 +11,9 @@ export class CompJS {
     // Styles
     #STYLES_MAP;
 
+    // Loaded SVG files
+    #LOADED_SVG
+
     // Elements
     #ELEMENTS_ID;
 
@@ -33,6 +36,7 @@ export class CompJS {
             obj.#checkStyleElement();
             obj.#STYLES_MAP = new Map();
             obj.#ELEMENTS_ID = new Map();
+            obj.#LOADED_SVG=new Map()
 
             CompJS.#INSTANCE = obj;
         }
@@ -217,13 +221,47 @@ export class CompJS {
         this.setCompJSSelectorPropertyValue(COMPJS_SELECTORS.ROOT, propertyName, propertyValue);
     }
 
-    setElementID(elementId, element) {
-        this.checkSelector(elementId);
+    setCompJSElementID(element, id) {
+        this.checkSelector(id);
 
-        if (this.#ELEMENTS_ID.get(elementId))
+        if (this.#ELEMENTS_ID.get(id))
             throw new Error("Element ID has already being assigned...");
 
-        this.#ELEMENTS_ID.set(elementId, element);
+        this.#ELEMENTS_ID.set(id, element);
+    }
+
+    getCompJSElementID(elementId) {
+        this.checkCompJSElementID(elementId);
+
+        return this.#ELEMENTS_ID.get(elementId);
+    }
+
+    checkCompJSElementID(elementId){
+        this.checkSelector(elementId);
+
+        if (this.#ELEMENTS_ID.get(elementId)  === undefined)
+            throw new Error("Element ID does not exist...");
+    }
+
+    setElementID(element, id) {
+        if(id)
+            element.id=id
+    }
+
+    addClassNames(element,...classNames){
+        if(!classNames)
+            return
+
+        if(classNames instanceof Array){
+            if(classNames.length===0)
+                return
+
+            this.checkSelectors(classNames);
+            element.classList.add(...classNames);}
+        else{
+            this.checkSelector(classNames)
+            element.classList.add(classNames)
+        }
     }
 
     // - Links
@@ -236,8 +274,7 @@ export class CompJS {
         link.type = type;
         link.href = href;
 
-        if (id)
-            this.setElementID(id, link);
+        this.setElementID(link, id);
 
         // Append link element to HTML head
         this.#head.appendChild(link);
@@ -308,13 +345,8 @@ export class CompJS {
     createElementWithId(tagName, parentElement, id, classNames) {
         const element = document.createElement(tagName);
 
-        if (id)
-            this.setElementID(id, element)
-
-        if (classNames && classNames.length > 0) {
-            this.checkSelectors(classNames);
-            element.classList.add(...classNames);
-        }
+        this.setElementID(element, id)
+        this.addClassNames(element,...classNames)
 
         parentElement.appendChild(element);
 
@@ -334,13 +366,8 @@ export class CompJS {
         if (alt)
             imgElement.alt = alt;
 
-        if (id)
-            this.setElementID(id, imgElement)
-
-        if (classNames && classNames.length > 0) {
-            this.checkSelectors(classNames);
-            imgElement.classList.add(...classNames);
-        }
+        this.setElementID(imgElement, id)
+        this.addClassNames(imgElement,...classNames)
 
         parentElement.appendChild(imgElement);
 
@@ -360,13 +387,8 @@ export class CompJS {
         if (type)
             objectElement.type = type;
 
-        if (id)
-            this.setElementID(id, objectElement)
-
-        if (classNames && classNames.length > 0) {
-            this.checkSelectors(classNames);
-            objectElement.classList.add(...classNames);
-        }
+        this.setElementID(objectElement, id)
+        this.addClassNames(objectElement,...classNames)
 
         parentElement.appendChild(objectElement);
         return objectElement;
@@ -376,12 +398,66 @@ export class CompJS {
         return this.loadObjectWithId(parentElement, data, type, null, classNames);
     }
 
-    loadSVGWithId(parentElement, url, alt, id, ...classNames) {
+    loadSVGImgWithId(parentElement, url, alt, id, ...classNames) {
         // Create SVG img element
         return this.loadImgWithId(parentElement, url, alt, id, classNames);
     }
 
-    loadSVG(parentElement, url, alt, ...classNames) {
+    loadSVGImg(parentElement, url, alt, ...classNames) {
         return this.loadImg(parentElement, url, alt, classNames);
+    }
+
+    async loadHiddenSVG( url, viewBox, id) {
+            // SVG already loaded
+            if(this.#LOADED_SVG.get(id))
+                return
+
+            // Set SVG as being loaded
+            this.#LOADED_SVG.set(id, true)
+
+            // Create SVG element
+            const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+            // Create symbol element
+            const symbolElement = document.createElementNS('http://www.w3.org/2000/svg', 'symbol');
+
+            this.setElementID(symbolElement, id)
+
+            svgElement.appendChild(symbolElement);
+            document.querySelector("body").appendChild(svgElement);
+
+            fetch(url)
+                .then(response => response.text())
+                .then(svgData => {
+                    const parser = new DOMParser();
+                    const parsedSvg = parser.parseFromString(svgData, "image/svg+xml");
+
+                    svgElement.version="2.0";
+                    svgElement.classList.add(COMPJS_SELECTORS.HIDE)
+                    symbolElement.setAttribute('viewBox', viewBox);
+
+                    symbolElement.innerHTML=parsedSvg.documentElement.innerHTML;
+                });
+    }
+
+    loadSVG(parentElement, id, ...classNames) {
+        id=this.getFormattedId(id)
+        const getHiddenSVG=document.querySelector(id);
+
+        if(!getHiddenSVG)
+            throw new Error("Hidden SVG element not found...");
+
+        const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+        const useElement=document.createElementNS('http://www.w3.org/2000/svg', 'use');
+        useElement.setAttribute('href', id);
+
+        svgElement.appendChild(useElement);
+
+        this.addClassNames(svgElement,...classNames)
+
+        parentElement.appendChild(svgElement);
+
+        return svgElement;
     }
 }

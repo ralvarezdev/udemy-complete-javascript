@@ -1,6 +1,12 @@
 // - CompJS Root path
 export const COMPJS_ROOT_PATH = 'src/compjs';
 
+// - CompJS constants
+export const COMPJS_CONSTANTS = {
+    VIEW_BOX:'0 0 24 24'
+}
+Object.freeze(COMPJS_CONSTANTS);
+
 // - Paths that are related with CompJS
 export const COMPJS_PATHS = {
     // CSS main stylesheets path
@@ -53,7 +59,9 @@ export const COMPJS_VARIABLES = {
     MICRO_MARGIN: '--compjs-micro-margin',
 
     // Gap CSS variables
-    BIG_ICON_GAP: '--compjs-big-icon-gap',
+    BIG_GAP: '--compjs-big-gap',
+    MEDIUM_GAP: '--compjs-medium-gap',
+    SMALL_GAP: '--compjs-small-gap',
 
     // Padding CSS variables
     HUGE_PADDING: '--compjs-huge-padding',
@@ -82,3 +90,19 @@ Object.freeze(COMPJS_VARIABLES);
 // - List that contains all values from 'COMPJS_VARIABLES'
 export const COMPJS_VARIABLES_LIST = [...Object.values(COMPJS_VARIABLES)];
 Object.freeze(COMPJS_VARIABLES_LIST);
+
+// - URLs that are related with the grid component
+export const COMPJS_URLS = {
+    // SVG URLs and filenames
+    EDIT_SVG: "./src/compjs/svg/edit-2.svg",
+    PLUS_SVG: "./src/compjs/svg/plus.svg",
+
+    LOCK_SVG: "./src/compjs/svg/lock.svg",
+    UNLOCK_SVG: "./src/compjs/svg/unlock.svg",
+
+    TRASH_SVG: "./src/compjs/svg/trash-2.svg",
+    CLOSE_SVG: "./src/compjs/svg/x.svg",
+
+    DOWNLOAD_SVG: "./src/compjs/svg/download.svg"
+};
+Object.freeze(COMPJS_URLS);
