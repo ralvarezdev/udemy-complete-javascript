@@ -1,0 +1,74 @@
+.grid__header {
+    grid-column: 2/-1;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+
+    column-gap: var(--compjs-big-gap);
+    padding: var(--compjs-huge-padding);
+}
+
+.grid__header__title {
+    grid-row: 1;
+    grid-column: 1/2;
+
+    font-size: var(--compjs-font-size-h2);
+    text-align: center;
+    padding: 0 var(--compjs-big-padding);
+
+    color: var(--compjs-grey-dark);
+    transition: color var(--compjs-color-transition) ease-out;
+}
+
+.grid__header__title--warning {
+    color: var(--compjs-warning-color-dark);
+}
+
+.grid__header__icons {
+    grid-row: 1;
+    grid-column: 2/-1;
+
+    display: flex;
+    align-items: center;
+    justify-content: right;
+
+    gap: var(--compjs-small-gap);
+    padding: var(--compjs-small-padding) 0;
+}
+
+.grid__header__icon__container {
+    position: relative;
+    height: var(--compjs-medium-icon-size);
+    width: var(--compjs-medium-icon-size);
+    padding: var(--compjs-small-padding);
+}
+
+.grid__header__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: var(--compjs-medium-icon-size);
+    height: var(--compjs-medium-icon-size);
+
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke: var(--compjs-grey-dark);
+
+    z-index: -1;
+
+    animation: var(--compjs-focus-transition) ease-out var(--compjs-focus-transition-delay) bigIconLostFocus;
+}
+
+.grid__header__icon:hover,
+.grid__header__icon:active {
+    transform: translate(-50%, -60%);
+
+    animation: var(--compjs-focus-transition) ease-out var(--compjs-focus-transition-delay) bigIconFocus;
+}
+
+.grid__header__icon--hidden {
+    transform: translate(-50%, 50%);
+}

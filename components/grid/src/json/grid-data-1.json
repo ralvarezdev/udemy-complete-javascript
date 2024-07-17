@@ -4,34 +4,44 @@
   "columns": [
     {
       "columnId": "name",
+      "columnData": {
       "title": "Name",
       "index": 3,
-      "type": "string"
+      "type": "string",
+      "nullable": false
+    }
     },
     {
       "columnId": "age",
+        "columnData": {
       "title": "Age",
       "index": 1,
-      "type": "int"
+      "type": "int",
+      "nullable": true}
     },
     {
       "columnId": "id",
-      "title": "ID",
-      "index": 2,
-      "type": "int"
+        "columnData": {
+          "title": "ID",
+          "index": 2,
+          "type": "uint",
+          "nullable": true
+        }
     },
     {
       "columnId": "country",
+        "columnData": {
       "title": "Country",
       "index": 0,
-      "type": "string"
+      "type": "string",
+      "nullable": true}
     }
   ],
   "pageSize": 10,
   "data": [
     {
       "name": "David Esber",
-      "age": 20,
+        "age": 20,
       "id": 1,
       "country": "USA"
     },
@@ -72,7 +82,7 @@
       "country": "UK"
     },
     {
-      "name": "Frank",
+        "name": "Frank",
       "age": 27,
       "id": 8,
       "country": "UK"

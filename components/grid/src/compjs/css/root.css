@@ -1,6 +1,12 @@
 :root {
     /* - Variables */
 
+    /* Timings */
+    --compjs-focus-transition: 0.4s;
+    --compjs-focus-transition-delay: 0s;
+    --compjs-color-transition: 0.2s;
+    --compjs-color-transition-delay: 0s;
+
     /* Fonts size */
     --compjs-font-size-h2: 5rem;
     --compjs-font-size-h3: 2.6rem;
@@ -40,6 +46,12 @@
     /* Border radius */
     --compjs-medium-border-radius: 10px;
 
+    /* Border width */
+    --compjs-medium-border-width: 2px;
+
+    /* Font weight */
+    --compjs-font-weight-bold: 600;
+
     /* Colors */
     --compjs-grey-dark: #343a40;
     --compjs-grey-medium: #868e96;
@@ -49,16 +61,13 @@
     --compjs-primary-color-dark: #099268;
     --compjs-primary-color-medium: #20c997;
     --compjs-primary-color-light: #e6fcf5;
+
+    --compjs-warning-color-dark: #c92a2a;
+    --compjs-warning-color-medium: #ff6b6b;
+    --compjs-warning-color-light: #ffc9c9;
 }
 
 * {
     margin: 0;
     padding: 0;
-}
-
-/* - Utilities */
-.hide {
-    display: none;    z-index: -1;
-    opacity: 0;
-    visibility: hidden;
 }

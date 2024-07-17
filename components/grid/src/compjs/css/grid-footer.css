@@ -1,0 +1,7 @@
+.grid__footer {
+    margin-top: var(--compjs-big-margin);
+}
+
+.grid__footer__pagination {
+    padding: var(--compjs-medium-padding);
+}

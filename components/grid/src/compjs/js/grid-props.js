@@ -10,6 +10,7 @@ export const GRID_SELECTORS = {
     HEADER_ICON: "grid__header__icon",
     HEADER_ICON_HIDDEN: "grid__header__icon--hidden",
     HEADER_TITLE: "grid__header__title",
+    HEADER_TITLE_WARNING: "grid__header__title--warning",
     HEADER_TITLE_NO_CHECKBOXES: "grid__header__title--no-checkboxes",
 
     // Icons IDs
@@ -22,8 +23,10 @@ export const GRID_SELECTORS = {
     // Column class names
     BODY: "grid__body",
     BODY_HEADER: "grid__body__header",
-    BODY_HEADER_COLUMN: "grid__body__header__column",
+    BODY_HEADER_WARNING: "grid__body__header--warning",
     BODY_HEADER_NO_CHECKBOXES: "grid__body__header--no-checkboxes",
+    BODY_HEADER_COLUMN: "grid__body__header__column",
+    BODY_HEADER_COLUMN_WARNING: "grid__body__header__column--warning",
     BODY_CONTENT: "grid__body__content",
     BODY_CONTENT_DATA: "grid__body__content__data",
     BODY_CONTENT_DATA_PAGE: "grid__body__content__data__page",
@@ -33,7 +36,9 @@ export const GRID_SELECTORS = {
 
     // Row class names
     BODY_CONTENT_DATA_PAGE_ROW: "grid__body__content__data__page__row",
+    BODY_CONTENT_DATA_PAGE_ROW_WARNING: "grid__body__content__data__page__row--warning",
     BODY_CONTENT_DATA_PAGE_ROW_CELL: "grid__body__content__data__page__row__cell",
+    BODY_CONTENT_DATA_PAGE_ROW_CELL_WARNING: "grid__body__content__data__page__row__cell--warning",
 
     // Footer class names
     FOOTER: "grid__footer",
@@ -45,3 +50,22 @@ Object.freeze(GRID_SELECTORS);
 // - List that contains all values from 'GRID_SELECTORS'
 export const GRID_SELECTORS_LIST = [...Object.values(GRID_SELECTORS)];
 Object.freeze(GRID_SELECTORS_LIST);
+
+// - JSON keys that are related with the grid component
+export const GRID_JSON = {
+    // Grid keys
+    COLUMNS: "columns",
+    LOCKED: "locked",
+    PAGE_SIZE: "pageSize",
+    TITLE: "title",
+    DATA: "data",
+
+    // Grid column keys
+    COLUMN_ID: "columnId",
+    COLUMN_DATA:"columnData",
+    COLUMN_DATA_TITLE: "title",
+    COLUMN_DATA_INDEX: "index",
+    COLUMN_DATA_TYPE: "type",
+    COLUMN_DATA_NULLABLE:"nullable",
+}
+Object.freeze(GRID_JSON);

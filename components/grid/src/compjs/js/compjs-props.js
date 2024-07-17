@@ -9,11 +9,14 @@ Object.freeze(COMPJS_CONSTANTS);
 
 // - Paths that are related with CompJS
 export const COMPJS_PATHS = {
-    // CSS main stylesheets path
-    BASE: `${COMPJS_ROOT_PATH}/css/base.css`,
+    // CSS Root stylesheets path
+    ROOT_STYLE: `${COMPJS_ROOT_PATH}/css/root.css`,
+
+    // CSS CompJS stylesheet path
+    COMPJS_STYLE: `${COMPJS_ROOT_PATH}/css/compjs.css`,
 
     // CSS components stylesheet path
-    GRID: `${COMPJS_ROOT_PATH}/css/grid.css`,
+    GRID_STYLE: `${COMPJS_ROOT_PATH}/css/grid.css`,
 };
 Object.freeze(COMPJS_PATHS);
 
@@ -35,6 +38,12 @@ Object.freeze(COMPJS_SELECTORS);
 
 // - CSS variables name that are related with CompJS
 export const COMPJS_VARIABLES = {
+    // Timing CSS variables
+    FOCUS_TRANSITION:'--compjs-focus-transition',
+    FOCUS_TRANSITION_DELAY:'--compjs-focus-transition-delay',
+    COLOR_TRANSITION:'--compjs-color-transition',
+    COLOR_TRANSITION_DELAY:'--compjs-color-transition-delay',
+
     // Font size CSS variables
     FONT_SIZE_H2: '--compjs-font-size-h2',
     FONT_SIZE_H3: '--compjs-font-size-h3',
@@ -73,6 +82,12 @@ export const COMPJS_VARIABLES = {
     // Border radius CSS variables
     MEDIUM_BORDER_RADIUS: '--compjs-medium-border-radius',
 
+    // Border width CSS variables
+    MEDIUM_BORDER_WIDTH: '--compjs-medium-border-width',
+
+    // Font weight CSS variables
+    FONT_WEIGHT_BOLD: '--compjs-font-weight-bold',
+
     // Colors CSS variables
     GREY_DARK: '--compjs-grey-dark',
     GREY_MEDIUM: '--compjs-grey-medium',
@@ -81,6 +96,10 @@ export const COMPJS_VARIABLES = {
     PRIMARY_DARK: '--compjs-primary-dark',
     PRIMARY_MEDIUM: '--compjs-primary-medium',
     PRIMARY_LIGHT: '--compjs-primary-light',
+
+    WARNING_DARK: '--compjs-warning-dark',
+    WARNING_MEDIUM: '--compjs-warning-medium',
+    WARNING_LIGHT: '--compjs-warning-light',
 
     // SVG CSS variables
     SVG_STROKE_WIDTH: '--compjs-svg-stroke-width'

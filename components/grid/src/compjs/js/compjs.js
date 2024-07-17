@@ -30,7 +30,8 @@ export class CompJS {
             obj.#head = document.querySelector('head');
 
             // Insert default CSS style to HTML
-            obj.addStyleSheet(COMPJS_PATHS.BASE);
+            obj.addStyleSheet(COMPJS_PATHS.ROOT_STYLE);
+            obj.addStyleSheet(COMPJS_PATHS.COMPJS_STYLE)
 
             // Custom CSS style
             obj.#checkStyleElement();
@@ -265,7 +266,7 @@ export class CompJS {
     }
 
     // - Links
-    #addLink(rel, type, href, id) {
+    addLink(rel, type, href, id) {
         // Create new link element for the stylesheet
         let link = document.createElement('link');
 
@@ -284,7 +285,7 @@ export class CompJS {
         if (!path.endsWith('.css'))
             throw new Error("Invalid path to stylesheet, it must end with '.css'...");
 
-        this.#addLink('stylesheet', 'text/css', path);
+        this.addLink('stylesheet', 'text/css', path);
     }
 
     // - Resets

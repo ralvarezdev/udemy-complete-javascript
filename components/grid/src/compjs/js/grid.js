@@ -2,7 +2,7 @@
 
 import {COMPJS_CONSTANTS,COMPJS_PATHS, COMPJS_SELECTORS, COMPJS_URLS} from "./compjs-props.js";
 import {CompJS} from "./compjs.js";
-import {GRID_SELECTORS, GRID_SELECTORS_LIST} from "./grid-props.js";
+import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_JSON} from "./grid-props.js";
 import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid {
@@ -26,19 +26,6 @@ export class Grid {
     #HAS_TRASH = Grid.#DEFAULT_HAS_TRASH
     #HAS_INSERTION = Grid.#DEFAULT_HAS_INSERTION
 
-    // JSON
-    #JSON_COLUMNS = "columns"
-    #JSON_LOCKED = "locked"
-    #JSON_PAGE_SIZE = "pageSize"
-    #JSON_TITLE = "title"
-
-    #JSON_COLUMN_ID = "columnId"
-    #JSON_COLUMN_TITLE = "title"
-    #JSON_COLUMN_INDEX = "index"
-    #JSON_COLUMN_TYPE = "type"
-
-    #JSON_DATA = "data"
-
     // DOM Elements
     #PARENT_ELEMENT;
     #ROOT;
@@ -61,9 +48,19 @@ export class Grid {
     #NUMBER_PAGES
     #CURRENT_PAGE = 0
 
+    // Empty elements and warning flags
+    #GLOBAL_WARNING=false
+    #EMPTY_COLUMNS=new Map()
+    #EMPTY_CELLS=new Map()
+
+    // Mutation observers
+    #TITLE_OBSERVER
+    #COLUMNS_OBSERVER
+    #CELLS_OBSERVER
+
     static {
         Grid.#COMPJS = new CompJS();
-        Grid.#COMPJS.addStyleSheet(COMPJS_PATHS.GRID);
+        Grid.#COMPJS.addStyleSheet(COMPJS_PATHS.GRID_STYLE);
     }
 
     constructor(elementId, parentElement) {
@@ -71,13 +68,13 @@ export class Grid {
         this.#ELEMENT_ID = String(elementId)
 
         // Initialize
-        this.mainInitializer(elementId);
+        this.#mainInitializer(elementId);
     }
 
     // - Initializers
 
     // Main initializer
-    mainInitializer() {
+    #mainInitializer() {
         // Root
         this.#ROOT = Grid.#COMPJS.createElement("div", this.#PARENT_ELEMENT, GRID_SELECTORS.ROOT);
 
@@ -85,8 +82,12 @@ export class Grid {
         const rootId = this.getSelectorWithElementId(GRID_SELECTORS.ROOT);
         Grid.#COMPJS.setCompJSElementID(this.#ROOT,rootId);
 
+        // Grid elements
         this.#initializeHeader();
         this.#initializeBody();
+
+        // Grid observers
+        this.addObservers();
     }
 
     // Header initializer
@@ -119,6 +120,8 @@ export class Grid {
         this.#BODY_CONTENT_DATA = Grid.#COMPJS.createElement("div", this.#BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_DATA, contentDataSelectorFromId);
     }
 
+    // - Icons
+
     addLockIcon() {
         if (this.#HAS_LOCK)
             return;
@@ -135,7 +138,7 @@ export class Grid {
         const headerIconLockContainer = Grid.#COMPJS.createElement("div", this.#HEADER_ICONS, GRID_SELECTORS.HEADER_ICON_CONTAINER);
 
         // Load lock SVG click event function
-        const makeDivEditable=child => {child.contentEditable=String(!this.#LOCK_STATUS)}
+        const makeDivEditable=element => {element.contentEditable=String(!this.#LOCK_STATUS)}
 
         headerIconLockContainer.addEventListener('click', event => {
             event.preventDefault();
@@ -143,11 +146,9 @@ export class Grid {
             // Change lock status
             this.#LOCK_STATUS = !this.#LOCK_STATUS;
 
-            const bodyHeaderColumns=this.#BODY_HEADER.querySelectorAll(`.${GRID_SELECTORS.BODY_HEADER_COLUMN}`)
-            const bodyContentDataCells=this.#BODY_CONTENT_DATA.querySelectorAll(`.${GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL}`)
-
-            bodyHeaderColumns.forEach(makeDivEditable)
-            bodyContentDataCells.forEach(makeDivEditable)
+            makeDivEditable(this.#HEADER_TITLE)
+            this.#getBodyHeaderColumns().forEach(makeDivEditable)
+            this.#getBodyContentDataCells().forEach(makeDivEditable)
 
             for (let className of [GRID_SELECTORS.HEADER_ICON_HIDDEN, COMPJS_SELECTORS.HIDE])
                 headerIconLockContainer.childNodes.forEach(child =>child.classList.toggle(className))
@@ -179,6 +180,235 @@ export class Grid {
         this.#HAS_TRASH = true
     }
 
+    // - Mutation observers
+
+    // Add Observers
+    addObservers() {
+        this.addTitleObserver()
+        this.addColumnsObserver()
+        this.addCellsObserver()
+    }
+
+    // Title Observer
+    addTitleObserver() {
+        if(this.#TITLE_OBSERVER!==undefined)
+            return
+
+        const titleObserverOptions = {
+            subtree: true,
+            characterData:true
+        }
+        const addGlobalWarning=()=>{
+            this.#addWarningClassNames()
+            this.#GLOBAL_WARNING=true
+        }
+
+        const titleObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if(mutation.type!=="characterData")
+                    return
+
+                if(mutation.target.textContent.length===0)
+                    addGlobalWarning()
+
+                else if(this.#GLOBAL_WARNING){
+                    this.#removeWarningClassNames(                   )
+                    this.#GLOBAL_WARNING=false
+                }
+            })
+        })
+
+        titleObserver.observe(this.#HEADER_TITLE, titleObserverOptions)
+    }
+
+    // Columns Observer
+    addColumnsObserver() {
+        if(this.#COLUMNS_OBSERVER!==undefined)
+            return
+
+        const columnsObserverOptions = {
+            subtree: true,
+            characterData:true
+        }
+        const addColumnWarning=element=>{
+            this.#addColumnWarningClassName(element)
+            this.#EMPTY_COLUMNS.set(element,true)
+        }
+
+        const columnsObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if(mutation.type!=="characterData")
+                    return
+
+                const element=mutation.target.ownerDocument.activeElement
+
+                if(mutation.target.textContent.length===0)
+                    addColumnWarning(element)
+
+                else if(this.#EMPTY_COLUMNS.get(element)){
+                    if(!this.#GLOBAL_WARNING)
+                        this.#removeColumnWarningClassName(element)
+
+                    this.#EMPTY_COLUMNS.set(element,false)
+                }
+
+            })
+        })
+
+        columnsObserver.observe(this.#BODY_HEADER, columnsObserverOptions)
+    }
+
+    // Cells Observer
+    addCellsObserver() {
+        if(this.#CELLS_OBSERVER!==undefined)
+            return
+
+        const cellsObserverOptions = {
+            subtree: true,
+            characterData:true
+        }
+        const addCellWarning=element=>{
+            this.#addCellWarningClassName(element)
+            this.#EMPTY_CELLS.set(element,true)
+        }
+
+        const cellsObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type !== "characterData")
+                    return
+
+                const element = mutation.target.ownerDocument.activeElement
+                const columnId = element.dataset[GRID_JSON.COLUMN_ID]
+                const columnData = this.#COLUMNS.get(columnId)
+                const textContent = mutation.target.textContent
+
+                if (textContent.length === 0&&!columnData.get(GRID_JSON.COLUMN_DATA_NULLABLE)) {
+                    addCellWarning(element)
+                    return
+                }
+
+                const columnDataType = columnData.get(GRID_JSON.COLUMN_DATA_TYPE)
+
+                // String columns
+                // NOTE: There's no need to check string columns
+
+                // Integer columns
+                if (columnDataType === "int"){
+                    if (!/^[-+]?[0-9]+$/.test(textContent)){
+                        addCellWarning(element)
+                        return
+                    }
+                }
+
+                // Unsigned integer columns
+                if (columnDataType === "uint"){
+                    if (!/^[0-9]+$/.test(textContent)){
+                        addCellWarning(element)
+                        return
+                    }
+                }
+
+                // Float columns
+                else if (columnDataType === "float"){
+                    if (!/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(textContent)){
+                        addCellWarning(element)
+                        return
+                    }
+                }
+
+                // Unsigned float columns
+                else if (columnDataType === "ufloat"){
+                    if (!/^[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(textContent)){
+                        addCellWarning(element)
+                        return
+                    }
+                }
+
+                if(this.#EMPTY_CELLS.get(element)){
+                    this.#removeCellWarningClassName(element)
+                    this.#EMPTY_CELLS.set(element,false)
+                }
+            })
+        })
+
+        cellsObserver.observe(this.#BODY_CONTENT_DATA, cellsObserverOptions)
+    }
+
+    #addWarningClassNames(addToTitle=true,addToColumnsHeader=true,addToRows=true) {
+        // Title
+        if(addToTitle)
+        this.#HEADER_TITLE.classList.add(GRID_SELECTORS.HEADER_TITLE_WARNING)
+
+        // Body
+        if(addToColumnsHeader)
+            this.#BODY_HEADER.classList.add(GRID_SELECTORS.BODY_HEADER_WARNING)
+
+        if(addToRows)
+            this.#getBodyContentDataRows().forEach(cell => {cell.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_WARNING)})
+    }
+
+    #removeWarningClassNames(removeFromTitle=true,removeFromColumnsHeader=true,removeFromRows=true) {
+        // Title
+        if(removeFromTitle)
+        this.#HEADER_TITLE.classList.remove(GRID_SELECTORS.HEADER_TITLE_WARNING)
+
+        // Body
+        if(removeFromColumnsHeader)
+            this.#BODY_HEADER.classList.remove(GRID_SELECTORS.BODY_HEADER_WARNING)
+
+        if(removeFromRows)
+            this.#getBodyContentDataRows().forEach(cell => {cell.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_WARNING)})
+    }
+
+    #addColumnWarningClassName(element){
+        if(!element)
+            return
+
+        element.classList.add(GRID_SELECTORS.BODY_HEADER_COLUMN_WARNING)
+    }
+
+    #removeColumnWarningClassName(element){
+        if(!element)
+            return
+
+        element.classList.remove(GRID_SELECTORS.BODY_HEADER_COLUMN_WARNING)
+    }
+
+     #addCellWarningClassName(element){
+        if(!element)
+            return
+
+        element.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL_WARNING)
+    }
+
+    #removeCellWarningClassName(element){
+        if(!element)
+            return
+
+        element.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL_WARNING)
+    }
+
+    disconnectTitleObserver() {
+        if(this.#TITLE_OBSERVER===undefined)
+            return
+
+        this.#TITLE_OBSERVER.disconnect()
+        this.#TITLE_OBSERVER=undefined
+    }
+
+    disconnectColumnsObserver() {
+        if(this.#COLUMNS_OBSERVER===undefined)
+            return
+
+        this.#COLUMNS_OBSERVER.disconnect()
+        this.#COLUMNS_OBSERVER=undefined
+    }
+
+    disconnectAllObservers() {
+        this.disconnectTitleObserver()
+        this.disconnectColumnsObserver()
+    }
+
     // - JSON
 
     // Read JSON props
@@ -187,13 +417,13 @@ export class Grid {
             throw new Error("JSON Grid is not an object...")
 
         // Header
-        this.#LOCK_STATUS = Boolean(jsonObject[this.#JSON_LOCKED]);
-        this.#TITLE = String(jsonObject[this.#JSON_TITLE]);
+        this.#LOCK_STATUS = Boolean(jsonObject[GRID_JSON.LOCKED]);
+        this.#TITLE = String(jsonObject[GRID_JSON.TITLE]);
 
         // Data
-        this.#PAGE_SIZE =  parseInt(jsonObject[this.#JSON_PAGE_SIZE]);
-        this.#COLUMNS = this.#loadJSONColumnsData(jsonObject[this.#JSON_COLUMNS]);
-        this.#DATA =  this.#loadJSONBodyData(jsonObject[this.#JSON_DATA]);
+        this.#PAGE_SIZE =  parseInt(jsonObject[GRID_JSON.PAGE_SIZE]);
+        this.#COLUMNS = this.#loadJSONColumnsData(jsonObject[GRID_JSON.COLUMNS]);
+        this.#DATA =  this.#loadJSONBodyData(jsonObject[GRID_JSON.DATA]);
 
         this.#sortJSONColumnsKeys();
 
@@ -204,9 +434,36 @@ export class Grid {
     }
 
     #loadJSONColumnsData(columnsObject) {
-        const columnsMap = getMapFromObject(columnsObject)
-        for (let key of columnsMap.keys())
-            columnsMap.set(key, getMapFromObject(columnsMap.get(key)))
+        const columnsList = getListFromObject(columnsObject)
+        const columnsMap=new Map(       )
+        let key, data, dataMap
+
+        for (let columnMap of columnsList) {
+             key=columnMap[GRID_JSON.COLUMN_ID]
+            if(!key)
+                throw new Error("JSON Grid column ID property is not defined...")
+
+             data=columnMap[GRID_JSON.COLUMN_DATA]
+            if(!data)
+                throw new Error("JSON Grid column data property is not defined...")
+
+             dataMap=getMapFromObject(data)
+
+            // Check for required properties
+            if(!dataMap.has(GRID_JSON.COLUMN_DATA_INDEX))
+                throw new Error("JSON Grid column index property is not defined...")
+
+            if(!dataMap.has(GRID_JSON.COLUMN_DATA_TITLE))
+                throw new Error("JSON Grid column title property is not defined...")
+
+            if(!dataMap.has(GRID_JSON.COLUMN_DATA_TYPE))
+                throw new Error("JSON Grid column type property is not defined...")
+
+            if(!dataMap.has(GRID_JSON.COLUMN_DATA_NULLABLE))
+                throw new Error("JSON Grid column nullable property is not defined...")
+
+            columnsMap.set(key, dataMap)
+        }
 
         return columnsMap
     }
@@ -226,9 +483,9 @@ export class Grid {
         this.#COLUMNS_SORTED_KEYS = []
 
         for (let key of this.#COLUMNS.keys())
-            this.#COLUMNS_SORTED_KEYS.push(this.#COLUMNS.get(key))
+            this.#COLUMNS_SORTED_KEYS.push([key, this.#COLUMNS.get(key)])
 
-        this.#COLUMNS_SORTED_KEYS.sort((a, b) => a.get(this.#JSON_COLUMN_INDEX) - b.get(this.#JSON_COLUMN_INDEX));
+        this.#COLUMNS_SORTED_KEYS.sort((a, b) => a[1].get(GRID_JSON.COLUMN_DATA_INDEX) - b[1].get(GRID_JSON.COLUMN_DATA_INDEX));
     }
 
     // Get JSON props
@@ -251,6 +508,11 @@ export class Grid {
         if(this.#TITLE===undefined)
             throw new Error("JSON Grid title property is not defined...")
 
+        if(this.#HEADER_TITLE.length===0) {
+            this.#addWarningClassNames()
+            this.#GLOBAL_WARNING = true
+        }
+
         this.#HEADER_TITLE.innerHTML = String(this.#TITLE);
     }
 
@@ -262,11 +524,23 @@ export class Grid {
             throw new Error("JSON Grid columns property is not defined...")
 
         // Set columns' data
-        this.#COLUMNS_SORTED_KEYS.forEach(column => {
+        this.#COLUMNS_SORTED_KEYS.forEach(([key, dataMap]) => {
             const columnElement = Grid.#COMPJS.createElement("div", this.#BODY_HEADER, GRID_SELECTORS.BODY_HEADER_COLUMN);
 
-            columnElement.innerHTML = column.get(this.#JSON_COLUMN_TITLE)
-            columnElement.style.order = column.get(this.#JSON_COLUMN_INDEX);
+            columnElement.dataset[GRID_JSON.COLUMN_DATA_TYPE]=dataMap.get(GRID_JSON.COLUMN_DATA_TYPE)
+            columnElement.dataset[GRID_JSON.COLUMN_ID]=key
+
+            const columnTitle = dataMap.get(GRID_JSON.COLUMN_DATA_TITLE)
+
+            if(columnTitle.length>0)
+                columnElement.innerHTML = columnTitle;
+
+            else{
+                this.#addColumnWarningClassName(columnElement)
+                this.#EMPTY_COLUMNS.set(columnElement,true)
+            }
+
+            columnElement.style.order = dataMap.get(GRID_JSON.COLUMN_DATA_INDEX);
         })
     }
 
@@ -349,8 +623,26 @@ export class Grid {
         }
     }
 
-    #getBodyContentDataPageHeight(element) {
-        return this.#BODY_CONTENT_DATA_PAGES.get(element)}
+    #updateBodyContentDataRow(pageElement, rowIndex) {
+        const rowData = this.#DATA[rowIndex]
+        const rowElement = Grid.#COMPJS.createElement("div", pageElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW);
+
+        this.#COLUMNS_SORTED_KEYS.forEach(([key, dataMap]) => {
+            const cellElement = Grid.#COMPJS.createElement("div", rowElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL);
+
+            cellElement.dataset[GRID_JSON.COLUMN_ID] = key;
+
+            const cellData = rowData.get(key)
+
+            if(cellData!==undefined)
+                cellElement.innerHTML =cellData ;
+
+            else if(!dataMap.get(GRID_JSON.COLUMN_DATA_NULLABLE)) {
+                this.#addCellWarningClassName(cellElement)
+                this.#EMPTY_CELLS.set(cellElement,true)
+            }
+        })
+    }
 
     #resizeBodyContent() {
         const maxHeight=this.#getBodyContentDataPageHeight(this.#MAX_HEIGHT_ELEMENT)
@@ -363,16 +655,6 @@ export class Grid {
         }
 
         Grid.#COMPJS.applyStyles()
-    }
-
-    #updateBodyContentDataRow(pageElement, rowIndex) {
-        const rowData = this.#DATA[rowIndex]
-        const rowElement = Grid.#COMPJS.createElement("div", pageElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW);
-
-        this.#COLUMNS_SORTED_KEYS.forEach(column => {
-            const cellElement = Grid.#COMPJS.createElement("div", rowElement, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL);
-            cellElement.innerHTML = rowData.get(column.get(this.#JSON_COLUMN_ID));
-        })
     }
 
     // - Utilities
@@ -424,6 +706,33 @@ export class Grid {
 
     setGridSelectorPropertyValue(propertyName, propertyValue) {
         this.setSelectorPropertyValue(GRID_SELECTORS.ROOT, propertyName, propertyValue);
+    }
+
+    #getBodyContentDataPageHeight(element) {
+        if(!this.#BODY_CONTENT_DATA_PAGES.has(element))
+            throw new Error("Body content data page is not defined...")
+
+        return this.#BODY_CONTENT_DATA_PAGES.get(element)}
+
+    #getBodyHeaderColumns(){
+        if(this.#BODY_HEADER===undefined)
+            throw new Error("Body header is not defined...")
+
+        return this.#BODY_HEADER.querySelectorAll(`.${GRID_SELECTORS.BODY_HEADER_COLUMN}`)
+    }
+
+    #getBodyContentDataRows(){
+        if(this.#BODY_CONTENT_DATA===undefined)
+            throw new Error("Body content data is not defined...")
+
+        return this.#BODY_CONTENT_DATA.querySelectorAll(`.${GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW}`)
+    }
+
+    #getBodyContentDataCells(){
+        if(this.#BODY_CONTENT_DATA===undefined)
+            throw new Error("Body content data is not defined...")
+
+        return this.#BODY_CONTENT_DATA.querySelectorAll(`.${GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_ROW_CELL}`)
     }
 
     // Reset applied customized styles
