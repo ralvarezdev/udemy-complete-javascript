@@ -26,7 +26,7 @@ export const COMPJS_SELECTORS = {
     ROOT: ":root",
 
     // Base element id
-    BASE: "compjs",
+    COMPJS: "compjs",
 
     // Style element id
     STYLE: "compjs-style",
@@ -93,9 +93,9 @@ export const COMPJS_VARIABLES = {
     GREY_MEDIUM: '--compjs-grey-medium',
     GREY_LIGHT: '--compjs-grey-light',
 
-    PRIMARY_DARK: '--compjs-primary-dark',
-    PRIMARY_MEDIUM: '--compjs-primary-medium',
-    PRIMARY_LIGHT: '--compjs-primary-light',
+    PRIMARY_COLOR_DARK: '--compjs-primary-color-dark',
+    PRIMARY_COLOR_MEDIUM: '--compjs-primary-color-medium',
+    PRIMARY_COLOR_LIGHT: '--compjs-primary-color-light',
 
     WARNING_DARK: '--compjs-warning-dark',
     WARNING_MEDIUM: '--compjs-warning-medium',
@@ -110,7 +110,7 @@ Object.freeze(COMPJS_VARIABLES);
 export const COMPJS_VARIABLES_LIST = [...Object.values(COMPJS_VARIABLES)];
 Object.freeze(COMPJS_VARIABLES_LIST);
 
-// - URLs that are related with the grid component
+// - URLs that are related with the components
 export const COMPJS_URLS = {
     // SVG URLs and filenames
     EDIT_SVG: "./src/compjs/svg/edit-2.svg",
@@ -125,3 +125,10 @@ export const COMPJS_URLS = {
     DOWNLOAD_SVG: "./src/compjs/svg/download.svg"
 };
 Object.freeze(COMPJS_URLS);
+
+// - URIs that are related with the components
+export const COMPJS_URIS= {
+    // W3
+    SVG_NAMESPACE: 'http://www.w3.org/2000/svg'
+}
+Object.freeze((COMPJS_URIS))

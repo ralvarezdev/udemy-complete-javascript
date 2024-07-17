@@ -9,6 +9,11 @@ const compjs = new CompJS("src/compjs");
 const grid1 = new Grid(1);
 const grid2 = new Grid(2);
 
+/*
+grid1.setGridIdProperty(COMPJS_VARIABLES.PRIMARY_COLOR_DARK, "#333")
+compjs.applyStyles()
+ */
+
 fetch("src/json/grid-data-1.json")
     .then(response => response.json())
     .then(json => grid1.loadJSON(json))
