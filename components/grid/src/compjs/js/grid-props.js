@@ -69,3 +69,18 @@ export const GRID_JSON = {
     COLUMN_DATA_NULLABLE:"nullable",
 }
 Object.freeze(GRID_JSON);
+
+// - Grid component available cell data types
+export const GRID_DATA_TYPES = {
+    // Data types
+    STRING: "string",
+    INTEGER: "int",
+    UNSIGNED_INTEGER: "uint",
+    DECIMAL: "decimal",
+    UNSIGNED_DECIMAL: "udecimal",
+    BOOLEAN: "boolean",
+    CHAR: "char",
+    DATE: "date",
+    TIME: "time",
+}
+Object.freeze(GRID_DATA_TYPES);

@@ -2,10 +2,13 @@
 
 import {COMPJS_CONSTANTS, COMPJS_SELECTORS, COMPJS_URLS} from "./compjs-props.js";
 import {CompJSElement} from "./compjs-element.js";
-import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_JSON} from "./grid-props.js";
+import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_JSON, GRID_DATA_TYPES} from "./grid-props.js";
 import {getListFromObject, getMapFromObject} from "./utils.js";
 
 export class Grid extends CompJSElement {
+    // Regular Expressions
+    static #REGULAR_EXPRESSIONS
+
     // Configuration
     #TITLE="Start creating!"
     #LOCK_STATUS
@@ -48,6 +51,22 @@ export class Grid extends CompJSElement {
     #TITLE_OBSERVER
     #COLUMNS_OBSERVER
     #CELLS_OBSERVER
+
+    static
+    {
+        // Regular Expression
+        Grid.#REGULAR_EXPRESSIONS = {
+            [GRID_DATA_TYPES.STRING]: /^.*$/,
+            [GRID_DATA_TYPES.INTEGER]: /^[-+]?[0-9]+$/,
+            [GRID_DATA_TYPES.UNSIGNED_INTEGER]: /^[0-9]+$/,
+            [GRID_DATA_TYPES.DECIMAL]: /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,
+            [GRID_DATA_TYPES.UNSIGNED_DECIMAL]: /^[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,
+            [GRID_DATA_TYPES.BOOLEAN]: /^(true|false)$/,
+            [GRID_DATA_TYPES.CHAR]: /^.$/,
+            [GRID_DATA_TYPES.DATE]: /^\d{4}-\d{2}-\d{2}$/,
+            [GRID_DATA_TYPES.TIME]: /^\d{2}:\d{2}:\d{2}$/
+        }
+    }
 
     constructor(elementId, parentElement) {
         super(elementId,parentElement)
@@ -542,37 +561,11 @@ export class Grid extends CompJSElement {
                 }
 
                 const columnDataType = columnData.get(GRID_JSON.COLUMN_DATA_TYPE)
+                const regularExpression = Grid.#REGULAR_EXPRESSIONS[columnDataType]
 
-                // String columns
-                // NOTE: There's no need to check string columns
-
-                // Integer columns
-                if (columnDataType === "int"){
-                    if (!/^[-+]?[0-9]+$/.test(textContent)){
-                        this.#addCellWarning(element)
-                        return
-                    }
-                }
-
-                // Unsigned integer columns
-                if (columnDataType === "uint"){
-                    if (!/^[0-9]+$/.test(textContent)){
-                        this.#addCellWarning(element)
-                        return
-                    }
-                }
-
-                // Float columns
-                else if (columnDataType === "float"){
-                    if (!/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(textContent)){
-                        this.#addCellWarning(element)
-                        return
-                    }
-                }
-
-                // Unsigned float columns
-                else if (columnDataType === "ufloat"){
-                    if (!/^[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/.test(textContent)){
+                // Validation
+                if ( regularExpression!== undefined){
+                    if(!regularExpression.test(textContent)){
                         this.#addCellWarning(element)
                         return
                     }
