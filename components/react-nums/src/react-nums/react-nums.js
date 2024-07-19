@@ -193,20 +193,24 @@ class ReactNumberObserver extends Observer{
 
 // React Equation class
 export class ReactEquation{
+    static #OPERATORS
+
     #REACT_NUMBRS_HANDLER
     #EQUATION
-    #OPERATORS
-    #REACT_NUMBERS
+    #QUEUE
     #UNIQUE_REACT_NUMBERS
     #RESULT
+
+    static {
+        ReactEquation.#OPERATORS=new Map(
+            [[')',0],['+',1],['-',1],['*',2],['/',2],['^',3],['(',4]]
+        )
+    }
 
     constructor(reactNumbersHandler){
         if(!reactNumbersHandler instanceof ReactNumbersHandler)
             throw new Error("Invalid React Numbers Handler")
 
-        this.#OPERATORS = [];
-        this.#REACT_NUMBERS=[]
-        this.#UNIQUE_REACT_NUMBERS=new Map()
         this.#REACT_NUMBRS_HANDLER=reactNumbersHandler
     }
 
@@ -230,62 +234,43 @@ export class ReactEquation{
 
     // Check if it's an operator
     isOperator(c){
-        return /^[-+*/^]$/.test(c)
+        return /^[-+*/^()]$/.test(c)
+    }
+
+    // Check if it's a decimal number
+    isDecimalNumber(s){
+        return /^[0-9]*[,.]?[0-9]*$/.test(s)
+    }
+
+    // Check if it has higher priority
+    #hasHigherPriority(op1,op2){
+        return ReactEquation.#OPERATORS.get(op1)>ReactEquation.#OPERATORS.get(op2)
     }
 
     // Push operator
     #pushOperator(op, operators){
-            if(operators.length===0||op==='(')
-            {
-                operators.push(op)
-                return
-            }
+            // Lambdas
+            const pushResultStack=op=>this.#QUEUE.push(op)
+            const pushTempStack=op=>operators.push(op)
 
-            if(op===')') {
-                while (operators.length > 0 && operators[operators.length - 1] !== '(')
-                    this.#OPERATORS.push(operators.pop())
+            const getTopOp=()=>operators[operators.length-1]
+
+            if(op===')'){
+                while(operators.length>0&&getTopOp()!=='(')
+                    pushResultStack(operators.pop())
+
                 operators.pop()
                 return
             }
 
-            // Lambdas
-            const isSum =op=>op==='+'||op==='-'
-            const isMultiplication =op=>op==='*'||op==='/'
-            const isPower =op=>op==='^'
-            const pushResultStack=()=>this.#OPERATORS.push(op)
-            const pushTempStack=()=>operators.push(op)
-            const substitute=()=>{
-                pushResultStack(operators.pop())
-                pushTempStack()
-            }
+            if(operators.length===0||this.#hasHigherPriority(op,getTopOp()))
+                operators.push(op)
 
-            const topOp=operators[operators.length-1]
+            else{
+                while(operators.length>0&&!this.#hasHigherPriority(op,getTopOp())&&getTopOp()!=='(')
+                    pushResultStack(operators.pop())
 
-            if(isSum(op)){
-                if(isSum(topOp))
-                    substitute()
-
-                else
-                    pushResultStack()
-            }
-
-            else if(isMultiplication(op)) {
-                if(isSum(topOp))
-                    pushTempStack()
-
-                else if (isMultiplication(topOp))
-                    substitute()
-
-                else
-                    pushResultStack()
-            }
-
-            else if(isPower(op)){
-                if(isSum(topOp)||isMultiplication(topOp))
-                    pushTempStack()
-
-                else
-                    pushResultStack()
+                pushTempStack(op)
             }
         }
 
@@ -296,12 +281,40 @@ export class ReactEquation{
 
             // Check if React Number has already being read by the current equation
             if(!this.#UNIQUE_REACT_NUMBERS.has(reactNumber)) {
-                reactNumber.subscribeObserver(new ReactNumberObserver(this))
-                this.#UNIQUE_REACT_NUMBERS.set(reactNumber, true)
+                const observer =new ReactNumberObserver(this)
+                reactNumber.subscribeObserver(observer)
+                this.#UNIQUE_REACT_NUMBERS.set(reactNumber, observer)
             }
 
-            this.#REACT_NUMBERS.push(reactNumber)
+            this.#QUEUE.push(reactNumber)
         }
+
+        // Push number
+    #pushNumber(number){
+        const parsed=parseFloat(number)
+
+        if(isNaN(parsed))
+            throw new Error("Invalid number")
+
+        this.#QUEUE.push(parsed)
+    }
+
+        // Reset values
+    #reset(){
+        this.#QUEUE=[]
+        this.#RESULT=null
+
+        if(this.#UNIQUE_REACT_NUMBERS!==undefined){
+            let reactNumber, observer
+            for(let key of this.#UNIQUE_REACT_NUMBERS.keys()) {
+                reactNumber=key
+                observer = this.#UNIQUE_REACT_NUMBERS.get(key)
+                reactNumber.unsubscribeObserver(observer)
+            }
+        }
+
+        this.#UNIQUE_REACT_NUMBERS=new Map()
+    }
 
         // Get equation
     get eq(){
@@ -312,28 +325,46 @@ export class ReactEquation{
     set eq(eq){
         eq=String(eq)
         this.#EQUATION=eq
+        this.#reset()
 
         const operators=[]
+        const pushSubstring=(s, isDecimalNumber)=>{
+            if(!isDecimalNumber)
+                this.#pushReactNumber(s)
 
-        for(let i=0,j=0;i<eq.length;i=j+1) {
+                // Validate the complete string
+            else if(!this.isDecimalNumber(s))
+                throw new Error("Invalid number")
+
+            else
+                this.#pushNumber(s)
+        }
+
+        for(let i=0,j=0, isDecimalNumber,s;i<eq.length;i=j+1) {
+            isDecimalNumber=this.isDecimalNumber(eq[i])
+
             for (j = i; j < eq.length; j++)
                 if (this.isOperator(eq[j]))
                     break;
 
-            if(j===eq.length)
-                this.#pushReactNumber(eq.substring(i,j))
-
-            else if(j===i)
+            if(j===i&&i!==eq.length) {
                 this.#pushOperator(eq[i], operators)
+                continue
+            }
+
+            s=eq.substring(i,j)
+
+            if(j===eq.length)
+                pushSubstring(s, isDecimalNumber)
 
             else {
-                this.#pushReactNumber(eq.substring(i, j))
+                pushSubstring(s, isDecimalNumber)
                 this.#pushOperator(eq[j], operators)
             }
         }
 
         while(operators.length>0)
-            this.#OPERATORS.push(operators.pop())
+            this.#QUEUE.push(operators.pop())
 
         /*
         console.log(this.#REACT_NUMBERS)
@@ -344,24 +375,36 @@ export class ReactEquation{
     // Calculate result of equation
     calculate(){
         this.#RESULT=null
-        let n1,n2, op, result;
+        let n1,n2, op, t, result;
 
-        const numbers= new Array(this.#REACT_NUMBERS.length)
-        const operators=new Array(this.#OPERATORS.length)
+        const queue=new Array(this.#QUEUE.length)
+        this.#QUEUE.forEach((element, i)=>{
+            if(element instanceof ReactNumber)
+                queue[i]=element.number
 
-        // Load numbers and operations
-        this.#REACT_NUMBERS.forEach((reactNumber, idx) => numbers[idx]=reactNumber.number)
-        this.#OPERATORS.forEach((operator, idx) => operators[idx]=operator)
+            else
+                queue[i] = element
+        })
 
-        while(numbers.length>1&&operators.length>0){
-            n1=numbers.pop()
-            n2=numbers.pop()
-            op=operators.pop()
+        const reactNumbersStack=[]
 
-            result = this.#calculateOperation(n1, n2, op)
-            // console.log(n1,n2, op)
+        while(queue.length>0){
+            // console.log(queue, reactNumbersStack)
+            t= queue.shift()
 
-            numbers.push(result)
+            if(!this.isOperator(t))
+                reactNumbersStack.push(t)
+
+            else
+            {
+                op=t
+                n2=reactNumbersStack.pop()
+                n1=reactNumbersStack.pop()
+                //console.log(n1,n2,op)
+
+                result = this.#calculateOperation(n1, n2, op)
+                reactNumbersStack.push(result)
+            }
         }
 
         return this.#RESULT= result
@@ -382,7 +425,4 @@ export class ReactEquation{
                 return n1**n2;
         }
     }
-
-    //
 }
-
