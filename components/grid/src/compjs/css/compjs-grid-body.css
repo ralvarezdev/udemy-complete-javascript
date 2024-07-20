@@ -57,7 +57,6 @@
 .compjs__grid__body__content__data__page {
     width: 100%;
     overflow: hidden;
-    z-index: 1;
 
     position: absolute;
 
@@ -67,25 +66,27 @@
 .compjs__grid__body__content__data__page--show-from-right {
     translate: 0;
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInRight;
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInFromRight;
 }
 
 .compjs__grid__body__content__data__page--show-from-left {
     translate: 0;
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInLeft;
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInFromLeft;
 }
 
 .compjs__grid__body__content__data__page--hide-to-left {
     translate: -100%;
+    /*z-index: 2;*/
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutLeft;
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutToLeft;
 }
 
 .compjs__grid__body__content__data__page--hide-to-right {
     translate: 100%;
+    /*z-index:2;*/
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutRight;
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutToRight;
 }
 
 .compjs__grid__body__content__data__page__row {

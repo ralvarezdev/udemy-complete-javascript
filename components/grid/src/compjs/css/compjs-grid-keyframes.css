@@ -20,40 +20,40 @@
 
 @keyframes moveInFromLeft {
     0% {
-        transform: translate(-100%);
+        translate: -100%;
     }
 
     100% {
-        transform: translate(0);
+        translate: 0;
     }
 }
 
 @keyframes moveInFromRight {
     0% {
-        transform: translate(100%);
+         translate:100%;
     }
 
     100% {
-        transform: translate(0);
+        translate: 0;
     }
 }
 
 @keyframes moveOutToLeft {
     0% {
-        transform: translate(0);
+        translate: 0;
     }
 
     100% {
-        transform: translate(-100%);
+        translate:-100%;
     }
 }
 
 @keyframes moveOutToRight {
     0% {
-        transform: translate(0);
+        translate: 0;
     }
 
     100% {
-        transform: translate(100%);
+        translate: 100%;
     }
 }

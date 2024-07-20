@@ -52,8 +52,7 @@ export class CompJSGrid extends CompJSElement {
     #NEXT_BTN
     #PAGE_BTN_CONTAINER
     #PAGE_BTN_OFFSET = 2
-    #PAGE_BTN_START
-    #PAGE_BTN_END
+    #BTN_START_IDX
 
     // Empty elements and warning flags
     #GLOBAL_WARNING = false
@@ -129,40 +128,39 @@ export class CompJSGrid extends CompJSElement {
         else if (toIdx < 0)
             toIdx = this.#NUMBER_PAGES - 1
 
-        // Get pagination buttons
-        const currentPageBtn = this.#getPaginationButtonByIndex(this.#CURRENT_PAGE)
-        const toPageBtn = this.#getPaginationButtonByIndex(toIdx)
-
-        // Change pagination active button
-        for (let [btn, idx] of [[currentPageBtn, this.#CURRENT_PAGE], [toPageBtn, toIdx]])
-            this.#togglePaginationButtonActive(btn, idx)
+        // Change of the current pagination active button
+        this.#togglePaginationButtonActive(this.#CURRENT_PAGE)
 
         // Get page elements
         const currentPageElement = this.#getPageElementByIndex(this.#CURRENT_PAGE)
         const toPageElement = this.#getPageElementByIndex(toIdx)
-        toPageElement.classList.remove(COMPJS_SELECTORS.HIDE)
 
         // Update current page
         const fromIdx = this.#CURRENT_PAGE
         this.#CURRENT_PAGE = toIdx
 
         // Update pagination buttons
+        this.#updatePaginationButtons()
         this.#setPreviousPageButtonPage()
         this.#setNextPageButtonPage()
-        this.#updatePaginationButtons()
+
+        // Change of the next pagination active button
+        this.#togglePaginationButtonActive(this.#CURRENT_PAGE)
+
+        currentPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_LEFT, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_RIGHT)
+        toPageElement.classList.remove
+            (GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_LEFT, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
 
         // Change page
         if (toIdx < fromIdx) {
             // Show from left side
             currentPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
-            toPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_LEFT)
             toPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_LEFT)
             return
         }
 
         // Show from right side
         currentPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_LEFT)
-        toPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
         toPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_RIGHT)
     }
 
@@ -304,7 +302,7 @@ export class CompJSGrid extends CompJSElement {
 
     // Add body content page element
     #addBodyContentPage(pageNumber, rowNumber) {
-        const pageElement = this.CompJS.createDiv(this.#BODY_CONTENT_DATA, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE, COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT);
+        const pageElement = this.CompJS.createDiv(this.#BODY_CONTENT_DATA, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT);
         this.#setPageElementIndex(pageElement, pageNumber)
 
         // Set page height
@@ -312,7 +310,7 @@ export class CompJSGrid extends CompJSElement {
 
         // Remove hide class from current page
         if (pageNumber === this.#CURRENT_PAGE)
-            pageElement.classList.remove(COMPJS_SELECTORS.HIDE, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
+            pageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
 
         // Add observer
         this.#addResizeObserverToElement(pageElement, this.#PAGE_ELEMENT_RESIZE_OBSERVER)
@@ -380,9 +378,10 @@ export class CompJSGrid extends CompJSElement {
         if (this.#NUMBER_PAGES > 2) {
             // Page button container
             this.#PAGE_BTN_CONTAINER = this.CompJS.createDiv(this.#INNER_BTN_CONTAINER, GRID_SELECTORS.FOOTER_PAGE_BTN_CONTAINER)
-            this.#updatePaginationButtonsRange()
 
-            for (let i = this.#PAGE_BTN_START; i <= this.#PAGE_BTN_END; i++) {
+            const numberButtons= 2*this.#PAGE_BTN_OFFSET+1< this.#NUMBER_PAGES-2 ? 2*this.#PAGE_BTN_OFFSET+1: this.#NUMBER_PAGES-2
+
+            for (let i = 1; i <= numberButtons; i++) {
                 const paginationButton = this.CompJS.createButton(this.#PAGE_BTN_CONTAINER, GRID_SELECTORS.FOOTER_PAGE_BTN);
                 this.#setPaginationButtonPage(paginationButton, i)
                 this.#setPaginationButtonPageContent(paginationButton, i + 1)
@@ -396,13 +395,16 @@ export class CompJSGrid extends CompJSElement {
 
     // Update pagination buttons range
     #updatePaginationButtonsRange() {
-        this.#PAGE_BTN_START = this.#CURRENT_PAGE - this.#PAGE_BTN_OFFSET
-        if (this.#PAGE_BTN_START < 1)
-            this.#PAGE_BTN_START = 1
+        if(this.#NUMBER_PAGES-2<=2*this.#PAGE_BTN_OFFSET+1){
+            this.#BTN_START_IDX=1
+    return}
 
-        this.#PAGE_BTN_END = this.#CURRENT_PAGE + this.#PAGE_BTN_OFFSET
-        if (this.#PAGE_BTN_END >= this.#NUMBER_PAGES - 1)
-            this.#PAGE_BTN_END = this.#NUMBER_PAGES - 1
+        this.#BTN_START_IDX = this.#CURRENT_PAGE - this.#PAGE_BTN_OFFSET
+        if (this.#BTN_START_IDX < 1)
+            this.#BTN_START_IDX = 1
+
+        else if(this.#CURRENT_PAGE + this.#PAGE_BTN_OFFSET >= this.#NUMBER_PAGES - 1)
+            this.#BTN_START_IDX = this.#NUMBER_PAGES - 2 * this.#PAGE_BTN_OFFSET-2
     }
 
     // Update pagination buttons
@@ -411,7 +413,7 @@ export class CompJSGrid extends CompJSElement {
             return
 
         this.#updatePaginationButtonsRange()
-        let i = this.#PAGE_BTN_START
+        let i = this.#BTN_START_IDX
 
         for (const paginationButton of this.#PAGE_BTN_CONTAINER.childNodes) {
             this.#setPaginationButtonPage(paginationButton, i++)
@@ -690,7 +692,10 @@ export class CompJSGrid extends CompJSElement {
     // - Active elements
 
     // Toggle active class from pagination button
-    #togglePaginationButtonActive(element, idx) {
+    #togglePaginationButtonActive(idx) {
+        // Get pagination buttons
+        const element = this.#getPaginationButtonByIndex(this.#CURRENT_PAGE)
+
         if (idx === 0 || idx === this.#NUMBER_PAGES - 1)
             element.classList.toggle(GRID_SELECTORS.FOOTER_INNER_BTN_ACTIVE)
         else
