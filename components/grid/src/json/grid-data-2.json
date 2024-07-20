@@ -2,39 +2,41 @@
   "locked": true,
   "title": "Students",
   "columns": [
-   {
+    {
       "columnId": "name",
       "columnData": {
-      "title": "Name",
-      "index": 3,
-      "type": "string",
-      "nullable": false
-    }
+        "title": "Name",
+        "index": 3,
+        "type": "string",
+        "nullable": false
+      }
     },
     {
       "columnId": "age",
-        "columnData": {
-      "title": "Age",
-      "index": 1,
-      "type": "int",
-      "nullable": true}
+      "columnData": {
+        "title": "Age",
+        "index": 1,
+        "type": "int",
+        "nullable": true
+      }
     },
     {
       "columnId": "id",
-        "columnData": {
-          "title": "ID",
-          "index": 2,
-          "type": "int",
-          "nullable": true
-        }
+      "columnData": {
+        "title": "ID",
+        "index": 2,
+        "type": "int",
+        "nullable": true
+      }
     },
     {
       "columnId": "country",
-        "columnData": {
-      "title": "Country",
-      "index": 0,
-      "type": "string",
-      "nullable": true}
+      "columnData": {
+        "title": "Country",
+        "index": 0,
+        "type": "string",
+        "nullable": true
+      }
     }
   ],
   "pageSize": 3,

@@ -1,80 +1,78 @@
 import {REACT_NUMBER_DATA_TYPES, REACT_NUMBER_DATA_TYPES_LIST} from "./react-nums-props.js";
 
-export class ReactNumbersHandler{
+export class ReactNumbersHandler {
     #NUMBERS
 
-    constructor(){
+    constructor() {
         this.#NUMBERS = new Map();
     }
 
     // - Add, remove and get React Numbers
 
     // Add React Number
-    addReactNumber(reactNumber){
-        const id=String(reactNumber.id)
+    addReactNumber(reactNumber) {
+        const id = String(reactNumber.id)
 
-        if(!reactNumber instanceof ReactNumber)
+        if (!reactNumber instanceof ReactNumber)
             throw new Error("Invalid React Number")
 
-        if(this.#NUMBERS.has(id))
+        if (this.#NUMBERS.has(id))
             throw new Error("React Number already exists")
 
         this.#NUMBERS.set(id, reactNumber);
     }
 
     // Change React Number ID
-    changeReactNumberId(id){
-        id=String(id)
+    changeReactNumberId(id) {
+        id = String(id)
 
-        const reactNumber=this.getReactNumber(id)
+        const reactNumber = this.getReactNumber(id)
         this.#NUMBERS.delete(id)
         this.#NUMBERS.set(reactNumber.id, reactNumber)
     }
 
     // Get React Number
-    getReactNumber(id){
-        id=String(id)
+    getReactNumber(id) {
+        id = String(id)
 
         const number = this.#NUMBERS.get(id)
-        if(!number)
+        if (!number)
             throw new Error("React Number not found")
 
         return number
     }
 
     // - Validators
-    static checkDataType(number_type){
-        for(let data_type of REACT_NUMBER_DATA_TYPES_LIST)
-            if(data_type===number_type)
+    static checkDataType(number_type) {
+        for (let data_type of REACT_NUMBER_DATA_TYPES_LIST)
+            if (data_type === number_type)
                 return true
 
         return false
     }
 
-    static getParsedNumber(data_type, number){
+    static getParsedNumber(data_type, number) {
         try {
-            if (data_type === REACT_NUMBER_DATA_TYPES.NUMBER){
-                number= Number.parseFloat(number)
-                if(Number.isNaN(number))
+            if (data_type === REACT_NUMBER_DATA_TYPES.NUMBER) {
+                number = Number.parseFloat(number)
+                if (Number.isNaN(number))
                     return null
-            }
-            else if (data_type === REACT_NUMBER_DATA_TYPES.BIG_INT)
-                number= BigInt(number)
-        }
-        catch(e){
+            } else if (data_type === REACT_NUMBER_DATA_TYPES.BIG_INT)
+                number = BigInt(number)
+        } catch (e) {
             return null
         }
 
         return number
     }
 
-    static isDataType(data_type, number){
-        return typeof(number) ===data_type
+    static isDataType(data_type, number) {
+        return typeof (number) === data_type
     }
 }
 
 // - Subject class
-class Subject{
+class Subject {
     #OBSERVERS
 
     constructor() {
@@ -84,16 +82,16 @@ class Subject{
     // - Subscribe and unsubscribe observers
 
     // Subscribe observer
-    subscribeObserver(observer){
-        const idx=this.#OBSERVERS.indexOf(observer)
-        if(idx===-1)
+    subscribeObserver(observer) {
+        const idx = this.#OBSERVERS.indexOf(observer)
+        if (idx === -1)
             this.#OBSERVERS.push(observer)
     }
 
     // Unsubscribe observer
-    unsubscribeObserver(observer){
-        const idx=this.#OBSERVERS.indexOf(observer)
-        if(idx!==-1)
+    unsubscribeObserver(observer) {
+        const idx = this.#OBSERVERS.indexOf(observer)
+        if (idx !== -1)
             this.#OBSERVERS.splice(idx, 1)
     }
 
@@ -104,103 +102,103 @@ class Subject{
 }
 
 // - Observer class
-class Observer{
-    update(){
+class Observer {
+    update() {
         console.log("Observer updated")
     }
 }
 
 // - React Number class
-export class ReactNumber extends Subject{
+export class ReactNumber extends Subject {
     #REACT_NUMBERS_HANDLER
     #NUMBER
     #DATA_TYPE
     #ID
 
-    constructor(number, number_type, id, reactNumbersHandler){
+    constructor(number, number_type, id, reactNumbersHandler) {
         super()
 
         // Check data type
-        if(!ReactNumbersHandler.checkDataType(number_type))
+        if (!ReactNumbersHandler.checkDataType(number_type))
             throw new Error("Invalid data type")
 
         // Get parsed number
         number = ReactNumbersHandler.getParsedNumber(number_type, number)
 
         // Check if number is valid
-        if(!ReactNumbersHandler.isDataType(number_type, number))
+        if (!ReactNumbersHandler.isDataType(number_type, number))
             throw new Error("Invalid number type")
 
         // Check React Numbers Handler
-        if(!reactNumbersHandler instanceof ReactNumbersHandler)
+        if (!reactNumbersHandler instanceof ReactNumbersHandler)
             throw new Error("Invalid React Numbers Handler")
 
-        this.number=number;
-        this.data_type=number_type;
-        this.id=id;
-        this.#REACT_NUMBERS_HANDLER=reactNumbersHandler;
+        this.number = number;
+        this.data_type = number_type;
+        this.id = id;
+        this.#REACT_NUMBERS_HANDLER = reactNumbersHandler;
         this.reactNumbersHandler.addReactNumber(this)
     }
 
     // - Getters and setters
-    get number(){
+    get number() {
         return ReactNumbersHandler.getParsedNumber(this.data_type, this.#NUMBER);
     }
 
-    set number(number){
+    set number(number) {
         this.#NUMBER = number;
         this.notifyAll()
     }
 
-    get data_type(){
+    get data_type() {
         return this.#DATA_TYPE;
     }
 
-    set data_type(number_type){
+    set data_type(number_type) {
         this.#DATA_TYPE = number_type;
     }
 
-    get id(){
+    get id() {
         return this.#ID;
     }
 
-    set id(id){
-        const oldId=this.id
-        this.#ID=id;
+    set id(id) {
+        const oldId = this.id
+        this.#ID = id;
 
-        if(oldId!==undefined)
+        if (oldId !== undefined)
             this.reactNumbersHandler.changeReactNumberId(oldId)
     }
 
-    get reactNumbersHandler(){
+    get reactNumbersHandler() {
         return this.#REACT_NUMBERS_HANDLER;
     }
 
-    valueOf(){
+    valueOf() {
         return this.number
     }
 
-    toString(){
+    toString() {
         return String(this.number)
     }
 }
 
 // React Number Observer class
-class ReactNumberObserver extends Observer{
+class ReactNumberObserver extends Observer {
     #REACT_EQUATION
 
-    constructor(reactEquation){
+    constructor(reactEquation) {
         super()
-        this.#REACT_EQUATION=reactEquation
+        this.#REACT_EQUATION = reactEquation
     }
 
-    update(){
+    update() {
         this.#REACT_EQUATION.calculate()
     }
 }
 
 // React Equation class
-export class ReactEquation{
+export class ReactEquation {
     static #OPERATORS
 
     #REACT_NUMBRS_HANDLER
@@ -210,159 +208,159 @@ export class ReactEquation{
     #RESULT
 
     static {
-        ReactEquation.#OPERATORS=new Map(
-            [[')',0],['+',1],['-',1],['*',2],['/',2],['^',3],['(',4]]
+        ReactEquation.#OPERATORS = new Map(
+            [[')', 0], ['+', 1], ['-', 1], ['*', 2], ['/', 2], ['^', 3], ['(', 4]]
         )
     }
 
-    constructor(reactNumbersHandler){
-        if(!reactNumbersHandler instanceof ReactNumbersHandler)
+    constructor(reactNumbersHandler) {
+        if (!reactNumbersHandler instanceof ReactNumbersHandler)
             throw new Error("Invalid React Numbers Handler")
 
-        this.#REACT_NUMBRS_HANDLER=reactNumbersHandler
+        this.#REACT_NUMBRS_HANDLER = reactNumbersHandler
     }
 
     // - Getters and setters
 
     // Get Equation result
-    get result(){
-        if(this.eq===undefined)
+    get result() {
+        if (this.eq === undefined)
             return null
 
-        if(this.#RESULT===null)
+        if (this.#RESULT === null)
             this.calculate()
 
         return this.#RESULT
     }
 
     // Get React Numbers Handler
-    get reactNumbersHandler(){
+    get reactNumbersHandler() {
         return this.#REACT_NUMBRS_HANDLER
     }
 
     // Check if it's an operator
-    isOperator(c){
+    isOperator(c) {
         return /^[-+*/^()]$/.test(c)
     }
 
     // Check if it's a decimal number
-    isDecimalNumber(s){
+    isDecimalNumber(s) {
         return /^[0-9]*[,.]?[0-9]*$/.test(s)
     }
 
     // Check if it has higher priority
-    #hasHigherPriority(op1,op2){
-        return ReactEquation.#OPERATORS.get(op1)>ReactEquation.#OPERATORS.get(op2)
+    #hasHigherPriority(op1, op2) {
+        return ReactEquation.#OPERATORS.get(op1) > ReactEquation.#OPERATORS.get(op2)
     }
 
     // Push operator
-    #pushOperator(op, operators){
-            // Lambdas
-            const pushResultStack=op=>this.#QUEUE.push(op)
-            const pushTempStack=op=>operators.push(op)
+    #pushOperator(op, operators) {
+        // Lambdas
+        const pushResultStack = op => this.#QUEUE.push(op)
+        const pushTempStack = op => operators.push(op)
 
-            const getTopOp=()=>operators[operators.length-1]
+        const getTopOp = () => operators[operators.length - 1]
 
-            if(op===')'){
-                while(operators.length>0&&getTopOp()!=='(')
-                    pushResultStack(operators.pop())
+        if (op === ')') {
+            while (operators.length > 0 && getTopOp() !== '(')
+                pushResultStack(operators.pop())
 
-                operators.pop()
-                return
-            }
-
-            if(operators.length===0||this.#hasHigherPriority(op,getTopOp()))
-                operators.push(op)
-
-            else{
-                while(operators.length>0&&!this.#hasHigherPriority(op,getTopOp())&&getTopOp()!=='(')
-                    pushResultStack(operators.pop())
-
-                pushTempStack(op)
-            }
+            operators.pop()
+            return
         }
 
-        // Push React Number
-        #pushReactNumber(id){
-            // Get React Number
-            const reactNumber=this.reactNumbersHandler.getReactNumber(id)
+        if (operators.length === 0 || this.#hasHigherPriority(op, getTopOp()))
+            operators.push(op)
 
-            // Check if React Number has already being read by the current equation
-            if(!this.#UNIQUE_REACT_NUMBERS.has(reactNumber)) {
-                const observer =new ReactNumberObserver(this)
-                reactNumber.subscribeObserver(observer)
-                this.#UNIQUE_REACT_NUMBERS.set(reactNumber, observer)
-            }
+        else {
+            while (operators.length > 0 && !this.#hasHigherPriority(op, getTopOp()) && getTopOp() !== '(')
+                pushResultStack(operators.pop())
 
-            this.#QUEUE.push(reactNumber)
+            pushTempStack(op)
+        }
+    }
+
+    // Push React Number
+    #pushReactNumber(id) {
+        // Get React Number
+        const reactNumber = this.reactNumbersHandler.getReactNumber(id)
+
+        // Check if React Number has already being read by the current equation
+        if (!this.#UNIQUE_REACT_NUMBERS.has(reactNumber)) {
+            const observer = new ReactNumberObserver(this)
+            reactNumber.subscribeObserver(observer)
+            this.#UNIQUE_REACT_NUMBERS.set(reactNumber, observer)
         }
 
-        // Push number
-    #pushNumber(number){
-        const parsed=parseFloat(number)
+        this.#QUEUE.push(reactNumber)
+    }
 
-        if(isNaN(parsed))
+    // Push number
+    #pushNumber(number) {
+        const parsed = parseFloat(number)
+
+        if (isNaN(parsed))
             throw new Error("Invalid number")
 
         this.#QUEUE.push(parsed)
     }
 
-        // Reset values
-    #reset(){
-        this.#QUEUE=[]
-        this.#RESULT=null
+    // Reset values
+    #reset() {
+        this.#QUEUE = []
+        this.#RESULT = null
 
-        if(this.#UNIQUE_REACT_NUMBERS!==undefined){
+        if (this.#UNIQUE_REACT_NUMBERS !== undefined) {
             let reactNumber, observer
-            for(let key of this.#UNIQUE_REACT_NUMBERS.keys()) {
-                reactNumber=key
+            for (let key of this.#UNIQUE_REACT_NUMBERS.keys()) {
+                reactNumber = key
                 observer = this.#UNIQUE_REACT_NUMBERS.get(key)
                 reactNumber.unsubscribeObserver(observer)
             }
         }
 
-        this.#UNIQUE_REACT_NUMBERS=new Map()
+        this.#UNIQUE_REACT_NUMBERS = new Map()
     }
 
-        // Get equation
-    get eq(){
+    // Get equation
+    get eq() {
         return this.#EQUATION
     }
 
     // Set equation
-    set eq(eq){
-        eq=String(eq)
-        this.#EQUATION=eq
+    set eq(eq) {
+        eq = String(eq)
+        this.#EQUATION = eq
         this.#reset()
 
-        const operators=[]
-        const pushSubstring=(s, isDecimalNumber)=>{
-            if(!isDecimalNumber)
+        const operators = []
+        const pushSubstring = (s, isDecimalNumber) => {
+            if (!isDecimalNumber)
                 this.#pushReactNumber(s)
 
-                // Validate the complete string
-            else if(!this.isDecimalNumber(s))
+            // Validate the complete string
+            else if (!this.isDecimalNumber(s))
                 throw new Error("Invalid number")
 
             else
                 this.#pushNumber(s)
         }
 
-        for(let i=0,j=0, isDecimalNumber,s;i<eq.length;i=j+1) {
-            isDecimalNumber=this.isDecimalNumber(eq[i])
+        for (let i = 0, j = 0, isDecimalNumber, s; i < eq.length; i = j + 1) {
+            isDecimalNumber = this.isDecimalNumber(eq[i])
 
             for (j = i; j < eq.length; j++)
                 if (this.isOperator(eq[j]))
                     break;
 
-            if(j===i&&i!==eq.length) {
+            if (j === i && i !== eq.length) {
                 this.#pushOperator(eq[i], operators)
                 continue
             }
 
-            s=eq.substring(i,j)
+            s = eq.substring(i, j)
 
-            if(j===eq.length)
+            if (j === eq.length)
                 pushSubstring(s, isDecimalNumber)
 
             else {
@@ -371,7 +369,7 @@ export class ReactEquation{
             }
         }
 
-        while(operators.length>0)
+        while (operators.length > 0)
             this.#QUEUE.push(operators.pop())
 
         /*
@@ -381,32 +379,31 @@ export class ReactEquation{
     }
 
     // Calculate result of equation
-    calculate(){
-        this.#RESULT=null
-        let n1,n2, op, t, result;
+    calculate() {
+        this.#RESULT = null
+        let n1, n2, op, t, result;
 
-        const queue=[...this.#QUEUE]
+        const queue = [...this.#QUEUE]
 
-        if(queue.length===0)
-            return this.#RESULT=null
+        if (queue.length === 0)
+            return this.#RESULT = null
 
-        if(queue.length===1)
-            return this.#RESULT=queue.pop()
+        if (queue.length === 1)
+            return this.#RESULT = queue.pop()
 
-        const reactNumbersStack=[]
+        const reactNumbersStack = []
 
-        while(queue.length>0){
+        while (queue.length > 0) {
             //console.table([queue,reactNumbersStack])
-            t= queue.shift()
+            t = queue.shift()
 
-            if(!this.isOperator(t))
+            if (!this.isOperator(t))
                 reactNumbersStack.push(t)
 
-            else
-            {
-                op=t
-                n2=reactNumbersStack.pop()
-                n1=reactNumbersStack.pop()
+            else {
+                op = t
+                n2 = reactNumbersStack.pop()
+                n1 = reactNumbersStack.pop()
                 //console.log(n1,n2,op)
 
                 result = this.#calculateOperation(n1, n2, op)
@@ -414,32 +411,30 @@ export class ReactEquation{
             }
         }
 
-        return this.#RESULT= result
+        return this.#RESULT = result
     }
 
     // Calculate numeric operation between two numbers
-    #calculateOperation(n1, n2, op){
-        switch(op){
+    #calculateOperation(n1, n2, op) {
+        switch (op) {
             case '+':
-                return n1+n2;
+                return n1 + n2;
             case '-':
-                return n1-n2;
+                return n1 - n2;
             case '*':
-                return n1*n2;
+                return n1 * n2;
             case '/':
-                return n1/n2;
+                return n1 / n2;
             case '^':
-                return n1**n2;
+                return n1 ** n2;
         }
     }
 
-    valueOf()
-    {
+    valueOf() {
         return this.result
     }
 
-    toString()
-    {
+    toString() {
         return String(this.result)
     }
 }

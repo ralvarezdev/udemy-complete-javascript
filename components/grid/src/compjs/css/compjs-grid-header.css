@@ -9,7 +9,7 @@
     padding: var(--compjs-padding-huge-size);
 }
 
-.compjs__grid__header--no-checkboxes{
+.compjs__grid__header--no-checkboxes {
     grid-column-start: 1;
 }
 
@@ -40,7 +40,7 @@
     align-items: center;
     justify-content: right;
 
-    gap: var(--compjs-gap-small-size);
+    gap: var(--compjs-gap-micro-size);
     padding: var(--compjs-padding-small-size) 0;
 }
 

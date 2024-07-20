@@ -3,7 +3,7 @@ export const COMPJS_ROOT_PATH = 'src/compjs';
 
 // - CompJS constants
 export const COMPJS_CONSTANTS = {
-    VIEW_BOX:'0 0 24 24'
+    VIEW_BOX: '0 0 24 24'
 }
 Object.freeze(COMPJS_CONSTANTS);
 
@@ -45,12 +45,12 @@ Object.freeze(COMPJS_SELECTORS);
 // - CSS variables name that are related with CompJS
 export const COMPJS_VARIABLES = {
     // Timing CSS variables
-    TRANSITION_FOCUS:'--compjs-transition-focus',
-    TRANSITION_FOCUS_DELAY:'--compjs-transition-focus-delay',
-    TRANSITION_COLOR:'--compjs-transition-color',
-    TRANSITION_COLOR_DELAY:'--compjs-transition-color-delay',
-    TRANSITION_TRANSLATE:'--compjs-transition-translate',
-    TRANSITION_TRANSLATE_DELAY:'--compjs-transition-translate-delay',
+    TRANSITION_FOCUS: '--compjs-transition-focus',
+    TRANSITION_FOCUS_DELAY: '--compjs-transition-focus-delay',
+    TRANSITION_COLOR: '--compjs-transition-color',
+    TRANSITION_COLOR_DELAY: '--compjs-transition-color-delay',
+    TRANSITION_TRANSLATE: '--compjs-transition-translate',
+    TRANSITION_TRANSLATE_DELAY: '--compjs-transition-translate-delay',
 
     // Font size CSS variables
     H2_FONT_SIZE: '--compjs-h2-font-size',
@@ -81,9 +81,11 @@ export const COMPJS_VARIABLES = {
     MARGIN_MICRO_SIZE: '--compjs-margin-micro-size',
 
     // Gap CSS variables
+    GAP_HUGE_SIZE: '--compjs-gap-huge-size',
     GAP_BIG_SIZE: '--compjs-gap-big-size',
     GAP_MEDIUM_SIZE: '--compjs-gap-medium-size',
     GAP_SMALL_SIZE: '--compjs-gap-small-size',
+    GAP_MICRO_SIZE: '--compjs-gap-micro-size',
 
     // Padding CSS variables
     PADDING_HUGE_SIZE: '--compjs-padding-huge-size',
@@ -139,7 +141,7 @@ export const COMPJS_URLS = {
 Object.freeze(COMPJS_URLS);
 
 // - URIs that are related with the components
-export const COMPJS_URIS= {
+export const COMPJS_URIS = {
     // W3
     SVG_NAMESPACE: 'http://www.w3.org/2000/svg'
 }

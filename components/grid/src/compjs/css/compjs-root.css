@@ -31,16 +31,18 @@
     --compjs-checkbox-small-size: 0.6rem;
 
     /* Margins size */
-    --compjs-margin-huge-size: 3rem;
-    --compjs-margin-big-size: 2.2rem;
-    --compjs-margin-medium-size: 1.6rem;
-    --compjs-margin-small-size: 0.8rem;
-    --compjs-margin-micro-size: 0.25rem;
+    --compjs-margin-huge-size: 4rem;
+    --compjs-margin-big-size: 3rem;
+    --compjs-margin-medium-size: 2.2rem;
+    --compjs-margin-small-size: 1.6rem;
+    --compjs-margin-micro-size: 0.8rem;
 
     /* Gaps size */
-    --compjs-gap-big-size:2rem;
-    --compjs-gap-medium-size:1rem;
-    --compjs-gap-small-size: 0.5rem;
+    --compjs-gap-huge-size: 4rem;
+    --compjs-gap-big-size: 2.2rem;
+    --compjs-gap-medium-size: 1.6rem;
+    --compjs-gap-small-size: 1rem;
+    --compjs-gap-micro-size: 0.8rem;
 
     /* Padding size */
     --compjs-padding-huge-size: 3rem;

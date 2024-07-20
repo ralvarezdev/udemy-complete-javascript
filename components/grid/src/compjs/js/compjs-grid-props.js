@@ -52,8 +52,10 @@ export const GRID_SELECTORS = {
     FOOTER_OUTER_BTN: "compjs__grid__footer__pagination__outer-btn",
     FOOTER_INNER_BTN_CONTAINER: "compjs__grid__footer__pagination__inner-btn-container",
     FOOTER_INNER_BTN: "compjs__grid__footer__pagination__inner-btn",
+    FOOTER_INNER_BTN_ACTIVE: "compjs__grid__footer__pagination__inner-btn--active",
     FOOTER_PAGE_BTN_CONTAINER: "compjs__grid__footer__pagination__inner-btn__page-btn-container",
     FOOTER_PAGE_BTN: "compjs__grid__footer__pagination__inner-btn__page-btn",
+    FOOTER_PAGE_BTN_ACTIVE: "compjs__grid__footer__pagination__inner-btn__page-btn--active",
 };
 Object.freeze(GRID_SELECTORS);
 
@@ -72,10 +74,10 @@ export const GRID_JSON = {
 
     // CompJS Grid column keys
     COLUMN_ID: "columnId",
-    COLUMN_DATA:"columnData",
+    COLUMN_DATA: "columnData",
     COLUMN_DATA_TITLE: "title",
     COLUMN_DATA_INDEX: "index",
     COLUMN_DATA_TYPE: "type",
-    COLUMN_DATA_NULLABLE:"nullable",
+    COLUMN_DATA_NULLABLE: "nullable",
 }
 Object.freeze(GRID_JSON);

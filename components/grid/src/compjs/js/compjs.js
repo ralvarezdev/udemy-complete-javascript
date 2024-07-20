@@ -18,7 +18,7 @@ export class CompJS {
 
     // Elements
     #ELEMENTS_ID;
-    
+
     // Regular expressions
     #DATA_TYPES_REGEXP;
 
@@ -43,8 +43,8 @@ export class CompJS {
             obj.#checkStyleElement();
             obj.#STYLES_MAP = new Map();
             obj.#ELEMENTS_ID = new Map();
-            obj.#LOADED_SVGS=new Map()
-            
+            obj.#LOADED_SVGS = new Map()
+
             // Regular Expressions
             obj.#DATA_TYPES_REGEXP = {
                 [COMPJS_DATA_TYPES.STRING]: /^.*$/,
@@ -158,14 +158,14 @@ export class CompJS {
     }
 
     // Get element computed style
-    getCompStyle(element){
+    getCompStyle(element) {
         return (element === null) ? null : window.getComputedStyle(element);
     }
 
     // Get selector computed style
     getSelectorCompStyle(selector) {
         const element = this.getElement(selector);
-        return  getComputedStyle(element);
+        return getComputedStyle(element);
     }
 
     // Get computed style property
@@ -188,7 +188,7 @@ export class CompJS {
 
         const selectorPropertiesMap = new Map();
         const element = this.getElement(selector);
-        const compStyle= this.getCompStyle(element);
+        const compStyle = this.getCompStyle(element);
 
         for (let propertyName of propertiesName) {
             let propertyValue = this.#getProperty(compStyle, propertyName);
@@ -204,7 +204,7 @@ export class CompJS {
     }
 
     getCompJSElementId(elementId) {
-        const element= this.#ELEMENTS_ID.get(elementId);
+        const element = this.#ELEMENTS_ID.get(elementId);
 
         if (element === undefined)
             throw new Error("Element ID does not exist...");
@@ -252,16 +252,16 @@ export class CompJS {
     }
 
     setElementId(element, id) {
-        if(id)
-            element.id=id
+        if (id)
+            element.id = id
     }
 
     // Set class property values
-    addClassNames(element,...classNames){
-        if(!classNames)
+    addClassNames(element, ...classNames) {
+        if (!classNames)
             return
 
-        if(!classNames instanceof Array)
+        if (!classNames instanceof Array)
             return
 
         this.checkSelectors(...classNames);
@@ -347,11 +347,11 @@ export class CompJS {
     // - Element initializers
 
     // Create element with ID
-    createElementWithId(tagName, parentElement, id,...classNames) {
+    createElementWithId(tagName, parentElement, id, ...classNames) {
         const element = document.createElement(tagName);
 
         this.setElementId(element, id)
-        this.addClassNames(element,...classNames)
+        this.addClassNames(element, ...classNames)
 
         parentElement.appendChild(element);
         return element;
@@ -383,24 +383,24 @@ export class CompJS {
     }
 
     // Create input element with ID
-    createInputWithId(parentElement, name, type,value,id, ...classNames) {
-        const inputElement= this.createElementWithId('input', parentElement, id, ...classNames, COMPJS_SELECTORS.INPUT);
+    createInputWithId(parentElement, name, type, value, id, ...classNames) {
+        const inputElement = this.createElementWithId('input', parentElement, id, ...classNames, COMPJS_SELECTORS.INPUT);
 
-        if(name)
-            inputElement.name=name
+        if (name)
+            inputElement.name = name
 
-        if(type)
-            inputElement.type=type
+        if (type)
+            inputElement.type = type
 
-        if(value)
-            inputElement.value=value
+        if (value)
+            inputElement.value = value
 
         return inputElement;
     }
 
     // Create input element
-    createInput(parentElement,name,type,value, ...classNames) {
-        return this.createInputWithId(parentElement,name,type, value,null, ...classNames);
+    createInput(parentElement, name, type, value, ...classNames) {
+        return this.createInputWithId(parentElement, name, type, value, null, ...classNames);
     }
 
     // - Loaders
@@ -457,52 +457,52 @@ export class CompJS {
     */
 
     // Load hidden SVG to be used as reference
-    async loadHiddenSVG( url, viewBox, id) {
-            if(!this.#HIDDEN_SVG_CONTAINER)
-                this.#HIDDEN_SVG_CONTAINER=this.createDiv(this.#body,COMPJS_SELECTORS.HIDDEN_SVG_CONTAINER,COMPJS_SELECTORS.HIDE)
+    async loadHiddenSVG(url, viewBox, id) {
+        if (!this.#HIDDEN_SVG_CONTAINER)
+            this.#HIDDEN_SVG_CONTAINER = this.createDiv(this.#body, COMPJS_SELECTORS.HIDDEN_SVG_CONTAINER, COMPJS_SELECTORS.HIDE)
 
-            // SVG already loaded
-            if(this.#LOADED_SVGS.get(id))
-                return
+        // SVG already loaded
+        if (this.#LOADED_SVGS.get(id))
+            return
 
-            // Set SVG as being loaded
-            this.#LOADED_SVGS.set(id, true)
+        // Set SVG as being loaded
+        this.#LOADED_SVGS.set(id, true)
 
-            const svgElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'svg');
-            const symbolElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'symbol');
+        const svgElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'svg');
+        const symbolElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'symbol');
 
-            this.setElementId(symbolElement, id)
+        this.setElementId(symbolElement, id)
 
-            svgElement.appendChild(symbolElement);
-            this.#HIDDEN_SVG_CONTAINER.appendChild(svgElement);
+        svgElement.appendChild(symbolElement);
+        this.#HIDDEN_SVG_CONTAINER.appendChild(svgElement);
 
-            fetch(url)
-                .then(response => response.text())
-                .then(svgData => {
-                    const parser = new DOMParser();
-                    const parsedSvg = parser.parseFromString(svgData, "image/svg+xml");
+        fetch(url)
+            .then(response => response.text())
+            .then(svgData => {
+                const parser = new DOMParser();
+                const parsedSvg = parser.parseFromString(svgData, "image/svg+xml");
 
-                    svgElement.version="2.0";
-                    svgElement.classList.add(COMPJS_SELECTORS.HIDDEN_SVG)
-                    symbolElement.setAttribute('viewBox', viewBox);
+                svgElement.version = "2.0";
+                svgElement.classList.add(COMPJS_SELECTORS.HIDDEN_SVG)
+                symbolElement.setAttribute('viewBox', viewBox);
 
-                    symbolElement.innerHTML=parsedSvg.documentElement.innerHTML;
-                });
+                symbolElement.innerHTML = parsedSvg.documentElement.innerHTML;
+            });
     }
 
     // Load SVG
     loadSVG(parentElement, id, ...classNames) {
-        id=this.getFormattedId(id)
-        const getHiddenSVG=document.querySelector(id);
+        id = this.getFormattedId(id)
+        const getHiddenSVG = document.querySelector(id);
 
-        if(!getHiddenSVG)
+        if (!getHiddenSVG)
             throw new Error("Hidden SVG element not found...");
 
         const svgElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'svg');
-        const useElement=document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'use');
+        const useElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'use');
         useElement.setAttribute('href', id);
 
-        this.addClassNames(svgElement,...classNames)
+        this.addClassNames(svgElement, ...classNames)
         svgElement.appendChild(useElement);
         parentElement.appendChild(svgElement);
 

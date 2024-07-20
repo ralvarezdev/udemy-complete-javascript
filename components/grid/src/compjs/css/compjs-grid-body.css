@@ -12,15 +12,15 @@
 
     color: var(--compjs-primary-color-light);
     background-color: var(--compjs-primary-color-dark);
-    border-radius:var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width) 0 0;
+    border-radius: var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width) 0 0;
 
-    transition:font-weight var(--compjs-transition-color) ease-out,
-                color var(--compjs-transition-color) ease-out,
-                background-color var(--compjs-transition-color) ease-out;
+    transition: font-weight var(--compjs-transition-color) ease-out,
+    color var(--compjs-transition-color) ease-out,
+    background-color var(--compjs-transition-color) ease-out;
 }
 
-.compjs__grid__body__header--warning{
-    background-color: var(--compjs-grey-dark    );
+.compjs__grid__body__header--warning {
+    background-color: var(--compjs-grey-dark);
 }
 
 .compjs__grid__body__header--no-checkboxes {
@@ -120,9 +120,9 @@
     border: transparent solid var(--compjs-border-medium-width);
 
     transition: border var(--compjs-transition-color) ease-out,
-                font-weight var(--compjs-transition-color) ease-out,
-                color var(--compjs-transition-color) ease-out,
-                background-color var(--compjs-transition-color) ease-out;
+    font-weight var(--compjs-transition-color) ease-out,
+    color var(--compjs-transition-color) ease-out,
+    background-color var(--compjs-transition-color) ease-out;
 }
 
 .compjs__grid__body__column--warning,
@@ -132,7 +132,7 @@
     color: var(--compjs-white);
 }
 
-.compjs__grid__body__header__column--warning{
+.compjs__grid__body__header__column--warning {
     background-color: var(--compjs-warning-color-dark);
 }
 
@@ -141,10 +141,10 @@
     border-color: var(--compjs-warning-color-dark);
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(odd)>.compjs__grid__body__content__data__page__row__cell--warning{
+.compjs__grid__body__content__data__page__row:nth-child(odd) > .compjs__grid__body__content__data__page__row__cell--warning {
     background-color: var(--compjs-warning-color-medium);
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(even)>.compjs__grid__body__content__data__page__row__cell--warning{
+.compjs__grid__body__content__data__page__row:nth-child(even) > .compjs__grid__body__content__data__page__row__cell--warning {
     background-color: var(--compjs-warning-color-light);
 }
