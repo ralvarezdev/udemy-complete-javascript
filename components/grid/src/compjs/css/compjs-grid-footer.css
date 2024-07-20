@@ -1,0 +1,86 @@
+.compjs__grid__footer {
+    grid-column: 2/-1;
+    margin-top: var(--compjs-margin-big-size);
+}
+
+.compjs__grid__footer--no-checkboxes {
+    grid-column-start: 1;
+}
+
+.compjs__grid__footer__pagination {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    gap: var(--compjs-gap-big-size);
+
+    padding: var(--compjs-padding-medium-size);
+}
+
+.compjs__grid__footer__pagination__outer-btn {
+    width: var(--compjs-button-big-width);
+    padding:var(--compjs-padding-small-size);
+
+    border: var(--compjs-border-medium-width) solid var(--compjs-primary-color-dark);
+    color: var(--compjs-primary-color-light);
+    background-color: var(--compjs-primary-color-dark);
+}
+
+.compjs__grid__footer__pagination__outer-btn:hover {
+    color: var(--compjs-primary-color-dark);
+    border-color: var(--compjs-primary-color-dark);
+    background-color: var(--compjs-white);
+}
+
+.compjs__grid__footer__pagination__outer-btn:first-of-type,
+.compjs__grid__footer__pagination__inner-btn:first-of-type
+{
+    order: 1;
+}
+
+.compjs__grid__footer__pagination__outer-btn:last-of-type,
+.compjs__grid__footer__pagination__inner-btn:last-of-type  {
+    order: 3;
+}
+
+.compjs__grid__footer__pagination__inner-btn-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    gap: var(--compjs-gap-medium-size);
+}
+
+.compjs__grid__footer__pagination__inner-btn-container,
+.compjs__grid__footer__pagination__inner-btn__page-btn-container{
+    order: 2;
+}
+
+.compjs__grid__footer__pagination__inner-btn__page-btn-container {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+    gap: var(--compjs-gap-small-size);
+}
+
+.compjs__grid__footer__pagination__inner-btn,
+.compjs__grid__footer__pagination__inner-btn__page-btn{
+    padding: var(--compjs-padding-small-size);
+}
+
+.compjs__grid__footer__pagination__outer-btn,
+.compjs__grid__footer__pagination__inner-btn ,
+.compjs__grid__footer__pagination__inner-btn__page-btn{
+    font-size: var(--compjs-text-font-size);
+
+    border-radius: var(--compjs-border-radius-small-width);
+
+    transition: color var(--compjs-transition-color) ease-out,
+                border var(--compjs-transition-color) ease-out,
+                background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__footer__pagination__inner-btn,
+.compjs__grid__footer__pagination__inner-btn__page-btn{
+    width: var(--compjs-button-small-width);
+}

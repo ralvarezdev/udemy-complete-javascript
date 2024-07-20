@@ -175,6 +175,14 @@ export class ReactNumber extends Subject{
     get reactNumbersHandler(){
         return this.#REACT_NUMBERS_HANDLER;
     }
+
+    valueOf(){
+        return this.number
+    }
+
+    toString(){
+        return String(this.number)
+    }
 }
 
 // React Number Observer class
@@ -377,19 +385,18 @@ export class ReactEquation{
         this.#RESULT=null
         let n1,n2, op, t, result;
 
-        const queue=new Array(this.#QUEUE.length)
-        this.#QUEUE.forEach((element, i)=>{
-            if(element instanceof ReactNumber)
-                queue[i]=element.number
+        const queue=[...this.#QUEUE]
 
-            else
-                queue[i] = element
-        })
+        if(queue.length===0)
+            return this.#RESULT=null
+
+        if(queue.length===1)
+            return this.#RESULT=queue.pop()
 
         const reactNumbersStack=[]
 
         while(queue.length>0){
-            // console.log(queue, reactNumbersStack)
+            //console.table([queue,reactNumbersStack])
             t= queue.shift()
 
             if(!this.isOperator(t))
@@ -424,5 +431,15 @@ export class ReactEquation{
             case '^':
                 return n1**n2;
         }
+    }
+
+    valueOf()
+    {
+        return this.result
+    }
+
+    toString()
+    {
+        return String(this.result)
     }
 }

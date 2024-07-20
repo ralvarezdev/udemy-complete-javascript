@@ -1,0 +1,10 @@
+@import url('compjs-grid-keyframes.css');
+@import url('compjs-grid-header.css');
+@import url('compjs-grid-body.css');
+@import url('compjs-grid-footer.css');
+
+.compjs__grid {
+    display: grid;
+    grid-template-columns: var(--compjs-checkbox-medium-size) 1fr;
+    padding: var(--compjs-padding-big-size);
+}

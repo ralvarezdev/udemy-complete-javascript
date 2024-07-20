@@ -1,0 +1,150 @@
+.compjs__grid__body {
+    display: grid;
+    grid-column: 1/-1;
+    grid-template-columns: subgrid;
+}
+
+.compjs__grid__body__header {
+    grid-column: 2/-1;
+
+    display: grid;
+    grid-auto-columns: 1fr;
+
+    color: var(--compjs-primary-color-light);
+    background-color: var(--compjs-primary-color-dark);
+    border-radius:var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width) 0 0;
+
+    transition:font-weight var(--compjs-transition-color) ease-out,
+                color var(--compjs-transition-color) ease-out,
+                background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__body__header--warning{
+    background-color: var(--compjs-grey-dark    );
+}
+
+.compjs__grid__body__header--no-checkboxes {
+    grid-column-start: 1;
+}
+
+.compjs__grid__body__header__column {
+    grid-row: 1;
+
+    font-size: var(--compjs-h3-font-size);
+    padding: var(--compjs-padding-micro-size) var(--compjs-padding-small-size);
+    text-align: center;
+}
+
+.compjs__grid__body__content {
+    grid-column: 1/-1;
+
+    display: grid;
+    grid-template-columns: subgrid;
+}
+
+.compjs__grid__body__content__data {
+    grid-column: 2/-1;
+
+    position: relative;
+    height: auto;
+    overflow: hidden;
+}
+
+.compjs__grid__body__content__data--no-checkboxes {
+    grid-column-start: 1;
+}
+
+.compjs__grid__body__content__data__page {
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+
+    position: absolute;
+
+    border-radius: 0 0 var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width);
+}
+
+.compjs__grid__body__content__data__page--show-from-right {
+    translate: 0;
+
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInRight;
+}
+
+.compjs__grid__body__content__data__page--show-from-left {
+    translate: 0;
+
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInLeft;
+}
+
+.compjs__grid__body__content__data__page--hide-to-left {
+    translate: -100%;
+
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutLeft;
+}
+
+.compjs__grid__body__content__data__page--hide-to-right {
+    translate: 100%;
+
+    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutRight;
+}
+
+.compjs__grid__body__content__data__page__row {
+    display: grid;
+    grid-auto-columns: 1fr;
+
+    font-size: var(--compjs-text-font-size);
+    color: var(--compjs-grey-dark);
+
+    transition: background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__body__content__data__page__row:nth-child(odd) {
+    background-color: var(--compjs-primary-color-light);
+}
+
+.compjs__grid__body__content__data__page__row--warning:nth-child(odd) {
+    background-color: var(--compjs-grey-light);
+}
+
+.compjs__grid__body__content__data__page__row:nth-child(even) {
+    background-color: var(--compjs-white);
+}
+
+.compjs__grid__body__content__data__page__row__cell {
+    grid-row: 1;
+
+    padding: var(--compjs-padding-cell-size);
+
+    text-align: center;
+
+    border: transparent solid var(--compjs-border-medium-width);
+
+    transition: border var(--compjs-transition-color) ease-out,
+                font-weight var(--compjs-transition-color) ease-out,
+                color var(--compjs-transition-color) ease-out,
+                background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__body__column--warning,
+.compjs__grid__body__header__column--warning,
+.compjs__grid__body__content__data__page__row__cell--warning {
+    font-weight: var(--compjs-font-weight-bold);
+    color: var(--compjs-white);
+}
+
+.compjs__grid__body__header__column--warning{
+    background-color: var(--compjs-warning-color-dark);
+}
+
+.compjs__grid__body__content__data__page__row__cell--warning {
+    color: var(--compjs-grey-dark);
+    border-color: var(--compjs-warning-color-dark);
+}
+
+.compjs__grid__body__content__data__page__row:nth-child(odd)>.compjs__grid__body__content__data__page__row__cell--warning{
+    background-color: var(--compjs-warning-color-medium);
+}
+
+.compjs__grid__body__content__data__page__row:nth-child(even)>.compjs__grid__body__content__data__page__row__cell--warning{
+    background-color: var(--compjs-warning-color-light);
+}

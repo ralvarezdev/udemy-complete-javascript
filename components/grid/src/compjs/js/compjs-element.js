@@ -10,7 +10,6 @@ export class CompJSElement {
 
     static {
         CompJSElement.#COMPJS = new CompJS();
-        CompJSElement.#COMPJS.addStyleSheet(COMPJS_PATHS.GRID_STYLE);
     }
 
     constructor(elementId, parentElement) {
@@ -21,6 +20,10 @@ export class CompJSElement {
     // - Getters
 
     // Get CompJS instance
+    static get CompJS(){
+        return CompJSElement.#COMPJS
+    }
+
     get CompJS(){
         return CompJSElement.#COMPJS
     }
@@ -86,9 +89,28 @@ export class CompJSElement {
 
     // - Element initializers
 
-    createElementWithElementId(tagName, parentElement, selector,...classNames){
+    // Create element with ID
+    createElementWithId(tagName, parentElement, selector,...classNames){
         const id =this.getIdFromSelector(selector)
         return this.CompJS.createElementWithId(tagName, parentElement, id, ...classNames);
+    }
+
+    // Create div with ID
+    createDivWithId(parentElement, selector,...classNames){
+        const id =this.getIdFromSelector(selector)
+        return this.CompJS.createDivWithId(parentElement, id, ...classNames);
+    }
+
+    // Create button with ID
+    createButtonWithId(parentElement, selector,...classNames){
+        const id =this.getIdFromSelector(selector)
+        return this.CompJS.createButtonWithId(parentElement, id, ...classNames);
+    }
+
+    // Create input with ID
+    createInputWithId(parentElement, selector,name,type,value,...classNames){
+        const id =this.getIdFromSelector(selector)
+        return this.CompJS.createInputWithId(parentElement, id,name,type,value, ...classNames);
     }
 
     // - Re-setters
