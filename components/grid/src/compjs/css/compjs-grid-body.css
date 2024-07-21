@@ -6,6 +6,7 @@
 
 .compjs__grid__body__header {
     grid-column: 2/-1;
+    overflow: hidden;
 
     display: grid;
     grid-auto-columns: 1fr;
@@ -33,6 +34,15 @@
     font-size: var(--compjs-h3-font-size);
     padding: var(--compjs-padding-micro-size) var(--compjs-padding-small-size);
     text-align: center;
+
+    transition: background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__body__header__column:focus{
+    outline: none;
+
+    color: var(--compjs-white);
+    background-color: var(--compjs-grey-dark);
 }
 
 .compjs__grid__body__content {
@@ -48,6 +58,8 @@
     position: relative;
     height: auto;
     overflow: hidden;
+
+    border-radius: 0 0 var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width);
 }
 
 .compjs__grid__body__content__data--no-checkboxes {
@@ -57,10 +69,9 @@
 .compjs__grid__body__content__data__page {
     width: 100%;
     overflow: hidden;
+    min-height: fit-content;
 
     position: absolute;
-
-    border-radius: 0 0 var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width);
 }
 
 .compjs__grid__body__content__data__page--show-from-right {
@@ -92,6 +103,7 @@
 .compjs__grid__body__content__data__page__row {
     display: grid;
     grid-auto-columns: 1fr;
+    min-height: fit-content;
 
     font-size: var(--compjs-text-font-size);
     color: var(--compjs-grey-dark);
@@ -113,17 +125,26 @@
 
 .compjs__grid__body__content__data__page__row__cell {
     grid-row: 1;
+    overflow: auto;
+    min-height: calc(var(--compjs-padding-cell-size) * 2 + var(--compjs-text-font-size));
 
     padding: var(--compjs-padding-cell-size);
 
     text-align: center;
 
-    border: transparent solid var(--compjs-border-medium-width);
+    border: transparent solid var(--compjs-border-small-width);
 
     transition: border var(--compjs-transition-color) ease-out,
     font-weight var(--compjs-transition-color) ease-out,
     color var(--compjs-transition-color) ease-out,
     background-color var(--compjs-transition-color) ease-out;
+}
+
+.compjs__grid__body__content__data__page__row__cell:focus{
+    outline: none;
+
+    color: var(--compjs-white);
+    background-color: var(--compjs-grey-medium);
 }
 
 .compjs__grid__body__column--warning,
@@ -134,6 +155,10 @@
 }
 
 .compjs__grid__body__header__column--warning {
+    background-color: var(--compjs-warning-color-dark);
+}
+
+.compjs__grid__body__header__column--warning:focus {
     background-color: var(--compjs-warning-color-dark);
 }
 

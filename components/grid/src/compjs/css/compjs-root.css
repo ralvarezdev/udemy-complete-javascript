@@ -6,7 +6,7 @@
     --compjs-transition-focus-delay: 0s;
     --compjs-transition-color: 0.2s;
     --compjs-transition-color-delay: 0s;
-    --compjs-transition-translate: 0.5s;
+    --compjs-transition-translate: 0.4s;
     --compjs-transition-translate-delay: 0s;
 
     /* Fonts size */
@@ -58,15 +58,17 @@
     --compjs-border-radius-small-width: 5px;
 
     /* Border width */
-    --compjs-border-medium-width: 2px;
+    --compjs-border-big-width: 8px;
+    --compjs-border-medium-width: 4px;
+    --compjs-border-small-width: 2px;
 
     /* Font weight */
     --compjs-font-weight-bold: 600;
 
     /* Colors */
     --compjs-grey-dark: #343a40;
-    --compjs-grey-medium: #868e96;
-    --compjs-grey-light: #dee2e6;
+    --compjs-grey-medium: #495057;
+    --compjs-grey-light: #868e96;
     --compjs-white: #f8f9fa;
 
     --compjs-primary-color-dark: #099268;

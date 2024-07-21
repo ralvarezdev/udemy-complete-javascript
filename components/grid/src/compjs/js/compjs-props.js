@@ -3,7 +3,12 @@ export const COMPJS_ROOT_PATH = 'src/compjs';
 
 // - CompJS constants
 export const COMPJS_CONSTANTS = {
-    VIEW_BOX: '0 0 24 24'
+    // Icon view box
+    VIEW_BOX: '0 0 24 24',
+
+    // Animation delay on page load
+    LOAD_DELAY: 500,
+    CLICK_DELAY:200,
 }
 Object.freeze(COMPJS_CONSTANTS);
 
@@ -33,6 +38,10 @@ export const COMPJS_SELECTORS = {
 
     // Utilities class names
     HIDE: "compjs__hide",
+    NO_TRANSITION: "compjs__no-transition",
+    NO_TRANSFORM: "compjs__no-transform",
+    NO_ANIMATION: "compjs__no-animation",
+    PRELOAD: "compjs__preload",
 
     // Compjs class names
     HIDDEN_SVG_CONTAINER: "compjs__hidden-svg-container",
@@ -100,7 +109,9 @@ export const COMPJS_VARIABLES = {
     BORDER_RADIUS_SMALL_WIDTH: '--compjs-border-radius-small-width',
 
     // Border width CSS variables
+    BORDER_BIG_WIDTH: '--compjs-border-big-width',
     BORDER_MEDIUM_WIDTH: '--compjs-border-medium-width',
+    BORDER_SMALL_WIDTH: '--compjs-border-small-width',
 
     // Font weight CSS variables
     BOLD_FONT_WEIGHT: '--compjs-bold-font-weight',

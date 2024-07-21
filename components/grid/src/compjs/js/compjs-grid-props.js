@@ -8,6 +8,9 @@ export const GRID_SELECTORS = {
     HEADER_NO_CHECKBOXES: "compjs__grid__header--no-checkboxes",
     HEADER_ICONS: "compjs__grid__header__icons",
     HEADER_ICON_CONTAINER: "compjs__grid__header__icon-container",
+    HEADER_ICON_CONTAINER_INSERT: "compjs__grid__header__icon-container--insert",
+    HEADER_ICON_CONTAINER_REMOVE: "compjs__grid__header__icon-container--remove",
+    HEADER_ICON_CONTAINER_LOCK: "compjs__grid__header__icon-container--lock",
     HEADER_ICON: "compjs__grid__header__icon",
     HEADER_TITLE_CONTAINER: "compjs__grid__header__title-container",
     HEADER_TITLE: "compjs__grid__header__title",
@@ -16,9 +19,9 @@ export const GRID_SELECTORS = {
     // Icons IDs
     ICON_LOCK: "compjs__icon-lock",
     ICON_UNLOCK: "compjs__icon-unlock",
-    ICON_TRASH: "compjs__icon-trash",
+    ICON_REMOVE: "compjs__icon-remove",
     ICON_DOWNLOAD: "compjs__icon-download",
-    ICON_ADD: "compjs__icon-add",
+    ICON_INSERT: "compjs__icon-insert",
 
     // Column class names
     BODY: "compjs__grid__body",
@@ -50,12 +53,12 @@ export const GRID_SELECTORS = {
     FOOTER_NO_CHECKBOXES: "compjs__grid__footer--no-checkboxes",
     FOOTER_PAGINATION: "compjs__grid__footer__pagination",
     FOOTER_OUTER_BTN: "compjs__grid__footer__pagination__outer-btn",
+    FOOTER_MIDDLE_BTN_CONTAINER: "compjs__grid__footer__pagination__middle-btn-container",
+    FOOTER_MIDDLE_BTN: "compjs__grid__footer__pagination__middle-btn",
+    FOOTER_MIDDLE_BTN_ACTIVE: "compjs__grid__footer__pagination__middle-btn--active",
     FOOTER_INNER_BTN_CONTAINER: "compjs__grid__footer__pagination__inner-btn-container",
     FOOTER_INNER_BTN: "compjs__grid__footer__pagination__inner-btn",
     FOOTER_INNER_BTN_ACTIVE: "compjs__grid__footer__pagination__inner-btn--active",
-    FOOTER_PAGE_BTN_CONTAINER: "compjs__grid__footer__pagination__inner-btn__page-btn-container",
-    FOOTER_PAGE_BTN: "compjs__grid__footer__pagination__inner-btn__page-btn",
-    FOOTER_PAGE_BTN_ACTIVE: "compjs__grid__footer__pagination__inner-btn__page-btn--active",
 };
 Object.freeze(GRID_SELECTORS);
 

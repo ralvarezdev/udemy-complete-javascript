@@ -74,6 +74,11 @@ export class CompJSElement {
         return this.CompJS.getSelectorProperties(id, ...propertiesName);
     }
 
+    // Get formatted data name
+    getFormattedDataName(dataName) {
+         return dataName.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`)
+    }
+
     // - Query selectors
 
     // Get element with the given selector and data
@@ -81,6 +86,7 @@ export class CompJSElement {
         if (parentElement === undefined)
             this._throwUndefinedElementError(parentElementName)
 
+        dataName=this.getFormattedDataName(dataName)
         return parentElement.querySelector(`${selector}[data-${dataName}='${data}']`)
     }
 
@@ -97,6 +103,7 @@ export class CompJSElement {
         if (parentElement === undefined)
             this._throwUndefinedElementError(parentElementName)
 
+        dataName=this.getFormattedDataName(dataName)
         return parentElement.querySelectorAll(`${selector}[data-${dataName}='${data}']`)
     }
 
@@ -126,6 +133,11 @@ export class CompJSElement {
     setIdFromSelectorProperty(selector, propertyName, propertyValue) {
         const id = this.getFormattedIdFromSelector(selector)
         this.CompJS.setSelectorProperty(id, propertyName, propertyValue);
+    }
+
+    // Make element editable
+    setEditable(element, contentEditable) {
+        element.contentEditable = contentEditable;
     }
 
     // - Element initializers

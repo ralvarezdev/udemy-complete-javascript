@@ -65,6 +65,11 @@ export class CompJS {
 
     // - Utilities
 
+    // Sleep n milliseconds
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     // Convert pixels to rem
     convertPixelsToRem(pixels) {
         return pixels / parseFloat(getComputedStyle(document.documentElement).fontSize);

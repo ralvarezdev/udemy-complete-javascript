@@ -19,7 +19,7 @@
 .compjs__grid__footer__pagination__outer-btn {
     width: var(--compjs-button-big-width);
 
-    border: var(--compjs-border-medium-width) solid var(--compjs-primary-color-dark);
+    border: var(--compjs-border-small-width) solid var(--compjs-primary-color-dark);
     color: var(--compjs-primary-color-light);
     background-color: var(--compjs-primary-color-dark);
 }
@@ -30,33 +30,33 @@
     background-color: var(--compjs-white);
 }
 
-.compjs__grid__footer__pagination__inner-btn,
-.compjs__grid__footer__pagination__inner-btn__page-btn {
-    border: var(--compjs-border-medium-width) solid var(--compjs-primary-color-medium);
+.compjs__grid__footer__pagination__middle-btn,
+.compjs__grid__footer__pagination__inner-btn {
+    border: var(--compjs-border-small-width) solid var(--compjs-primary-color-medium);
     color: var(--compjs-primary-color-medium);
     background-color: var(--compjs-white);
 }
 
+.compjs__grid__footer__pagination__middle-btn:hover,
+.compjs__grid__footer__pagination__middle-btn--active,
 .compjs__grid__footer__pagination__inner-btn:hover,
-.compjs__grid__footer__pagination__inner-btn--active,
-.compjs__grid__footer__pagination__inner-btn__page-btn:hover,
-.compjs__grid__footer__pagination__inner-btn__page-btn--active {
+.compjs__grid__footer__pagination__inner-btn--active {
     color: var(--compjs-primary-color-dark);
     border-color: var(--compjs-primary-color-dark);
     background-color: var(--compjs-white);
 }
 
 .compjs__grid__footer__pagination__outer-btn:first-of-type,
-.compjs__grid__footer__pagination__inner-btn:first-of-type {
+.compjs__grid__footer__pagination__middle-btn:first-of-type {
     order: 1;
 }
 
 .compjs__grid__footer__pagination__outer-btn:last-of-type,
-.compjs__grid__footer__pagination__inner-btn:last-of-type {
+.compjs__grid__footer__pagination__middle-btn:last-of-type {
     order: 3;
 }
 
-.compjs__grid__footer__pagination__inner-btn-container {
+.compjs__grid__footer__pagination__middle-btn-container {
     display: flex;
     justify-content: center;
     align-content: center;
@@ -64,12 +64,12 @@
     gap: var(--compjs-gap-big-size);
 }
 
-.compjs__grid__footer__pagination__inner-btn-container,
-.compjs__grid__footer__pagination__inner-btn__page-btn-container {
+.compjs__grid__footer__pagination__middle-btn-container,
+.compjs__grid__footer__pagination__inner-btn-container {
     order: 2;
 }
 
-.compjs__grid__footer__pagination__inner-btn__page-btn-container {
+.compjs__grid__footer__pagination__inner-btn-container {
     display: flex;
     justify-content: center;
     align-content: center;
@@ -77,14 +77,14 @@
     gap: var(--compjs-gap-small-size);
 }
 
-.compjs__grid__footer__pagination__inner-btn,
-.compjs__grid__footer__pagination__inner-btn__page-btn {
+.compjs__grid__footer__pagination__middle-btn,
+.compjs__grid__footer__pagination__inner-btn {
     width: var(--compjs-button-small-width);
 }
 
 .compjs__grid__footer__pagination__outer-btn,
-.compjs__grid__footer__pagination__inner-btn,
-.compjs__grid__footer__pagination__inner-btn__page-btn {
+.compjs__grid__footer__pagination__middle-btn,
+.compjs__grid__footer__pagination__inner-btn {
     padding: var(--compjs-padding-small-size);
     font-size: var(--compjs-text-font-size);
 
