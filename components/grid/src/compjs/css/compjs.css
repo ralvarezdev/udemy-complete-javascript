@@ -2,14 +2,16 @@
 @import url('compjs-utilities.css');
 @import url('compjs-elements.css');
 
-:root{
+:root {
     /* Transition timings */
     --compjs-transition-focus-duration: 0.4s;
     --compjs-transition-focus-delay: 0s;
     --compjs-transition-color-duration: 0.2s;
     --compjs-transition-color-delay: 0s;
-    --compjs-transition-translate-duration: 0.4s;
+    --compjs-transition-translate-duration: 0.5s;
     --compjs-transition-translate-delay: 0s;
+    --compjs-transition-scale-duration: 0.15s;
+    --compjs-transition-scale-delay: 0s;
 
     /* Font sizes */
     --compjs-h2-font-size: 4.4rem;
@@ -27,10 +29,15 @@
     --compjs-icon-medium-size: 3.2rem;
     --compjs-icon-small-size: 2rem;
 
+    /* Radio sizes */
+    --compjs-radio-big-size: 2.6rem;
+    --compjs-radio-medium-size: 1.8rem;
+    --compjs-radio-small-size: 1rem;
+
     /* Checkbox sizes */
-    --compjs-checkbox-big-size: 1rem;
-    --compjs-checkbox-medium-size: 0.8rem;
-    --compjs-checkbox-small-size: 0.6rem;
+    --compjs-checkbox-big-size: 2.6rem;
+    --compjs-checkbox-medium-size: 1.8rem;
+    --compjs-checkbox-small-size: 1rem;
 
     /* Margin sizes */
     --compjs-margin-huge-size: 4rem;
@@ -51,8 +58,8 @@
     --compjs-padding-big-size: 2.2rem;
     --compjs-padding-medium-size: 1.6rem;
     --compjs-padding-small-size: 0.8rem;
-    --compjs-padding-micro-size: 0.25rem;
-    --compjs-padding-cell-size: 0.5rem;
+    --compjs-padding-micro-size: 0.5rem;
+    --compjs-padding-tiny-size: 0.3rem;
 
     /* Border radius widths */
     --compjs-border-radius-big-width: 15px;
@@ -60,9 +67,11 @@
     --compjs-border-radius-small-width: 5px;
 
     /* Border widths */
-    --compjs-border-big-width: 8px;
+    --compjs-border-huge-width: 8px;
+    --compjs-border-big-width: 6px;
     --compjs-border-medium-width: 4px;
     --compjs-border-small-width: 2px;
+    --compjs-border-tiny-width: 1px;
 
     /* Font weights */
     --compjs-font-weight-bold: 600;
@@ -82,7 +91,7 @@
     --compjs-warning-color-light: #ffc9c9;
 }
 
-html{
+html {
     font-size: 62.5%
 }
 

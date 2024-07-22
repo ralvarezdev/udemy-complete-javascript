@@ -10,11 +10,11 @@ export class CompJS {
     #style;
 
     // Styles
-    #STYLES_MAP;
+    #stylesMap;
 
     // Loaded SVG files
-    #HIDDEN_SVG_CONTAINER
     #LOADED_SVGS
+    #hiddenSVGContainer
 
     // Elements
     #ELEMENTS_ID;
@@ -40,7 +40,7 @@ export class CompJS {
 
             // Custom CSS style
             obj.#checkStyleElement();
-            obj.#STYLES_MAP = new Map();
+            obj.#stylesMap = new Map();
             obj.#ELEMENTS_ID = new Map();
             obj.#LOADED_SVGS = new Map()
 
@@ -232,12 +232,12 @@ export class CompJS {
         this.checkPropertyValue(propertyValue);
 
         // Add class property style
-        if (this.#STYLES_MAP.has(selector) === false) {
-            this.#STYLES_MAP.set(selector, new Map([[propertyName, propertyValue]]));
+        if (this.#stylesMap.has(selector) === false) {
+            this.#stylesMap.set(selector, new Map([[propertyName, propertyValue]]));
             return;
         }
 
-        this.#STYLES_MAP.get(selector).set(propertyName, propertyValue);
+        this.#stylesMap.get(selector).set(propertyName, propertyValue);
     }
 
     // Set CompJS selector property values
@@ -299,7 +299,7 @@ export class CompJS {
 
     // Reset map with customized styles
     resetStylesMap() {
-        this.#STYLES_MAP = new Map();
+        this.#stylesMap = new Map();
     }
 
     // Reset all applied customized styles
@@ -312,14 +312,14 @@ export class CompJS {
         this.checkSelector(selector);
 
         // Reset styles for the given class name
-        if (this.#STYLES_MAP.has(selector)) {
-            this.#STYLES_MAP.delete(selector);
+        if (this.#stylesMap.has(selector)) {
+            this.#stylesMap.delete(selector);
 
             // Reset style element content
-            this.#STYLES_MAP.resetAppliedStyles();
+            this.#stylesMap.resetAppliedStyles();
 
             // Apply new styles
-            this.#STYLES_MAP.applyStyles();
+            this.#stylesMap.applyStyles();
         }
     }
 
@@ -331,7 +331,7 @@ export class CompJS {
         // Append customized styles
         let newContent = "";
 
-        for (let [selector, property] of this.#STYLES_MAP.entries()) {
+        for (let [selector, property] of this.#stylesMap.entries()) {
             let newPropertyContent = `${selector} {\n`;
 
             for (let [propertyName, propertyValue] of property.entries())
@@ -387,7 +387,7 @@ export class CompJS {
     }
 
     // Create input element with ID
-    createInputWithId(parentElement, name, type, value, id, ...classNames) {
+    createInputWithId(parentElement, type, name, value, id, ...classNames) {
         const inputElement = this.createElementWithId('input', parentElement, id, ...classNames, COMPJS_SELECTORS.INPUT);
 
         if (name)
@@ -403,8 +403,34 @@ export class CompJS {
     }
 
     // Create input element
-    createInput(parentElement, name, type, value, ...classNames) {
-        return this.createInputWithId(parentElement, name, type, value, null, ...classNames);
+    createInput(parentElement, type, name, value, ...classNames) {
+        return this.createInputWithId(parentElement, type, name, value, null, ...classNames);
+    }
+
+    // Create input radio element with ID
+    createInputRadioWithId(parentElement, name, value, checked, id, ...classNames) {
+        const inputElement = this.createInputWithId(parentElement, 'radio', name, value, id, ...classNames, COMPJS_SELECTORS.RADIO);
+        inputElement.checked = checked
+
+        return inputElement
+    }
+
+    // Create input radio element
+    createInputRadio(parentElement, name, value, checked, ...classNames) {
+        return this.createInputRadioWithId(parentElement, name, value, checked, null, ...classNames);
+    }
+
+    // Create input checkbox element with ID
+    createInputCheckboxWithId(parentElement, name, value, checked, id, ...classNames) {
+        const inputElement = this.createInputWithId(parentElement, 'checkbox', name, value, id, ...classNames, COMPJS_SELECTORS.CHECKBOX);
+        inputElement.checked = checked
+
+        return inputElement
+    }
+
+    // Create input checkbox element
+    createInputCheckbox(parentElement, name, value, checked, ...classNames) {
+        return this.createInputCheckboxWithId(parentElement, name, value, checked, null, ...classNames);
     }
 
     // - Loaders
@@ -462,8 +488,8 @@ export class CompJS {
 
     // Load hidden SVG to be used as reference
     async loadHiddenSVG(url, viewBox, id) {
-        if (!this.#HIDDEN_SVG_CONTAINER)
-            this.#HIDDEN_SVG_CONTAINER = this.createDiv(this.#body, COMPJS_SELECTORS.HIDDEN_SVG_CONTAINER, COMPJS_SELECTORS.HIDE)
+        if (!this.#hiddenSVGContainer)
+            this.#hiddenSVGContainer = this.createDiv(this.#body, COMPJS_SELECTORS.HIDDEN_SVG_CONTAINER, COMPJS_SELECTORS.HIDE)
 
         // SVG already loaded
         if (this.#LOADED_SVGS.get(id))
@@ -478,7 +504,7 @@ export class CompJS {
         this.setElementId(symbolElement, id)
 
         svgElement.appendChild(symbolElement);
-        this.#HIDDEN_SVG_CONTAINER.appendChild(svgElement);
+        this.#hiddenSVGContainer.appendChild(svgElement);
 
         fetch(url)
             .then(response => response.text())

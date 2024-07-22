@@ -8,11 +8,11 @@ export const COMPJS_CONSTANTS = {
 
     // Animation delay on page load
     LOAD_DELAY: 500,
-    CLICK_DELAY:200,
+    CLICK_DELAY: 200,
 }
 Object.freeze(COMPJS_CONSTANTS);
 
-// - Paths that are related with CompJS
+// - CompJS related paths
 export const COMPJS_PATHS = {
     // CSS CompJS stylesheet path
     COMPJS_STYLE: `${COMPJS_ROOT_PATH}/css/compjs.css`,
@@ -22,7 +22,7 @@ export const COMPJS_PATHS = {
 };
 Object.freeze(COMPJS_PATHS);
 
-// - CSS selectors that are related with the CompJS
+// - CompJS CSS selectors
 export const COMPJS_SELECTORS = {
     // Root selector
     ROOT: ":root",
@@ -40,80 +40,94 @@ export const COMPJS_SELECTORS = {
     NO_ANIMATION: "compjs__no-animation",
     PRELOAD: "compjs__preload",
 
-    // Compjs class names
+    // CompJS class names
     HIDDEN_SVG_CONTAINER: "compjs__hidden-svg-container",
     HIDDEN_SVG: "compjs__hidden-svg",
     BUTTON: "compjs__button",
     INPUT: "compjs__input",
+    RADIO: "compjs__radio",
+    RADIO_WARNING: "compjs__radio--warning",
+    CHECKBOX: "compjs__checkbox",
+    CHECKBOX_WARNING: "compjs__checkbox--warning",
 };
 Object.freeze(COMPJS_SELECTORS);
 
-// - CSS variables name that are related with CompJS
+// - CompJS CSS variables name
 export const COMPJS_VARIABLES = {
-    // Timing CSS variables
+    // Transition timings
     TRANSITION_FOCUS: '--compjs-transition-focus-duration',
     TRANSITION_FOCUS_DELAY: '--compjs-transition-focus-delay',
     TRANSITION_COLOR: '--compjs-transition-color-duration',
     TRANSITION_COLOR_DELAY: '--compjs-transition-color-delay',
     TRANSITION_TRANSLATE: '--compjs-transition-translate-duration',
     TRANSITION_TRANSLATE_DELAY: '--compjs-transition-translate-delay',
+    TRANSITION_SCALE: '--compjs-transition-scale-duration',
+    TRANSITION_SCALE_DELAY: '--compjs-transition-scale-delay',
 
-    // Font size CSS variables
+    // Font sizes
     H2_FONT_SIZE: '--compjs-h2-font-size',
     H3_FONT_SIZE: '--compjs-h3-font-size',
     H4_FONT_SIZE: '--compjs-h4-font-size',
     TEXT_FONT_SIZE: '--compjs-text-font-size',
 
-    // Icon size CSS variables
+    // Icon sizes
     ICON_BIG_SIZE: '--compjs-icon-big-size',
     ICON_MEDIUM_SIZE: '--compjs-icon-medium-size',
     ICON_SMALL_SIZE: '--compjs-icon-small-size',
 
-    // Button width CSS variables
+    // Button widths
     BUTTON_BIG_WIDTH: '--compjs-button-big-width',
     BUTTON_MEDIUM_WIDTH: '--compjs-button-medium-width',
     BUTTON_SMALL_WIDTH: '--compjs-button-small-width',
 
-    // Checkbox size CSS variables
+    // Radio sizes
+    RADIO_BIG_SIZE: '--compjs-radio-big-size',
+    RADIO_MEDIUM_SIZE: '--compjs-radio-medium-size',
+    RADIO_SMALL_SIZE: '--compjs-radio-small-size',
+
+    // Checkbox sizes
     CHECKBOX_BIG_SIZE: '--compjs-checkbox-big-size',
     CHECKBOX_MEDIUM_SIZE: '--compjs-checkbox-medium-size',
     CHECKBOX_SMALL_SIZE: '--compjs-checkbox-small-size',
 
-    // Margin CSS variables
+    // Margin sizes
     MARGIN_HUGE_SIZE: '--compjs-margin-huge-size',
     MARGIN_BIG_SIZE: '--compjs-margin-big-size',
     MARGIN_MEDIUM_SIZE: '--compjs-margin-medium-size',
     MARGIN_SMALL_SIZE: '--compjs-margin-small-size',
     MARGIN_MICRO_SIZE: '--compjs-margin-micro-size',
 
-    // Gap CSS variables
+    // Gap sizes
     GAP_HUGE_SIZE: '--compjs-gap-huge-size',
     GAP_BIG_SIZE: '--compjs-gap-big-size',
     GAP_MEDIUM_SIZE: '--compjs-gap-medium-size',
     GAP_SMALL_SIZE: '--compjs-gap-small-size',
     GAP_MICRO_SIZE: '--compjs-gap-micro-size',
 
-    // Padding CSS variables
+    // Padding sizes
     PADDING_HUGE_SIZE: '--compjs-padding-huge-size',
     PADDING_BIG_SIZE: '--compjs-padding-big-size',
     PADDING_MEDIUM_SIZE: '--compjs-padding-medium-size',
     PADDING_SMALL_SIZE: ' --compjs-padding-small-size',
     PADDING_MICRO_SIZE: ' --compjs-padding-micro-size',
+    PADDING_TINY_SIZE: ' --compjs-padding-tiny-size',
 
-    // Border radius CSS variables
+    // Border radius widths
     BORDER_RADIUS_BIG_WIDTH: '--compjs-border-radius-big-width',
     BORDER_RADIUS_MEDIUM_WIDTH: '--compjs-border-radius-medium-width',
     BORDER_RADIUS_SMALL_WIDTH: '--compjs-border-radius-small-width',
 
-    // Border width CSS variables
+    // Border widths
+    BORDER_HUGE_WIDTH: '--compjs-border-huge-width',
     BORDER_BIG_WIDTH: '--compjs-border-big-width',
     BORDER_MEDIUM_WIDTH: '--compjs-border-medium-width',
     BORDER_SMALL_WIDTH: '--compjs-border-small-width',
+    BORDER_TINY_WIDTH: '--compjs-border-tiny-width',
 
-    // Font weight CSS variables
+    // Font weights
     BOLD_FONT_WEIGHT: '--compjs-bold-font-weight',
 
-    // Colors CSS variables
+    // Colors
     GREY_DARK: '--compjs-grey-dark',
     GREY_MEDIUM: '--compjs-grey-medium',
     GREY_LIGHT: '--compjs-grey-light',
@@ -132,7 +146,7 @@ Object.freeze(COMPJS_VARIABLES);
 export const COMPJS_VARIABLES_LIST = [...Object.values(COMPJS_VARIABLES)];
 Object.freeze(COMPJS_VARIABLES_LIST);
 
-// - URLs that are related with the components
+// - CompJS related URLs
 export const COMPJS_URLS = {
     // SVG URLs and filenames
     EDIT_SVG: "./src/compjs/svg/edit-2.svg",
@@ -148,7 +162,7 @@ export const COMPJS_URLS = {
 };
 Object.freeze(COMPJS_URLS);
 
-// - URIs that are related with the components
+// - CompJS related URIs
 export const COMPJS_URIS = {
     // W3
     SVG_NAMESPACE: 'http://www.w3.org/2000/svg'

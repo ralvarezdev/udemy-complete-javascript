@@ -20,7 +20,7 @@
 
 @keyframes moveInFromLeft {
     0% {
-        translate: -100%;
+        translate: -125%;
     }
 
     100% {
@@ -30,7 +30,11 @@
 
 @keyframes moveInFromRight {
     0% {
-         translate:100%;
+        translate: 100%;
+    }
+
+    80% {
+        translate: 0;
     }
 
     100% {
@@ -44,12 +48,16 @@
     }
 
     100% {
-        translate:-100%;
+        translate: -125%;
     }
 }
 
 @keyframes moveOutToRight {
     0% {
+        translate: 0;
+    }
+
+    20% {
         translate: 0;
     }
 

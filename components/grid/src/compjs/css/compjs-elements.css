@@ -6,3 +6,32 @@
     border: none;
     background-color: transparent;
 }
+
+.compjs__checkbox,
+.compjs__radio {
+    box-sizing: border-box;
+    margin: var(--compjs-margin-micro-size);
+    padding: 0;
+}
+
+.compjs__checkbox {
+    width: var(--compjs-checkbox-medium-size);
+    height: var(--compjs-checkbox-medium-size);
+
+    accent-color: var(--compjs-primary-color-dark);
+}
+
+.compjs__checkbox--warning {
+    accent-color: var(--compjs-warning-color-dark);
+}
+
+.compjs__radio {
+    width: var(--compjs-radio-medium-size);
+    height: var(--compjs-radio-medium-size);
+
+    accent-color: var(--compjs-primary-color-dark);
+}
+
+.compjs__radio--warning {
+    accent-color: var(--compjs-warning-color-dark);
+}

@@ -5,11 +5,11 @@
 }
 
 .compjs__grid__body__header {
-    grid-column: 2/-1;
+    grid-column: 1/-1;
     overflow: hidden;
 
     display: grid;
-    grid-auto-columns: 1fr;
+    grid-template-columns: subgrid;
 
     color: var(--compjs-primary-color-light);
     background-color: var(--compjs-primary-color-dark);
@@ -25,7 +25,18 @@
 }
 
 .compjs__grid__body__header--no-checkboxes {
-    grid-column-start: 1;
+    grid-auto-columns: 1fr;
+}
+
+.compjs__grid__body__header__columns-container {
+    grid-column: 2/-1;
+
+    display: grid;
+    grid-auto-columns: 1fr;
+}
+
+.compjs__grid__body__header__columns-container--no-checkboxes {
+    grid-column: 1/-1;
 }
 
 .compjs__grid__body__header__column {
@@ -38,7 +49,7 @@
     transition: background-color var(--compjs-transition-color-duration) ease-out;
 }
 
-.compjs__grid__body__header__column:focus{
+.compjs__grid__body__header__column:focus {
     outline: none;
 
     color: var(--compjs-white);
@@ -47,26 +58,46 @@
 
 .compjs__grid__body__content {
     grid-column: 1/-1;
+    overflow: hidden;
 
     display: grid;
     grid-template-columns: subgrid;
 }
 
-.compjs__grid__body__content__data {
+.compjs__grid__body__content__pages-container {
+    grid-row: 1;
     grid-column: 2/-1;
 
     position: relative;
     height: auto;
-    overflow: hidden;
 
-    border-radius: 0 0 var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width);
+    border-radius: 0 0 var(--compjs-border-radius-medium-width) 0;
 }
 
-.compjs__grid__body__content__data--no-checkboxes {
+.compjs__grid__body__content__pages-container--no-checkboxes {
     grid-column-start: 1;
+    border-radius: 0 0 0 var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width);
 }
 
-.compjs__grid__body__content__data__page {
+.compjs__grid__body__content__checkboxes-container {
+    grid-row: 1;
+    grid-column: 1/2;
+
+    display: flex;
+    flex-direction: column;
+    place-content: center flex-start;
+}
+
+.compjs__grid__body__content__checkbox-container {
+    padding: 0 var(--compjs-padding-medium-size);
+}
+
+.compjs__grid__body__content__checkbox {
+    position: relative;
+    z-index: 1
+}
+
+.compjs__grid__body__content__page {
     width: 100%;
     overflow: hidden;
     min-height: fit-content;
@@ -74,33 +105,32 @@
     position: absolute;
 }
 
-.compjs__grid__body__content__data__page--show-from-right {
+.compjs__grid__body__content__page--show-from-right,
+.compjs__grid__body__content__page--show-from-left {
     translate: 0;
-
-    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveInFromRight;
 }
 
-.compjs__grid__body__content__data__page--show-from-left {
-    translate: 0;
-
-    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveInFromLeft;
+.compjs__grid__body__content__page--show-from-right {
+    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveInFromRight;
 }
 
-.compjs__grid__body__content__data__page--hide-to-left {
-    translate: -100%;
-    /*z-index: 2;*/
-
-    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveOutToLeft;
+.compjs__grid__body__content__page--show-from-left {
+    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveInFromLeft;
 }
 
-.compjs__grid__body__content__data__page--hide-to-right {
+.compjs__grid__body__content__page--hide-to-left {
+    translate: -125%;
+
+    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveOutToLeft;
+}
+
+.compjs__grid__body__content__page--hide-to-right {
     translate: 100%;
-    /*z-index:2;*/
 
-    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveOutToRight;
+    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveOutToRight;
 }
 
-.compjs__grid__body__content__data__page__row {
+.compjs__grid__body__content__page__row {
     display: grid;
     grid-auto-columns: 1fr;
     min-height: fit-content;
@@ -111,19 +141,22 @@
     transition: background-color var(--compjs-transition-color-duration) ease-out;
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(odd) {
+.compjs__grid__body__content__checkbox-container:nth-child(odd),
+.compjs__grid__body__content__page__row:nth-child(odd) {
     background-color: var(--compjs-primary-color-light);
 }
 
-.compjs__grid__body__content__data__page__row--warning:nth-child(odd) {
+.compjs__grid__body__content__checkbox-container--warning:nth-child(odd),
+.compjs__grid__body__content__page__row--warning:nth-child(odd) {
     background-color: var(--compjs-grey-light);
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(even) {
+.compjs__grid__body__content__checkbox-container:nth-child(even),
+.compjs__grid__body__content__page__row:nth-child(even) {
     background-color: var(--compjs-white);
 }
 
-.compjs__grid__body__content__data__page__row__cell {
+.compjs__grid__body__content__page__row__cell {
     grid-row: 1;
     overflow: auto;
     min-height: calc(var(--compjs-padding-micro-size) * 2 + var(--compjs-text-font-size));
@@ -140,7 +173,7 @@
     background-color var(--compjs-transition-color-duration) ease-out;
 }
 
-.compjs__grid__body__content__data__page__row__cell:focus{
+.compjs__grid__body__content__page__row__cell:focus {
     outline: none;
 
     color: var(--compjs-white);
@@ -149,7 +182,7 @@
 
 .compjs__grid__body__column--warning,
 .compjs__grid__body__header__column--warning,
-.compjs__grid__body__content__data__page__row__cell--warning {
+.compjs__grid__body__content__page__row__cell--warning {
     font-weight: var(--compjs-font-weight-bold);
     color: var(--compjs-white);
 }
@@ -162,15 +195,15 @@
     background-color: var(--compjs-warning-color-dark);
 }
 
-.compjs__grid__body__content__data__page__row__cell--warning {
+.compjs__grid__body__content__page__row__cell--warning {
     color: var(--compjs-grey-dark);
     border-color: var(--compjs-warning-color-dark);
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(odd) > .compjs__grid__body__content__data__page__row__cell--warning {
+.compjs__grid__body__content__page__row:nth-child(odd) > .compjs__grid__body__content__page__row__cell--warning {
     background-color: var(--compjs-warning-color-medium);
 }
 
-.compjs__grid__body__content__data__page__row:nth-child(even) > .compjs__grid__body__content__data__page__row__cell--warning {
+.compjs__grid__body__content__page__row:nth-child(even) > .compjs__grid__body__content__page__row__cell--warning {
     background-color: var(--compjs-warning-color-light);
 }

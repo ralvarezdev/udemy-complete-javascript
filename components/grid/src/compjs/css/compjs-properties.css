@@ -36,6 +36,18 @@
     initial-value: 0s;
 }
 
+@property --compjs-transition-scale-duration {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0.15s;
+}
+
+@property --compjs-transition-scale-delay {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0s;
+}
+
 /* - Font sizes */
 
 @property --compjs-h2-font-size {
@@ -102,24 +114,44 @@
     initial-value: 20px;
 }
 
-/* - Checkbox sizes */
+/* - Radio sizes */
 
-@property --compjs-checkbox-big-size {
+@property --compjs-radio-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 26px;
+}
+
+@property --compjs-radio-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 18px;
+}
+
+@property --compjs-radio-small-size {
     syntax: "<length>";
     inherits: true;
     initial-value: 10px;
 }
 
+/* - Checkbox sizes */
+
+@property --compjs-checkbox-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 26px;
+}
+
 @property --compjs-checkbox-medium-size {
     syntax: "<length>";
     inherits: true;
-    initial-value: 8px;
+    initial-value: 18px;
 }
 
 @property --compjs-checkbox-small-size {
     syntax: "<length>";
     inherits: true;
-    initial-value: 6px;
+    initial-value: 10px;
 }
 
 /* - Margin sizes */
@@ -218,6 +250,12 @@
     initial-value: 4px;
 }
 
+@property --compjs-padding-tiny-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 2px;
+}
+
 /* - Border radius widths */
 
 @property --compjs-border-radius-big-width {
@@ -240,10 +278,16 @@
 
 /* - Border widths */
 
-@property --compjs-border-big-width {
+@property --compjs-border-huge-width {
     syntax: "<length>";
     inherits: true;
     initial-value: 8px;
+}
+
+@property --compjs-border-big-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 6px;
 }
 
 @property --compjs-border-medium-width {
@@ -256,6 +300,12 @@
     syntax: "<length>";
     inherits: true;
     initial-value: 2px;
+}
+
+@property --compjs-border-tiny-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 1px;
 }
 
 /* - Font weights */

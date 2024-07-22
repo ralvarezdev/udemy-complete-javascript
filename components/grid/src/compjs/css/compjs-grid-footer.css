@@ -3,14 +3,13 @@
     margin-top: var(--compjs-margin-huge-size);
 }
 
-.compjs__grid__footer--no-checkboxes {
+.compjs__grid__footer--no-radios {
     grid-column-start: 1;
 }
 
 .compjs__grid__footer__pagination {
     display: flex;
-    justify-content: center;
-    align-content: center;
+    place-content: center;
     gap: var(--compjs-gap-huge-size);
 
     padding: var(--compjs-padding-medium-size);
@@ -20,21 +19,43 @@
     width: var(--compjs-button-big-width);
 
     border: var(--compjs-border-small-width) solid var(--compjs-primary-color-dark);
-    color: var(--compjs-primary-color-light);
+    color: var(--compjs-white);
     background-color: var(--compjs-primary-color-dark);
+}
+
+.compjs__grid__footer__pagination__outer-btn--warning {
+    border-color: var(--compjs-warning-color-dark);
+    background-color: var(--compjs-warning-color-dark);
+}
+
+.compjs__grid__footer__pagination__outer-btn:hover,
+.compjs__grid__footer__pagination__outer-btn--warning:hover,
+.compjs__grid__footer__pagination__middle-btn,
+.compjs__grid__footer__pagination__inner-btn {
+    background-color: var(--compjs-white);
 }
 
 .compjs__grid__footer__pagination__outer-btn:hover {
     color: var(--compjs-primary-color-dark);
     border-color: var(--compjs-primary-color-dark);
-    background-color: var(--compjs-white);
+
+}
+
+.compjs__grid__footer__pagination__outer-btn--warning:hover {
+    color: var(--compjs-warning-color-dark);
+    border-color: var(--compjs-warning-color-dark);
 }
 
 .compjs__grid__footer__pagination__middle-btn,
 .compjs__grid__footer__pagination__inner-btn {
     border: var(--compjs-border-small-width) solid var(--compjs-primary-color-medium);
     color: var(--compjs-primary-color-medium);
-    background-color: var(--compjs-white);
+}
+
+.compjs__grid__footer__pagination__middle-btn--warning,
+.compjs__grid__footer__pagination__inner-btn--warning {
+    border-color: var(--compjs-warning-color-medium);
+    color: var(--compjs-warning-color-medium);
 }
 
 .compjs__grid__footer__pagination__middle-btn:hover,
@@ -43,7 +64,14 @@
 .compjs__grid__footer__pagination__inner-btn--active {
     color: var(--compjs-primary-color-dark);
     border-color: var(--compjs-primary-color-dark);
-    background-color: var(--compjs-white);
+}
+
+.compjs__grid__footer__pagination__middle-btn--warning:hover,
+.compjs__grid__footer__pagination__middle-btn--warning--active,
+.compjs__grid__footer__pagination__inner-btn--warning:hover,
+.compjs__grid__footer__pagination__inner-btn--warning--active {
+    color: var(--compjs-warning-color-dark);
+    border-color: var(--compjs-warning-color-dark);
 }
 
 .compjs__grid__footer__pagination__outer-btn:first-of-type,
@@ -58,8 +86,7 @@
 
 .compjs__grid__footer__pagination__middle-btn-container {
     display: flex;
-    justify-content: center;
-    align-content: center;
+    place-content: center;
 
     gap: var(--compjs-gap-big-size);
 }
@@ -71,8 +98,7 @@
 
 .compjs__grid__footer__pagination__inner-btn-container {
     display: flex;
-    justify-content: center;
-    align-content: center;
+    place-content: center;
 
     gap: var(--compjs-gap-small-size);
 }

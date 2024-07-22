@@ -76,7 +76,7 @@ export class CompJSElement {
 
     // Get formatted data name
     getFormattedDataName(dataName) {
-         return dataName.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`)
+        return dataName.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`)
     }
 
     // - Query selectors
@@ -86,7 +86,7 @@ export class CompJSElement {
         if (parentElement === undefined)
             this._throwUndefinedElementError(parentElementName)
 
-        dataName=this.getFormattedDataName(dataName)
+        dataName = this.getFormattedDataName(dataName)
         return parentElement.querySelector(`${selector}[data-${dataName}='${data}']`)
     }
 
@@ -103,7 +103,7 @@ export class CompJSElement {
         if (parentElement === undefined)
             this._throwUndefinedElementError(parentElementName)
 
-        dataName=this.getFormattedDataName(dataName)
+        dataName = this.getFormattedDataName(dataName)
         return parentElement.querySelectorAll(`${selector}[data-${dataName}='${data}']`)
     }
 

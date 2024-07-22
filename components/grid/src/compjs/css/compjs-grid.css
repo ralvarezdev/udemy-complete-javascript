@@ -5,6 +5,6 @@
 
 .compjs__grid {
     display: grid;
-    grid-template-columns: var(--compjs-checkbox-medium-size) 1fr;
+    grid-template-columns: auto 1fr;
     padding: var(--compjs-padding-big-size);
 }
