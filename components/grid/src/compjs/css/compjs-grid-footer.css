@@ -90,7 +90,7 @@
 
     border-radius: var(--compjs-border-radius-small-width);
 
-    transition: color var(--compjs-transition-color) ease-out,
-    border var(--compjs-transition-color) ease-out,
-    background-color var(--compjs-transition-color) ease-out;
+    transition: color var(--compjs-transition-color-duration) ease-out,
+    border var(--compjs-transition-color-duration) ease-out,
+    background-color var(--compjs-transition-color-duration) ease-out;
 }

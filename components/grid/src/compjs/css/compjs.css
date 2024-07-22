@@ -1,2 +1,92 @@
-@import url('compjs-elements.css');
+@import url('compjs-properties.css');
 @import url('compjs-utilities.css');
+@import url('compjs-elements.css');
+
+:root{
+    /* Transition timings */
+    --compjs-transition-focus-duration: 0.4s;
+    --compjs-transition-focus-delay: 0s;
+    --compjs-transition-color-duration: 0.2s;
+    --compjs-transition-color-delay: 0s;
+    --compjs-transition-translate-duration: 0.4s;
+    --compjs-transition-translate-delay: 0s;
+
+    /* Font sizes */
+    --compjs-h2-font-size: 4.4rem;
+    --compjs-h3-font-size: 2.4rem;
+    --compjs-h4-font-size: 1.8rem;
+    --compjs-text-font-size: 1.6rem;
+
+    /* Button sizes */
+    --compjs-button-big-width: 10rem;
+    --compjs-button-medium-width: 8rem;
+    --compjs-button-small-width: 6rem;
+
+    /* Icon sizes */
+    --compjs-icon-big-size: 5rem;
+    --compjs-icon-medium-size: 3.2rem;
+    --compjs-icon-small-size: 2rem;
+
+    /* Checkbox sizes */
+    --compjs-checkbox-big-size: 1rem;
+    --compjs-checkbox-medium-size: 0.8rem;
+    --compjs-checkbox-small-size: 0.6rem;
+
+    /* Margin sizes */
+    --compjs-margin-huge-size: 4rem;
+    --compjs-margin-big-size: 3rem;
+    --compjs-margin-medium-size: 2.2rem;
+    --compjs-margin-small-size: 1.6rem;
+    --compjs-margin-micro-size: 0.8rem;
+
+    /* Gap sizes */
+    --compjs-gap-huge-size: 4rem;
+    --compjs-gap-big-size: 2.2rem;
+    --compjs-gap-medium-size: 1.6rem;
+    --compjs-gap-small-size: 1rem;
+    --compjs-gap-micro-size: 0.8rem;
+
+    /* Padding sizes */
+    --compjs-padding-huge-size: 3.2rem;
+    --compjs-padding-big-size: 2.2rem;
+    --compjs-padding-medium-size: 1.6rem;
+    --compjs-padding-small-size: 0.8rem;
+    --compjs-padding-micro-size: 0.25rem;
+    --compjs-padding-cell-size: 0.5rem;
+
+    /* Border radius widths */
+    --compjs-border-radius-big-width: 15px;
+    --compjs-border-radius-medium-width: 10px;
+    --compjs-border-radius-small-width: 5px;
+
+    /* Border widths */
+    --compjs-border-big-width: 8px;
+    --compjs-border-medium-width: 4px;
+    --compjs-border-small-width: 2px;
+
+    /* Font weights */
+    --compjs-font-weight-bold: 600;
+
+    /* Colors */
+    --compjs-grey-dark: #343a40;
+    --compjs-grey-medium: #495057;
+    --compjs-grey-light: #868e96;
+    --compjs-white: #f8f9fa;
+
+    --compjs-primary-color-dark: #099268;
+    --compjs-primary-color-medium: #20c997;
+    --compjs-primary-color-light: #e6fcf5;
+
+    --compjs-warning-color-dark: #c92a2a;
+    --compjs-warning-color-medium: #ff6b6b;
+    --compjs-warning-color-light: #ffc9c9;
+}
+
+html{
+    font-size: 62.5%
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}

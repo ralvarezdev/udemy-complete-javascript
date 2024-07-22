@@ -14,9 +14,6 @@ Object.freeze(COMPJS_CONSTANTS);
 
 // - Paths that are related with CompJS
 export const COMPJS_PATHS = {
-    // CSS Root stylesheets path
-    ROOT_STYLE: `${COMPJS_ROOT_PATH}/css/compjs-root.css`,
-
     // CSS CompJS stylesheet path
     COMPJS_STYLE: `${COMPJS_ROOT_PATH}/css/compjs.css`,
 
@@ -54,11 +51,11 @@ Object.freeze(COMPJS_SELECTORS);
 // - CSS variables name that are related with CompJS
 export const COMPJS_VARIABLES = {
     // Timing CSS variables
-    TRANSITION_FOCUS: '--compjs-transition-focus',
+    TRANSITION_FOCUS: '--compjs-transition-focus-duration',
     TRANSITION_FOCUS_DELAY: '--compjs-transition-focus-delay',
-    TRANSITION_COLOR: '--compjs-transition-color',
+    TRANSITION_COLOR: '--compjs-transition-color-duration',
     TRANSITION_COLOR_DELAY: '--compjs-transition-color-delay',
-    TRANSITION_TRANSLATE: '--compjs-transition-translate',
+    TRANSITION_TRANSLATE: '--compjs-transition-translate-duration',
     TRANSITION_TRANSLATE_DELAY: '--compjs-transition-translate-delay',
 
     // Font size CSS variables

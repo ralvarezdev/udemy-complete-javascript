@@ -36,8 +36,7 @@ export class CompJS {
             obj.#body = document.querySelector('body');
 
             // Insert default CSS style to HTML
-            obj.addStyleSheet(COMPJS_PATHS.ROOT_STYLE);
-            obj.addStyleSheet(COMPJS_PATHS.COMPJS_STYLE)
+            obj.addStyleSheet(COMPJS_PATHS.COMPJS_STYLE);
 
             // Custom CSS style
             obj.#checkStyleElement();

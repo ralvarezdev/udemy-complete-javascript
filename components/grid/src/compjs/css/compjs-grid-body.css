@@ -15,9 +15,9 @@
     background-color: var(--compjs-primary-color-dark);
     border-radius: var(--compjs-border-radius-medium-width) var(--compjs-border-radius-medium-width) 0 0;
 
-    transition: font-weight var(--compjs-transition-color) ease-out,
-    color var(--compjs-transition-color) ease-out,
-    background-color var(--compjs-transition-color) ease-out;
+    transition: font-weight var(--compjs-transition-color-duration) ease-out,
+    color var(--compjs-transition-color-duration) ease-out,
+    background-color var(--compjs-transition-color-duration) ease-out;
 }
 
 .compjs__grid__body__header--warning {
@@ -35,7 +35,7 @@
     padding: var(--compjs-padding-micro-size) var(--compjs-padding-small-size);
     text-align: center;
 
-    transition: background-color var(--compjs-transition-color) ease-out;
+    transition: background-color var(--compjs-transition-color-duration) ease-out;
 }
 
 .compjs__grid__body__header__column:focus{
@@ -77,27 +77,27 @@
 .compjs__grid__body__content__data__page--show-from-right {
     translate: 0;
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInFromRight;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveInFromRight;
 }
 
 .compjs__grid__body__content__data__page--show-from-left {
     translate: 0;
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveInFromLeft;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveInFromLeft;
 }
 
 .compjs__grid__body__content__data__page--hide-to-left {
     translate: -100%;
     /*z-index: 2;*/
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutToLeft;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveOutToLeft;
 }
 
 .compjs__grid__body__content__data__page--hide-to-right {
     translate: 100%;
     /*z-index:2;*/
 
-    animation: var(--compjs-transition-translate) ease-in-out var(--compjs-transition-translate-delay) moveOutToRight;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) moveOutToRight;
 }
 
 .compjs__grid__body__content__data__page__row {
@@ -108,7 +108,7 @@
     font-size: var(--compjs-text-font-size);
     color: var(--compjs-grey-dark);
 
-    transition: background-color var(--compjs-transition-color) ease-out;
+    transition: background-color var(--compjs-transition-color-duration) ease-out;
 }
 
 .compjs__grid__body__content__data__page__row:nth-child(odd) {
@@ -126,18 +126,18 @@
 .compjs__grid__body__content__data__page__row__cell {
     grid-row: 1;
     overflow: auto;
-    min-height: calc(var(--compjs-padding-cell-size) * 2 + var(--compjs-text-font-size));
+    min-height: calc(var(--compjs-padding-micro-size) * 2 + var(--compjs-text-font-size));
 
-    padding: var(--compjs-padding-cell-size);
+    padding: var(--compjs-padding-micro-size);
 
     text-align: center;
 
     border: transparent solid var(--compjs-border-small-width);
 
-    transition: border var(--compjs-transition-color) ease-out,
-    font-weight var(--compjs-transition-color) ease-out,
-    color var(--compjs-transition-color) ease-out,
-    background-color var(--compjs-transition-color) ease-out;
+    transition: border var(--compjs-transition-color-duration) ease-out,
+    font-weight var(--compjs-transition-color-duration) ease-out,
+    color var(--compjs-transition-color-duration) ease-out,
+    background-color var(--compjs-transition-color-duration) ease-out;
 }
 
 .compjs__grid__body__content__data__page__row__cell:focus{

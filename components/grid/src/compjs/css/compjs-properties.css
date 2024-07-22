@@ -1,0 +1,329 @@
+/* - Transition timings */
+
+@property --compjs-transition-focus-duration {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0.4s;
+}
+
+@property --compjs-transition-focus-delay {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0s;
+}
+
+@property --compjs-transition-color-duration {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0.4s;
+}
+
+@property --compjs-transition-color-delay {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0s;
+}
+
+@property --compjs-transition-translate-duration {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0.4s;
+}
+
+@property --compjs-transition-translate-delay {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0s;
+}
+
+/* - Font sizes */
+
+@property --compjs-h2-font-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 44px;
+}
+
+@property --compjs-h3-font-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 24px;
+}
+
+@property --compjs-h4-font-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 18px;
+}
+
+@property --compjs-text-font-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 16px;
+}
+
+/* - Button sizes */
+
+@property --compjs-button-big-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 100px;
+}
+
+@property --compjs-button-medium-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 80px;
+}
+
+@property --compjs-button-small-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 60px;
+}
+
+/* - Icon sizes */
+
+@property --compjs-icon-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 50px;
+}
+
+@property --compjs-icon-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 32px;
+}
+
+@property --compjs-icon-small-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 20px;
+}
+
+/* - Checkbox sizes */
+
+@property --compjs-checkbox-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 10px;
+}
+
+@property --compjs-checkbox-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 8px;
+}
+
+@property --compjs-checkbox-small-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 6px;
+}
+
+/* - Margin sizes */
+
+@property --compjs-margin-huge-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 40px;
+}
+
+@property --compjs-margin-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 30px;
+}
+
+@property --compjs-margin-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 22px;
+}
+
+@property --compjs-margin-small-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 16px;
+}
+
+@property --compjs-margin-micro-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 8px;
+}
+
+/* - Gap sizes */
+
+@property --compjs-gap-huge-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 40px;
+}
+
+@property --compjs-gap-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 22px;
+}
+
+@property --compjs-gap-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 16px;
+}
+
+@property --compjs-gap-small-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 10px;
+}
+
+@property --compjs-gap-micro-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 8px;
+}
+
+/* - Padding sizes */
+
+@property --compjs-padding-huge-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 32px;
+}
+
+@property --compjs-padding-big-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 22px;
+}
+
+@property --compjs-padding-medium-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 16px;
+}
+
+@property --compjs-padding-small-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 8px;
+}
+
+@property --compjs-padding-micro-size {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 4px;
+}
+
+/* - Border radius widths */
+
+@property --compjs-border-radius-big-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 15px;
+}
+
+@property --compjs-border-radius-medium-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 10px;
+}
+
+@property --compjs-border-radius-small-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 5px;
+}
+
+/* - Border widths */
+
+@property --compjs-border-big-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 8px;
+}
+
+@property --compjs-border-medium-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 4px;
+}
+
+@property --compjs-border-small-width {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 2px;
+}
+
+/* - Font weights */
+
+@property --compjs-font-weight-bold {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 600;
+}
+
+/* - Colors */
+
+@property --compjs-grey-dark {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #343a40;
+}
+
+@property --compjs-grey-medium {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #495057;
+}
+
+@property --compjs-grey-light {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #868e96;
+}
+
+@property --compjs-white {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #f8f9fa;
+}
+
+@property --compjs-primary-color-dark {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #099268;
+}
+
+@property --compjs-primary-color-medium {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #20c997;
+}
+
+@property --compjs-primary-color-light {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #e6fcf5;
+}
+
+@property --compjs-warning-color-dark {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #c92a2a;
+}
+
+@property --compjs-warning-color-medium {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #ff6b6b;
+}
+
+@property --compjs-warning-color-light {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #ffc9c9;
+}

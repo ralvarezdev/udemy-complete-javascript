@@ -1,7 +1,7 @@
-@import url('compjs-grid-keyframes.css');
-@import url('compjs-grid-header.css');
 @import url('compjs-grid-body.css');
 @import url('compjs-grid-footer.css');
+@import url('compjs-grid-header.css');
+@import url('compjs-grid-keyframes.css');
 
 .compjs__grid {
     display: grid;

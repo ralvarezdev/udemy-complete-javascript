@@ -152,8 +152,7 @@ export class CompJSGrid extends CompJSElement {
         this.#togglePaginationButtonActive()
 
         currentPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_LEFT, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_SHOW_RIGHT)
-        toPageElement.classList.remove
-            (GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_LEFT, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
+        toPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_LEFT, GRID_SELECTORS.BODY_CONTENT_DATA_PAGE_HIDE_RIGHT)
 
         // Change page
         if (toIdx < fromIdx) {

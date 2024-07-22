@@ -32,8 +32,8 @@
 
     border-bottom: var(--compjs-border-big-width) dashed transparent;
 
-    transition: color var(--compjs-transition-color) ease-out,
-                border var(--compjs-transition-color) ease-out;
+    transition: color var(--compjs-transition-color-duration) ease-out,
+                border var(--compjs-transition-color-duration) ease-out;
 }
 
 .compjs__grid__header__title:focus {
@@ -94,12 +94,12 @@
 
     z-index: 1;
 
-    animation: var(--compjs-transition-focus) ease-out var(--compjs-transition-focus-delay) bigIconLostFocus;
+    animation: var(--compjs-transition-focus-duration) ease-out var(--compjs-transition-focus-delay) bigIconLostFocus;
 }
 
 .compjs__grid__header__icon:hover,
 .compjs__grid__header__icon:active {
     transform: translate(-50%, -60%);
 
-    animation: var(--compjs-transition-focus) ease-out var(--compjs-transition-focus-delay) bigIconFocus;
+    animation: var(--compjs-transition-focus-duration) ease-out var(--compjs-transition-focus-delay) bigIconFocus;
 }
