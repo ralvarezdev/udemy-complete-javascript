@@ -7,7 +7,7 @@ export const COMPJS_CONSTANTS = {
     VIEW_BOX: '0 0 24 24',
 
     // Animation delay on page load
-    LOAD_DELAY: 500,
+    LOAD_DELAY: 700,
     CLICK_DELAY: 200,
 }
 Object.freeze(COMPJS_CONSTANTS);

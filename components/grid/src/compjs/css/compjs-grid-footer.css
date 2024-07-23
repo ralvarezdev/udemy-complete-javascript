@@ -3,13 +3,15 @@
     margin-top: var(--compjs-margin-huge-size);
 }
 
-.compjs__grid__footer--no-radios {
+.compjs__grid__footer--no-checkboxes {
     grid-column-start: 1;
 }
 
 .compjs__grid__footer__pagination {
     display: flex;
-    place-content: center;
+    justify-content: center;
+    align-content: center;
+
     gap: var(--compjs-gap-huge-size);
 
     padding: var(--compjs-padding-medium-size);
@@ -86,7 +88,8 @@
 
 .compjs__grid__footer__pagination__middle-btn-container {
     display: flex;
-    place-content: center;
+    justify-content: center;
+    align-content: center;
 
     gap: var(--compjs-gap-big-size);
 }
@@ -98,7 +101,8 @@
 
 .compjs__grid__footer__pagination__inner-btn-container {
     display: flex;
-    place-content: center;
+    justify-content: center;
+    align-content: center;
 
     gap: var(--compjs-gap-small-size);
 }

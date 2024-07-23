@@ -2,6 +2,7 @@
 export const GRID_CONSTANTS = {
     // Resize observers
     PAGE_ELEMENT_RESIZE_OBSERVER: "pageElementResize",
+    ROW_RESIZE_OBSERVER: "currentPageRowResize",
 
     // Mutation observers
     TITLE_OBSERVER: "title",
@@ -12,9 +13,6 @@ export const GRID_CONSTANTS = {
     PAGE_IDX: "pageIdx",
     ROW_IDX: "pageRowIdx",
     COLUMN_ID: "cellColumnId",
-
-    // Input checkbox
-    CHECKBOX_ROW_NAME: "pageRowCheckbox",
 }
 Object.freeze(GRID_CONSTANTS);
 

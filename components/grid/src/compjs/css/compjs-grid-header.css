@@ -18,7 +18,8 @@
     grid-column: 1/2;
 
     display: flex;
-    place-content: center;
+    align-content: center;
+    justify-content: center;
 
     padding: 0 var(--compjs-padding-big-size);
 
@@ -56,8 +57,8 @@
     grid-column: 2/-1;
 
     display: flex;
-    align-items: center;
-    justify-content: right;
+    align-content: center;
+    justify-content: flex-end;
 
     gap: var(--compjs-gap-micro-size);
     padding: var(--compjs-padding-small-size) 0;
