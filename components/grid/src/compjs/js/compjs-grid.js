@@ -116,6 +116,9 @@ export class CompJSGrid extends CompJSElement {
             return
         */
 
+        if(this.#pagesNumber===0)
+            return
+
         if (toIdx >= this.#pagesNumber)
             toIdx = 0
 
@@ -459,22 +462,35 @@ export class CompJSGrid extends CompJSElement {
 
     // Update body content checkbox containers height
     #updateBodyContentCheckboxContainersHeight() {
+        if(this.#pagesNumber===0)
+            return
+
         const pageRows = this.#getCurrentPageElement().childNodes
         const checkboxContainers = this.#bodyContentCheckboxesContainer.childNodes
 
+        // Update page row related checkbox container height
         for (let i = 0, pageRowHeightPx, checkboxContainerHeightPx; i < pageRows.length; i++) {
             pageRowHeightPx = this.CompJS.getElementTotalHeight(pageRows[i])
             checkboxContainerHeightPx = this.CompJS.getElementTotalHeight(checkboxContainers[i])
-
-            if (pageRowHeightPx > checkboxContainerHeightPx)
-                checkboxContainers[i].style.height = this.CompJS.convertPixelsToRem(pageRowHeightPx) + "rem"
+            checkboxContainers[i].style.height = this.CompJS.convertPixelsToRem(pageRowHeightPx) + "rem"
         }
+
+        /*
+        // Remove height style if there is minor number of page rows than the page size
+        for(let i=pageRows.length;i<checkboxContainers.length;i++)
+            checkboxContainers[i].style.height=""
+         */
     }
 
     // Update body content checkbox containers
     #updateBodyContentCheckboxContainers() {
         // Get checkbox containers and checkboxes
         const checkboxContainers = this.#getBodyContentCheckboxContainerElements()
+
+        if(this.#pagesNumber===0) {
+            checkboxContainers.forEach(c=>c.classList.add(COMPJS_SELECTORS.HIDE))
+            return
+        }
 
         // Get number of rows
         const rowsNumber = this.#lastPage.childNodes.length
@@ -490,7 +506,8 @@ export class CompJSGrid extends CompJSElement {
 
         else {
             for (let i = 0; i < rowsNumber; i++)
-                checkboxContainers[i].classList.remove(COMPJS_SELECTORS.HIDE)
+                for(let element of [checkboxContainers[i],checkboxContainers[i].firstChild])
+                    element.classList.remove(COMPJS_SELECTORS.HIDE)
 
             for (let i = rowsNumber; i < checkboxContainers.length; i++)
                 checkboxContainers[i].classList.add(COMPJS_SELECTORS.HIDE)
@@ -500,6 +517,17 @@ export class CompJSGrid extends CompJSElement {
     // Update body content checkboxes
     #updateBodyContentCheckboxes() {
         const checkboxes = this.#getBodyContentCheckboxElements()
+
+        // Hide checkboxes if the number of page rows is less than page size and there's a single page
+        if(this.#currentPage===0&&this.#pagesNumber===1) {
+            const rowsNumber=this.#getLastPageRowIndex()+1
+
+            for (let i =rowsNumber;i<checkboxes.length;i++)
+                for( let element of [checkboxes[i],checkboxes[i].parentElement]) {
+                    element.classList.add(COMPJS_SELECTORS.HIDE)
+                    element.style.height=""
+                }
+        }
 
         // Get page row index
         let pageRowIdx = this.#currentPage * this.#pageSize
@@ -525,7 +553,7 @@ export class CompJSGrid extends CompJSElement {
 
     // Update footer
     #updateFooter() {
-        if (this.#pagesNumber === 1) {
+        if (this.#pagesNumber <2) {
             this.#footer.classList.add(COMPJS_SELECTORS.HIDE)
             return
         }
@@ -639,6 +667,7 @@ export class CompJSGrid extends CompJSElement {
     // Delete selected rows
     #deleteSelectedPageRows() {
         const pages = this.#bodyContentPagesContainer.childNodes
+        let changedCurrentPage=false
         let oldPageIdx = 0, newPageIdx = 0, newPageRowIdx = 0
 
         // Disconnect page element resize observer
@@ -671,8 +700,12 @@ export class CompJSGrid extends CompJSElement {
 
         // Delete page
         const deletePage = idx => {
+            // Check if it's the current page
+            if(idx===this.#currentPage)
+                changedCurrentPage=true
+
             // Update page index and number of pages
-            if (oldPageIdx <= this.#currentPage)
+            if (oldPageIdx <= this.#currentPage&&this.#currentPage>0)
                 this.#currentPage--
             this.#pagesNumber--
 
@@ -695,14 +728,16 @@ export class CompJSGrid extends CompJSElement {
             this.#addResizeObserverToElement(page, GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER)
 
             // Check if it's the last page
-            if (i === pages.length - 1)
-                return
+            if (i === pages.length - 1) {
+                this.#setPageElementIndex(page, newPageIdx)
+                return changedCurrentPage
+            }
             i++
 
             // Remove page if it is missing some rows
             while (deletedPageRowsNumber > 0) {
                 const startIdx = pageRows.length
-                const nextPage = pages[i + 1]
+                const nextPage = pages[i ]
                 const nextPageRows = nextPage.childNodes
 
                 // Append rows to the current page
@@ -726,6 +761,8 @@ export class CompJSGrid extends CompJSElement {
 
         // Update last page
         this.#lastPage = pages[pages.length - 1]
+
+        return changedCurrentPage
     }
 
     // - JSON
@@ -904,7 +941,7 @@ export class CompJSGrid extends CompJSElement {
 
     // Get last page row index
     #getLastPageRowIndex() {
-        return this.#getPageRowIndex(this.#lastPage.lastElementChild)
+        return this.#pagesNumber>0?this.#getPageRowIndex(this.#lastPage.lastElementChild):null
     }
 
     // Get pagination button element class name
@@ -1068,7 +1105,7 @@ export class CompJSGrid extends CompJSElement {
             // Check if there's enough space for a new row
             const rowIndex = this.#getLastPageRowIndex()
 
-            if (this.#lastPage.childNodes.length >= this.#pageSize)
+            if (rowIndex===null||this.#lastPage.childNodes.length >= this.#pageSize)
                 this.#addBodyContentPage()
 
             // Add new row
@@ -1140,14 +1177,14 @@ export class CompJSGrid extends CompJSElement {
         headerRemoveIconContainer.addEventListener('click', event => {
             event.preventDefault()
 
-            // Store current page
-            const currentPage = this.#currentPage
+            // Store pages number
+            const pagesNumber=this.#pagesNumber
 
             // Update selected page rows
             this.#updateSelectedPageRows()
 
             // Remove selected rows
-            this.#deleteSelectedPageRows()
+            const changedCurrentPage= this.#deleteSelectedPageRows()
 
             // Update body content checkboxes
             this.#updateBodyContentCheckboxContainers()
@@ -1157,8 +1194,15 @@ export class CompJSGrid extends CompJSElement {
             this.#updateFooter()
 
             // Change to the current page (in case it was deleted)
-            if (currentPage !== this.#currentPage)
+            if (changedCurrentPage)
                 this.#changePage(this.#currentPage)
+
+            else {
+                if(pagesNumber!==this.#pagesNumber)
+                    this.#updateFooter()
+
+                this.#updateBodyContentCheckboxContainersHeight()
+            }
         })
     }
 
