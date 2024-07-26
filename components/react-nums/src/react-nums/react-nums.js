@@ -1,34 +1,24 @@
-import {REACT_NUMBER_DATA_TYPES, REACT_NUMBER_DATA_TYPES_LIST} from "./react-nums-props.js";
+import {REACT_NUMBER} from "./react-nums-props.js";
 
 export class ReactNumbersHandler {
     #NUMBERS
+    #DATA_TYPE
 
-    constructor() {
+    constructor(dataType) {
         this.#NUMBERS = new Map();
+        
+         // Check data type
+        if (!ReactNumbersHandler.checkDataType(dataType))
+            throw new Error("Invalid data type")
+        
+        this.#DATA_TYPE=dataType
     }
 
-    // - Add, remove and get React Numbers
+    // - Getters
 
-    // Add React Number
-    addReactNumber(reactNumber) {
-        const id = String(reactNumber.id)
-
-        if (!reactNumber instanceof ReactNumber)
-            throw new Error("Invalid React Number")
-
-        if (this.#NUMBERS.has(id))
-            throw new Error("React Number already exists")
-
-        this.#NUMBERS.set(id, reactNumber);
-    }
-
-    // Change React Number ID
-    changeReactNumberId(id) {
-        id = String(id)
-
-        const reactNumber = this.getReactNumber(id)
-        this.#NUMBERS.delete(id)
-        this.#NUMBERS.set(reactNumber.id, reactNumber)
+    // Get data type
+    get dataType() {
+        return this.#DATA_TYPE
     }
 
     // Get React Number
@@ -42,32 +32,60 @@ export class ReactNumbersHandler {
         return number
     }
 
+    // - Add and update React Numbers
+
+    // Add React Number
+    addReactNumber(reactNumber) {
+        const id = String(reactNumber.id)
+
+        if (!reactNumber instanceof ReactNumber)
+            throw new Error("Invalid React Number")
+        
+        if(this.#DATA_TYPE!==reactNumber.dataType)
+            throw new Error("Invalid React Number data type")
+
+        if (this.#NUMBERS.has(id))
+            throw new Error("React Number already exists")
+
+        this.#NUMBERS.set(id, reactNumber);
+    }
+
+    // Update React Number ID
+    updateReactNumberId(id) {
+        id = String(id)
+
+        const reactNumber = this.getReactNumber(id)
+        this.#NUMBERS.delete(id)
+        this.#NUMBERS.set(reactNumber.id, reactNumber)
+    }
+
     // - Validators
-    static checkDataType(number_type) {
-        for (let data_type of REACT_NUMBER_DATA_TYPES_LIST)
-            if (data_type === number_type)
+    
+    // Check data type
+    static checkDataType(dataType) {
+        for (let validDataType of Object.values(REACT_NUMBER.DATA_TYPES))
+            if (dataType ===validDataType)
                 return true
 
         return false
     }
 
-    static getParsedNumber(data_type, number) {
+    // Get parsed number
+    getParsedNumber(number) {
         try {
-            if (data_type === REACT_NUMBER_DATA_TYPES.NUMBER) {
+            if (this.#DATA_TYPE === REACT_NUMBER.DATA_TYPES.NUMBER) {
                 number = Number.parseFloat(number)
                 if (Number.isNaN(number))
                     return null
-            } else if (data_type === REACT_NUMBER_DATA_TYPES.BIG_INT)
-                number = BigInt(number)
+                else
+                    return number
+                
+            } else if (this.#DATA_TYPE === REACT_NUMBER.DATA_TYPES.BIG_INT)
+                return BigInt(number)
+
         } catch (e) {
-            return null
+            throw new Error("Invalid React Number value")
         }
-
-        return number
-    }
-
-    static isDataType(data_type, number) {
-        return typeof (number) === data_type
     }
 }
 
@@ -112,37 +130,27 @@ class Observer {
 export class ReactNumber extends Subject {
     #REACT_NUMBERS_HANDLER
     #NUMBER
-    #DATA_TYPE
     #ID
 
-    constructor(number, number_type, id, reactNumbersHandler) {
+    constructor(number, id, reactNumbersHandler) {
         super()
-
-        // Check data type
-        if (!ReactNumbersHandler.checkDataType(number_type))
-            throw new Error("Invalid data type")
-
-        // Get parsed number
-        number = ReactNumbersHandler.getParsedNumber(number_type, number)
-
-        // Check if number is valid
-        if (!ReactNumbersHandler.isDataType(number_type, number))
-            throw new Error("Invalid number type")
 
         // Check React Numbers Handler
         if (!reactNumbersHandler instanceof ReactNumbersHandler)
             throw new Error("Invalid React Numbers Handler")
 
-        this.number = number;
-        this.data_type = number_type;
-        this.id = id;
+        // Get parsed number
+        number = reactNumbersHandler.getParsedNumber(number)
+
         this.#REACT_NUMBERS_HANDLER = reactNumbersHandler;
+        this.number = number;
+        this.id = id;
         this.reactNumbersHandler.addReactNumber(this)
     }
 
     // - Getters and setters
     get number() {
-        return ReactNumbersHandler.getParsedNumber(this.data_type, this.#NUMBER);
+        return this.#NUMBER;
     }
 
     set number(number) {
@@ -150,12 +158,8 @@ export class ReactNumber extends Subject {
         this.notifyAll()
     }
 
-    get data_type() {
-        return this.#DATA_TYPE;
-    }
-
-    set data_type(number_type) {
-        this.#DATA_TYPE = number_type;
+    get dataType() {
+        return this.reactNumbersHandler.dataType;
     }
 
     get id() {
@@ -167,7 +171,7 @@ export class ReactNumber extends Subject {
         this.#ID = id;
 
         if (oldId !== undefined)
-            this.reactNumbersHandler.changeReactNumberId(oldId)
+            this.reactNumbersHandler.updateReactNumberId(oldId)
     }
 
     get reactNumbersHandler() {
@@ -201,7 +205,7 @@ class ReactNumberObserver extends Observer {
 export class ReactEquation {
     static #OPERATORS
 
-    #REACT_NUMBRS_HANDLER
+    #REACT_NUMBERS_HANDLER
     #EQUATION
     #QUEUE
     #UNIQUE_REACT_NUMBERS
@@ -217,7 +221,7 @@ export class ReactEquation {
         if (!reactNumbersHandler instanceof ReactNumbersHandler)
             throw new Error("Invalid React Numbers Handler")
 
-        this.#REACT_NUMBRS_HANDLER = reactNumbersHandler
+        this.#REACT_NUMBERS_HANDLER = reactNumbersHandler
     }
 
     // - Getters and setters
@@ -235,7 +239,12 @@ export class ReactEquation {
 
     // Get React Numbers Handler
     get reactNumbersHandler() {
-        return this.#REACT_NUMBRS_HANDLER
+        return this.#REACT_NUMBERS_HANDLER
+    }
+
+    // Get data type
+    get dataType() {
+        return this.reactNumbersHandler.dataType
     }
 
     // Check if it's an operator
@@ -265,19 +274,21 @@ export class ReactEquation {
             while (operators.length > 0 && getTopOp() !== '(')
                 pushResultStack(operators.pop())
 
+            if(operators.length===0)
+                throw new Error("Invalid React Equation")
+
             operators.pop()
             return
         }
 
-        if (operators.length === 0 || this.#hasHigherPriority(op, getTopOp()))
+        if (operators.length === 0 || this.#hasHigherPriority(op, getTopOp())){
             operators.push(op)
+            return}
 
-        else {
-            while (operators.length > 0 && !this.#hasHigherPriority(op, getTopOp()) && getTopOp() !== '(')
-                pushResultStack(operators.pop())
+       while (operators.length > 0 && !this.#hasHigherPriority(op, getTopOp()) && getTopOp() !== '(')
+           pushResultStack(operators.pop())
 
-            pushTempStack(op)
-        }
+        pushTempStack(op)
     }
 
     // Push React Number
@@ -297,12 +308,12 @@ export class ReactEquation {
 
     // Push number
     #pushNumber(number) {
-        const parsed = parseFloat(number)
+        const parsedNumber = this.reactNumbersHandler.getParsedNumber(number)
 
-        if (isNaN(parsed))
+        if (isNaN(parsedNumber))
             throw new Error("Invalid number")
 
-        this.#QUEUE.push(parsed)
+        this.#QUEUE.push(parsedNumber)
     }
 
     // Reset values
@@ -389,7 +400,7 @@ export class ReactEquation {
             return this.#RESULT = null
 
         if (queue.length === 1)
-            return this.#RESULT = queue.pop()
+            return this.#RESULT = queue.pop().valueOf()
 
         const reactNumbersStack = []
 

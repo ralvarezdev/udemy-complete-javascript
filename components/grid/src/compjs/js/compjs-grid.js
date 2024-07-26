@@ -1,11 +1,14 @@
 'use strict';
 
-import {COMPJS_CONSTANTS, COMPJS_PATHS, COMPJS_SELECTORS, COMPJS_URLS} from "./compjs-props.js";
+import {compJS} from "./compjs.js";
+import {COMPJS} from "./compjs-props.js";
 import {CompJSElement} from "./compjs-element.js";
-import {GRID_SELECTORS, GRID_SELECTORS_LIST, GRID_JSON, GRID_CONSTANTS} from "./compjs-grid-props.js";
+import {GRID} from "./compjs-grid-props.js";
 import {getListFromObject, getMapFromObject} from "./compjs-utils.js";
 
 export class CompJSGrid extends CompJSElement {
+    static COUNTER = 0
+
     // Configuration
     #title = "Start creating!"
     #lockStatus
@@ -54,7 +57,6 @@ export class CompJSGrid extends CompJSElement {
     #lastPageButton
     #previousPageButton
     #nextPageButton
-    #innerButtonsNumber = 0
     #pageButtonOffset = 2
     #btnStartIdx
 
@@ -71,14 +73,14 @@ export class CompJSGrid extends CompJSElement {
     #OBSERVERS_OPTIONS = new Map()
 
     static {
-        CompJSElement.CompJS.addStyleSheet(COMPJS_PATHS.GRID_STYLE);
+        compJS.addStyleSheet(GRID.PATHS.MAIN_STYLE);
     }
 
     constructor(elementId, parentElement) {
         super(elementId, parentElement)
 
         // Set root element
-        this.#ROOT = this.createDivWithId(this.parentElement, GRID_SELECTORS.ROOT, GRID_SELECTORS.ROOT, COMPJS_SELECTORS.HIDE, COMPJS_SELECTORS.NO_TRANSITION, COMPJS_SELECTORS.NO_TRANSFORM, COMPJS_SELECTORS.NO_ANIMATION, COMPJS_SELECTORS.PRELOAD);
+        this.#ROOT = this.createDivWithId(this.parentElement, GRID.SELECTORS.ROOT, GRID.SELECTORS.ROOT, COMPJS.SELECTORS.UTILITIES.HIDE, COMPJS.SELECTORS.UTILITIES.NO_TRANSITION, COMPJS.SELECTORS.UTILITIES.NO_TRANSFORM, COMPJS.SELECTORS.UTILITIES.NO_ANIMATION, COMPJS.SELECTORS.UTILITIES.PRELOAD);
 
         // CompJS Grid observers
         this.#initObservers();
@@ -116,7 +118,7 @@ export class CompJSGrid extends CompJSElement {
             return
         */
 
-        if(this.#pagesNumber===0)
+        if (this.#pagesNumber === 0)
             return
 
         if (toIdx >= this.#pagesNumber)
@@ -125,8 +127,8 @@ export class CompJSGrid extends CompJSElement {
         else if (toIdx < 0)
             toIdx = this.#pagesNumber - 1
 
-        // Disconnect row element resize observer
-        this.#disconnectRowElementResizeObserver()
+        // Disconnect page row element resize observer
+        this.#disconnectPageRowElementResizeObserver()
 
         // Change of the current pagination active button
         this.#togglePaginationButtonActive()
@@ -154,34 +156,36 @@ export class CompJSGrid extends CompJSElement {
         this.#togglePaginationButtonActive()
 
         // Change page
+        // TO CHECK
         if (toIdx === fromIdx) {
-            currentPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_LEFT, GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_RIGHT)
-            toPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_LEFT, GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_RIGHT)
+            currentPageElement.classList.remove(GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_LEFT, GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_RIGHT)
+            toPageElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_LEFT, GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_RIGHT)
             return
         }
 
-        currentPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_LEFT, GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_RIGHT)
-        toPageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_LEFT, GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_RIGHT)
+        currentPageElement.classList.remove(GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_LEFT, GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_RIGHT)
+        toPageElement.classList.remove(GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_LEFT, GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_RIGHT)
 
+        // Show from left side
         if (toIdx < fromIdx) {
-            // Show from left side
-            currentPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_RIGHT)
-            toPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_LEFT)
-            return
+            currentPageElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_RIGHT)
+            toPageElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_LEFT)
         }
 
         // Show from right side
-        currentPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_LEFT)
-        toPageElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_SHOW_RIGHT)
+        else {
+            currentPageElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_LEFT)
+            toPageElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_SHOW_RIGHT)
+        }
     }
 
     // Show grid
     #showGrid() {
         // Remove preload class
-        this.#ROOT.classList.remove(COMPJS_SELECTORS.NO_TRANSITION, COMPJS_SELECTORS.NO_TRANSFORM, COMPJS_SELECTORS.NO_ANIMATION, COMPJS_SELECTORS.HIDE)
+        this.#ROOT.classList.remove(COMPJS.SELECTORS.UTILITIES.NO_TRANSITION, COMPJS.SELECTORS.UTILITIES.NO_TRANSFORM, COMPJS.SELECTORS.UTILITIES.NO_ANIMATION, COMPJS.SELECTORS.UTILITIES.HIDE)
 
         // Sleep for a while to prevent animations on page load
-        this.CompJS.sleep(COMPJS_CONSTANTS.LOAD_DELAY).then(() => this.#ROOT.classList.remove(COMPJS_SELECTORS.PRELOAD))
+        compJS.sleep(COMPJS.DELAYS.LOAD).then(() => this.#ROOT.classList.remove(COMPJS.SELECTORS.UTILITIES.PRELOAD))
     }
 
     // - Element initializers
@@ -189,69 +193,72 @@ export class CompJSGrid extends CompJSElement {
     // Header initializer
     #initHeader() {
         // Header
-        this.#header = this.CompJS.createDiv(this.#ROOT, GRID_SELECTORS.HEADER, GRID_SELECTORS.HEADER_NO_CHECKBOXES);
+        this.#header = compJS.createDiv(this.#ROOT, GRID.SELECTORS.HEADER.BASE, GRID.SELECTORS.HEADER.BASE_NO_CHECKBOXES);
 
         // Title
-        this.#headerTitleContainer = this.CompJS.createDiv(this.#header, GRID_SELECTORS.HEADER_TITLE_CONTAINER);
+        this.#headerTitleContainer = compJS.createDiv(this.#header, GRID.SELECTORS.HEADER.TITLE_CONTAINER);
 
-        this.#headerTitle = this.CompJS.createElement("h2", this.#headerTitleContainer, GRID_SELECTORS.HEADER_TITLE);
+        this.#headerTitle = compJS.createElement("h2", this.#headerTitleContainer, GRID.SELECTORS.HEADER.TITLE);
         this.#headerTitle.contentEditable = this.isContentEditable()
 
         // Icons
-        this.#headerIconsContainer = this.CompJS.createDiv(this.#header, GRID_SELECTORS.HEADER_ICONS_CONTAINER);
+        this.#headerIconsContainer = compJS.createDiv(this.#header, GRID.SELECTORS.HEADER.ICONS_CONTAINER);
     }
 
     // Body initializer
     #initBody() {
         // Body
-        this.#body = this.CompJS.createDiv(this.#ROOT, GRID_SELECTORS.BODY);
+        this.#body = compJS.createDiv(this.#ROOT, GRID.SELECTORS.BODY.BASE);
 
         // Body header
-        this.#bodyHeader = this.CompJS.createDiv(this.#body, GRID_SELECTORS.BODY_HEADER, GRID_SELECTORS.BODY_HEADER_NO_CHECKBOXES);
-        this.#bodyHeaderColumnsContainer = this.CompJS.createDiv(this.#bodyHeader, GRID_SELECTORS.BODY_HEADER_COLUMNS_CONTAINER, GRID_SELECTORS.BODY_HEADER_COLUMNS_CONTAINER_NO_CHECKBOXES);
+        this.#bodyHeader = compJS.createDiv(this.#body, GRID.SELECTORS.BODY.HEADER.BASE, GRID.SELECTORS.BODY.HEADER.BASE_NO_CHECKBOXES);
+        this.#bodyHeaderColumnsContainer = compJS.createDiv(this.#bodyHeader, GRID.SELECTORS.BODY.HEADER.COLUMNS_CONTAINER, GRID.SELECTORS.BODY.HEADER.COLUMNS_CONTAINER_NO_CHECKBOXES);
 
         // Body content
-        this.#bodyContent = this.createDivWithId(this.#body, GRID_SELECTORS.BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT);
+        const selector1 = GRID.SELECTORS.BODY.CONTENT.BASE
+        this.#bodyContent = this.createDivWithId(this.#body, selector1, selector1);
 
         // Add checkboxes container
-        this.#bodyContentCheckboxesContainer = this.createDivWithId(this.#bodyContent, GRID_SELECTORS.BODY_CONTENT_CHECKBOXES_CONTAINER, GRID_SELECTORS.BODY_CONTENT_CHECKBOXES_CONTAINER, COMPJS_SELECTORS.HIDE)
+        const selector2 = GRID.SELECTORS.BODY.CONTENT.CHECKBOXES_CONTAINER
+        this.#bodyContentCheckboxesContainer = this.createDivWithId(this.#bodyContent, selector2, selector2, COMPJS.SELECTORS.UTILITIES.HIDE)
 
         // Body content pages container
-        this.#bodyContentPagesContainer = this.createDivWithId(this.#bodyContent, GRID_SELECTORS.BODY_CONTENT_PAGES_CONTAINER, GRID_SELECTORS.BODY_CONTENT_PAGES_CONTAINER, GRID_SELECTORS.BODY_CONTENT_PAGES_CONTAINER_NO_CHECKBOXES);
+        const selector3 = GRID.SELECTORS.BODY.CONTENT.PAGES_CONTAINER
+        this.#bodyContentPagesContainer = this.createDivWithId(this.#bodyContent, selector3, selector3, GRID.SELECTORS.BODY.CONTENT.PAGES_CONTAINER_NO_CHECKBOXES);
 
         // Add observers
-        this.#addMutationObserverToElement(this.#headerTitle, GRID_CONSTANTS.TITLE_OBSERVER)
-        this.#addMutationObserverToElement(this.#bodyHeaderColumnsContainer, GRID_CONSTANTS.COLUMNS_OBSERVER)
-        this.#addMutationObserverToElement(this.#bodyContentPagesContainer, GRID_CONSTANTS.CELLS_OBSERVER)
+        this.#addMutationObserverToElement(this.#headerTitle, GRID.OBSERVERS.MUTATION.TITLE)
+        this.#addMutationObserverToElement(this.#bodyHeaderColumnsContainer, GRID.OBSERVERS.MUTATION.COLUMNS)
+        this.#addMutationObserverToElement(this.#bodyContentPagesContainer, GRID.OBSERVERS.MUTATION.CELLS)
     }
 
     // Footer initializer
     #initFooter() {
         // Footer
-        this.#footer = this.CompJS.createDiv(this.#ROOT, GRID_SELECTORS.FOOTER, GRID_SELECTORS.FOOTER_NO_CHECKBOXES, COMPJS_SELECTORS.HIDE);
+        this.#footer = compJS.createDiv(this.#ROOT, GRID.SELECTORS.FOOTER.BASE, GRID.SELECTORS.FOOTER.BASE_NO_CHECKBOXES, COMPJS.SELECTORS.UTILITIES.HIDE);
 
         // Pagination
-        this.#footerPagination = this.CompJS.createDiv(this.#footer, GRID_SELECTORS.FOOTER_PAGINATION);
+        this.#footerPagination = compJS.createDiv(this.#footer, GRID.SELECTORS.FOOTER.PAGINATION);
 
         // Previous and next buttons
-        this.#previousPageButton = this.CompJS.createButton(this.#footerPagination, GRID_SELECTORS.FOOTER_OUTER_BTN);
+        this.#previousPageButton = compJS.createButton(this.#footerPagination, GRID.SELECTORS.FOOTER.OUTER_BTN);
         this.#setPaginationButtonPageContent(this.#previousPageButton, "Previous")
         this.#setPreviousPageButtonPage()
 
         // Next button
-        this.#nextPageButton = this.CompJS.createButton(this.#footerPagination, GRID_SELECTORS.FOOTER_OUTER_BTN);
+        this.#nextPageButton = compJS.createButton(this.#footerPagination, GRID.SELECTORS.FOOTER.OUTER_BTN);
         this.#setPaginationButtonPageContent(this.#nextPageButton, "Next")
         this.#setNextPageButtonPage()
 
         // Middle buttons container
-        this.#middleButtonsContainer = this.CompJS.createDiv(this.#footerPagination, GRID_SELECTORS.FOOTER_MIDDLE_BTN_CONTAINER);
+        this.#middleButtonsContainer = compJS.createDiv(this.#footerPagination, GRID.SELECTORS.FOOTER.MIDDLE_BTN_CONTAINER);
 
         // First page and last page buttons
-        this.#firstPageButton = this.CompJS.createButton(this.#middleButtonsContainer, GRID_SELECTORS.FOOTER_MIDDLE_BTN, GRID_SELECTORS.FOOTER_MIDDLE_BTN_ACTIVE)
+        this.#firstPageButton = compJS.createButton(this.#middleButtonsContainer, GRID.SELECTORS.FOOTER.MIDDLE_BTN, GRID.SELECTORS.FOOTER.MIDDLE_BTN_ACTIVE)
         this.#setPaginationButtonPage(this.#firstPageButton, 0)
         this.#setPaginationButtonPageContent(this.#firstPageButton, 1)
 
-        this.#lastPageButton = this.CompJS.createButton(this.#middleButtonsContainer, GRID_SELECTORS.FOOTER_MIDDLE_BTN)
+        this.#lastPageButton = compJS.createButton(this.#middleButtonsContainer, GRID.SELECTORS.FOOTER.MIDDLE_BTN)
 
         // Add pagination buttons click event
         this.#addPaginationButtonClickEvent(this.#previousPageButton, this.#nextPageButton, this.#firstPageButton, this.#lastPageButton)
@@ -272,9 +279,9 @@ export class CompJSGrid extends CompJSElement {
     // Add body content checkbox
     #addBodyContentCheckbox(rowIdx) {
         // Create checkbox container and checkbox
-        const checkboxContainer = this.CompJS.createDiv(this.#bodyContentCheckboxesContainer, GRID_SELECTORS.BODY_CONTENT_CHECKBOX_CONTAINER);
+        const checkboxContainer = compJS.createDiv(this.#bodyContentCheckboxesContainer, GRID.SELECTORS.BODY.CONTENT.CHECKBOX_CONTAINER);
         const checked = false
-        const checkbox = this.CompJS.createInputCheckbox(checkboxContainer, null, null, checked, GRID_SELECTORS.BODY_CONTENT_CHECKBOX)
+        const checkbox = compJS.createInputCheckbox(checkboxContainer, null, null, checked, GRID.SELECTORS.BODY.CONTENT.CHECKBOX)
 
         // Set checkbox page row index
         this.#setPageRowElementIndex(checkbox, rowIdx)
@@ -284,7 +291,7 @@ export class CompJSGrid extends CompJSElement {
 
         // Add warning class, if needed
         if (this.#globalWarning)
-            checkbox.classList.add(COMPJS_SELECTORS.CHECKBOX_WARNING)
+            checkbox.classList.add(COMPJS.SELECTORS.ELEMENTS.CHECKBOX_WARNING)
 
         return checkboxContainer
     }
@@ -293,7 +300,7 @@ export class CompJSGrid extends CompJSElement {
     #addBodyContentPage() {
         // Create page element
         const pageNumber = this.#pagesNumber++
-        const pageElement = this.CompJS.createDiv(this.#bodyContentPagesContainer, GRID_SELECTORS.BODY_CONTENT_PAGE, GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_RIGHT);
+        const pageElement = compJS.createDiv(this.#bodyContentPagesContainer, GRID.SELECTORS.BODY.CONTENT.PAGE, GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_RIGHT);
 
         // Set first and last page
         this.#lastPage = pageElement
@@ -305,14 +312,14 @@ export class CompJSGrid extends CompJSElement {
         this.#setPageElementIndex(pageElement, pageNumber)
 
         // Set page height
-        this.#bodyContentPagesHeight.set(pageElement, this.CompJS.getElementTotalHeight(pageElement))
+        this.#bodyContentPagesHeight.set(pageElement, compJS.getElementTotalHeight(pageElement))
 
         // Remove hide class from current page
         if (pageNumber === this.#currentPage)
-            pageElement.classList.remove(GRID_SELECTORS.BODY_CONTENT_PAGE_HIDE_RIGHT)
+            pageElement.classList.remove(GRID.SELECTORS.BODY.CONTENT.PAGE_HIDE_RIGHT)
 
         // Add observer
-        this.#addResizeObserverToElement(pageElement, GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER)
+        this.#addResizeObserverToElement(pageElement, GRID.OBSERVERS.RESIZE.PAGE_ELEMENT)
 
         return pageElement
     }
@@ -321,18 +328,22 @@ export class CompJSGrid extends CompJSElement {
     #addBodyContentPageRows(pageElement, pageNumber, loadFromData) {
         let rowIndex = pageNumber * this.#pageSize
 
-        for (let i = 0; i < this.#pageSize && rowIndex < this.#data.length; rowIndex++, i++)
+        for (let i = 0; i < this.#pageSize; rowIndex++, i++) {
+            if (loadFromData && rowIndex >= this.#data.length)
+                break
+
             this.#addBodyContentPageRow(pageElement, rowIndex, loadFromData)
+        }
     }
 
     // Add body content page row
     #addBodyContentPageRow(pageElement, rowIndex, loadFromData) {
         // Get row data and create row element
-        const rowElement = this.CompJS.createDiv(pageElement, GRID_SELECTORS.BODY_CONTENT_PAGE_ROW);
+        const rowElement = compJS.createDiv(pageElement, GRID.SELECTORS.BODY.CONTENT.PAGE_ROW);
 
         // Add warning class, if needed
         if (this.#globalWarning)
-            rowElement.classList.add(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW_WARNING)
+            rowElement.classList.add(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW_WARNING)
 
         // Set row element index, selected flag, and add page cells
         this.#setPageRowElementIndex(rowElement, rowIndex)
@@ -354,16 +365,17 @@ export class CompJSGrid extends CompJSElement {
     // Add body content page row cells
     #addBodyContentPageCells(rowElement, rowIndex, loadFromData) {
         this.#columnsSortedKeys.forEach(([key, dataMap]) => {
-            const cellElement = this.CompJS.createDiv(rowElement, GRID_SELECTORS.BODY_CONTENT_PAGE_ROW_CELL);
+            const cellElement = compJS.createDiv(rowElement, GRID.SELECTORS.BODY.CONTENT.PAGE_ROW_CELL);
             this.#setCellElementColumnId(cellElement, key)
 
             if (loadFromData) {
-                const rowData=this.#data[rowIndex]
+                const rowData = this.#data[rowIndex]
                 const cellData = rowData.get(key)
+
                 if (cellData !== undefined)
                     cellElement.innerHTML = cellData;
 
-                else if (!dataMap.get(GRID_JSON.COLUMN_DATA_NULLABLE))
+                else if (!dataMap.get(GRID.JSON.COLUMN.NULLABLE))
                     this.#toggleCellWarning(cellElement)
             }
         })
@@ -393,51 +405,51 @@ export class CompJSGrid extends CompJSElement {
             throw new Error("JSON CompJS Grid columns property is not defined...")
 
         // Set columns' data
-        this.#columnsSortedKeys.forEach(([key, dataMap]) => {
-            const columnElement = this.CompJS.createDiv(this.#bodyHeaderColumnsContainer, GRID_SELECTORS.BODY_HEADER_COLUMN);
+        this.#columnsSortedKeys.forEach(([id, dataMap]) => {
+            const columnElement = compJS.createDiv(this.#bodyHeaderColumnsContainer, GRID.SELECTORS.BODY.HEADER.COLUMN);
 
-            columnElement.dataset[GRID_JSON.COLUMN_DATA_TYPE] = dataMap.get(GRID_JSON.COLUMN_DATA_TYPE)
-            columnElement.dataset[GRID_JSON.COLUMN_ID] = key
+            // Set column element data
+            columnElement.dataset[GRID.JSON.COLUMN.ID] = id
+            columnElement.dataset[GRID.JSON.COLUMN.DATA_TYPE] = dataMap.get(GRID.JSON.COLUMN.DATA_TYPE)
 
-            const columnTitle = dataMap.get(GRID_JSON.COLUMN_DATA_TITLE)
+            // Set column element order
+            columnElement.style.order = dataMap.get(GRID.JSON.COLUMN.INDEX);
 
+            const columnTitle = dataMap.get(GRID.JSON.COLUMN.TITLE)
             if (columnTitle.length)
                 columnElement.innerHTML = columnTitle;
 
             else
                 this.#toggleColumnWarning(columnElement)
-
-            columnElement.style.order = dataMap.get(GRID_JSON.COLUMN_DATA_INDEX);
         })
     }
 
     // Update body element
     #updateBody() {
+        // Check if there are missing properties
+        for (let [prop, propName] of [[this.#pageSize, "page size"], [this.#data, "data"]])
+            if (prop === undefined)
+                this.#throwMissingPropertyError(propName)
+
         // Clear rows
         this.#disconnectPageElementResizeObserver()
-        let firstChild
 
         // Clear body content pages
         if (this.#bodyContentPagesContainer !== undefined)
-            while ((firstChild = this.#bodyContentPagesContainer.firstChild))
-                this.#bodyContentPagesContainer.removeChild(firstChild)
+            this.#bodyContentPagesContainer.childNodes.forEach(element => element.remove())
 
         // Hide checkboxes
         if (!this.#hasRemove && this.#bodyContentCheckboxesContainer !== undefined)
-            this.#bodyContentCheckboxesContainer.childNodes.forEach(element => element.classList.add(COMPJS_SELECTORS.HIDE))
-
-        if (this.#pageSize === undefined)
-            this.#throwMissingPropertyError("page size")
-
-        if (this.#data === undefined)
-            this.#throwMissingPropertyError("data")
+            this.#bodyContentCheckboxesContainer.childNodes.forEach(element => element.classList.add(COMPJS.SELECTORS.UTILITIES.HIDE))
 
         // Update rows data
         this.#pagesNumber = 0
         this.#bodyContentPagesHeight = new Map()
 
         // Get total height size in rems
-        const totalPages = this.#data.length / this.#pageSize + (this.#data.length % this.#pageSize > 0 ? 1 : 0)
+        const filledPages = this.#data.length / this.#pageSize
+        const partialFilledPage = this.#data.length % this.#pageSize > 0
+        const totalPages = filledPages + (partialFilledPage ? 1 : 0)
 
         for (let pageNumber = 0; pageNumber < totalPages; pageNumber++) {
             const pageElement = this.#addBodyContentPage()
@@ -448,31 +460,29 @@ export class CompJSGrid extends CompJSElement {
     // Update body content element height according to its child elements
     #updateBodyContent() {
         const maxHeight = this.#getBodyContentPageHeight(this.#maxHeightElement)
-        const remsMaxHeight = this.CompJS.convertPixelsToRem(maxHeight) + "rem"
-        const classNames = [GRID_SELECTORS.BODY_CONTENT, GRID_SELECTORS.BODY_CONTENT_PAGES_CONTAINER, GRID_SELECTORS.BODY_CONTENT_CHECKBOXES_CONTAINER]
+        const remsMaxHeight = compJS.convertPixelsToRem(maxHeight) + "rem"
+        const classNames = [GRID.SELECTORS.BODY.CONTENT.BASE, GRID.SELECTORS.BODY.CONTENT.PAGES_CONTAINER, GRID.SELECTORS.BODY.CONTENT.CHECKBOXES_CONTAINER]
 
         // Set body content data height
         for (let className of classNames) {
             const id = this.getFormattedIdFromSelector(className)
             this.setIdProperty(id, "height", remsMaxHeight)
         }
-
-        this.CompJS.applyStyles()
+        compJS.applyStyles()
     }
 
     // Update body content checkbox containers height
     #updateBodyContentCheckboxContainersHeight() {
-        if(this.#pagesNumber===0)
+        if (this.#pagesNumber === 0)
             return
 
         const pageRows = this.#getCurrentPageElement().childNodes
         const checkboxContainers = this.#bodyContentCheckboxesContainer.childNodes
 
         // Update page row related checkbox container height
-        for (let i = 0, pageRowHeightPx, checkboxContainerHeightPx; i < pageRows.length; i++) {
-            pageRowHeightPx = this.CompJS.getElementTotalHeight(pageRows[i])
-            checkboxContainerHeightPx = this.CompJS.getElementTotalHeight(checkboxContainers[i])
-            checkboxContainers[i].style.height = this.CompJS.convertPixelsToRem(pageRowHeightPx) + "rem"
+        for (let i = 0, pageRowHeightPx; i < pageRows.length; i++) {
+            pageRowHeightPx = compJS.getElementTotalHeight(pageRows[i])
+            checkboxContainers[i].style.height = compJS.convertPixelsToRem(pageRowHeightPx) + "rem"
         }
 
         /*
@@ -487,31 +497,27 @@ export class CompJSGrid extends CompJSElement {
         // Get checkbox containers and checkboxes
         const checkboxContainers = this.#getBodyContentCheckboxContainerElements()
 
-        if(this.#pagesNumber===0) {
-            checkboxContainers.forEach(c=>c.classList.add(COMPJS_SELECTORS.HIDE))
+        if (this.#pagesNumber === 0) {
+            checkboxContainers.forEach(c => c.classList.add(COMPJS.SELECTORS.UTILITIES.HIDE))
             return
         }
 
         // Get number of rows
-        const rowsNumber = this.#lastPage.childNodes.length
+        const rowsNumber = this.#getCurrentPageElement().childElementCount
 
         // Observe page rows
         const currentPageElement = this.#getCurrentPageElement()
 
-        currentPageElement.childNodes.forEach(row => this.#addResizeObserverToElement(row, GRID_CONSTANTS.ROW_RESIZE_OBSERVER))
+        currentPageElement.childNodes.forEach(row => this.#addResizeObserverToElement(row, GRID.OBSERVERS.RESIZE.PAGE_ROW_ELEMENT))
 
         // Change checkboxes visibility
-        if (this.#currentPage !== this.#pagesNumber - 1)
-            checkboxContainers.forEach(c => c.classList.remove(COMPJS_SELECTORS.HIDE))
+        for (let i = 0; i < rowsNumber; i++)
+            for (let element of [checkboxContainers[i], ...checkboxContainers[i].childNodes])
+                element.classList.remove(COMPJS.SELECTORS.UTILITIES.HIDE)
 
-        else {
-            for (let i = 0; i < rowsNumber; i++)
-                for(let element of [checkboxContainers[i],checkboxContainers[i].firstChild])
-                    element.classList.remove(COMPJS_SELECTORS.HIDE)
-
-            for (let i = rowsNumber; i < checkboxContainers.length; i++)
-                checkboxContainers[i].classList.add(COMPJS_SELECTORS.HIDE)
-        }
+        for (let i = rowsNumber; i < checkboxContainers.length; i++)
+            for (let element of [checkboxContainers[i], ...checkboxContainers[i].childNodes])
+                element.classList.add(COMPJS.SELECTORS.UTILITIES.HIDE)
     }
 
     // Update body content checkboxes
@@ -519,13 +525,14 @@ export class CompJSGrid extends CompJSElement {
         const checkboxes = this.#getBodyContentCheckboxElements()
 
         // Hide checkboxes if the number of page rows is less than page size and there's a single page
-        if(this.#currentPage===0&&this.#pagesNumber===1) {
-            const rowsNumber=this.#getLastPageRowIndex()+1
+        if (this.#currentPage === 0 && this.#pagesNumber === 1) {
+            const rowsNumber = this.#getLastPageRowIndex() + 1
 
-            for (let i =rowsNumber;i<checkboxes.length;i++)
-                for( let element of [checkboxes[i],checkboxes[i].parentElement]) {
-                    element.classList.add(COMPJS_SELECTORS.HIDE)
-                    element.style.height=""
+            // Hide checkbox and checkbox container
+            for (let i = rowsNumber; i < checkboxes.length; i++)
+                for (let element of [checkboxes[i], checkboxes[i].parentElement]) {
+                    element.classList.add(COMPJS.SELECTORS.UTILITIES.HIDE)
+                    element.style.height = ""
                 }
         }
 
@@ -545,7 +552,6 @@ export class CompJSGrid extends CompJSElement {
 
         // Store selected checkboxes
         checkboxes.forEach(checkbox => {
-            // Store selected checkboxes
             const fromRowIdx = this.#getPageRowIndex(checkbox)
             this.#selectedPageRows.set(fromRowIdx, checkbox.checked)
         })
@@ -553,8 +559,8 @@ export class CompJSGrid extends CompJSElement {
 
     // Update footer
     #updateFooter() {
-        if (this.#pagesNumber <2) {
-            this.#footer.classList.add(COMPJS_SELECTORS.HIDE)
+        if (this.#pagesNumber < 2) {
+            this.#footer.classList.add(COMPJS.SELECTORS.UTILITIES.HIDE)
             return
         }
 
@@ -565,7 +571,7 @@ export class CompJSGrid extends CompJSElement {
         this.#updatePaginationButtonsPage()
 
         // Remove hide class from footer
-        this.#footer.classList.remove(COMPJS_SELECTORS.HIDE)
+        this.#footer.classList.remove(COMPJS.SELECTORS.UTILITIES.HIDE)
     }
 
     // Update inner pagination buttons
@@ -576,44 +582,34 @@ export class CompJSGrid extends CompJSElement {
                 this.#innerButtonsContainer.remove()
                 this.#innerButtonsContainer = undefined
             }
-            this.#innerButtonsNumber=0
 
             return
         }
+
+        // Page inner buttons container
+        if (this.#innerButtonsContainer === undefined)
+            this.#innerButtonsContainer = compJS.createDiv(this.#middleButtonsContainer, GRID.SELECTORS.FOOTER.INNER_BTN_CONTAINER)
 
         // Get number of required inner buttons
-        const numberButtons = 2 * this.#pageButtonOffset + 1 < this.#pagesNumber - 2 ? 2 * this.#pageButtonOffset + 1 : this.#pagesNumber - 2
+        const isInsideOffsetRange = 2 * this.#pageButtonOffset + 1 < this.#pagesNumber - 2
+        const currentNumberButtons=this.#innerButtonsContainer.childElementCount
+        const requiredNumberButtons = isInsideOffsetRange ? 2 * this.#pageButtonOffset + 1 : this.#pagesNumber - 2
+        const innerButtons = this.#innerButtonsContainer.childNodes
 
-        // Check if there are buttons to be deleted
-        if (this.#innerButtonsNumber >= numberButtons) {
-            const innerButtons = this.#innerButtonsContainer.childNodes
-
-            for (let i = numberButtons; i < this.#innerButtonsNumber; i++)
-                innerButtons[i].remove()
-
-            return
-        }
-
-        // Page button container
-        if (this.#innerButtonsContainer === undefined)
-            this.#innerButtonsContainer = this.CompJS.createDiv(this.#middleButtonsContainer, GRID_SELECTORS.FOOTER_INNER_BTN_CONTAINER)
+        // Delete inner buttons, if needed
+        for (let i = requiredNumberButtons; i < currentNumberButtons; i++)
+            this.#innerButtonsContainer.lastElementChild.remove()
 
         // Add inner buttons, if needed
-        for (let i = this.#innerButtonsNumber; i < numberButtons; i++) {
-            const paginationButton = this.CompJS.createButton(this.#innerButtonsContainer, GRID_SELECTORS.FOOTER_INNER_BTN);
+        for (let i = currentNumberButtons; i < requiredNumberButtons; i++) {
+            const paginationButton = compJS.createButton(this.#innerButtonsContainer, GRID.SELECTORS.FOOTER.INNER_BTN);
             this.#addPaginationButtonClickEvent(paginationButton)
         }
 
         // Add warning class, if needed
-        if (this.#globalWarning) {
-            const innerButtons = this.#innerButtonsContainer.childNodes
-
-            for (let i = this.#innerButtonsNumber; i < numberButtons; i++)
-                innerButtons[i].classList.add(GRID_SELECTORS.FOOTER_INNER_BTN_WARNING)
-        }
-
-        // Update pagination inner buttons counter
-        this.#innerButtonsNumber = numberButtons
+        if (this.#globalWarning)
+            for (let i = 0; i < requiredNumberButtons; i++)
+                innerButtons[i].classList.add(GRID.SELECTORS.FOOTER.INNER_BTN_WARNING)
     }
 
     // Update pagination buttons range
@@ -651,10 +647,10 @@ export class CompJSGrid extends CompJSElement {
         this.#updatePaginationButtonsRange()
         let i = this.#btnStartIdx
 
-        for (const paginationButton of this.#innerButtonsContainer.childNodes) {
-            this.#setPaginationButtonPage(paginationButton, i++)
-            this.#setPaginationButtonPageContent(paginationButton, i)
-        }
+        this.#innerButtonsContainer.childNodes.forEach(innerButton => {
+            this.#setPaginationButtonPage(innerButton, i++)
+            this.#setPaginationButtonPageContent(innerButton, i)
+        })
     }
 
     // Update pagination buttons page
@@ -668,101 +664,132 @@ export class CompJSGrid extends CompJSElement {
 
     // Delete selected rows
     #deleteSelectedPageRows() {
-        const pagesContainer=this.#bodyContentPagesContainer
+        const pagesContainer = this.#bodyContentPagesContainer
         const pages = pagesContainer.childNodes
-        let changedCurrentPage=false
-        let oldPageIdx = 0, newPageIdx = 0, newPageRowIdx = 0
+        const oldCurrentPageIdx=this.#currentPage
+        let changedPage=false, oldPageIdx , newPageIdx = 0, newPageRowIdx = 0,pageIdx=0,page,nextPage
 
         // Disconnect page element resize observer
         this.#disconnectPageElementResizeObserver()
 
         // Disconnect row element resize observer
-        //this.#disconnectRowElementResizeObserver()
+        this.#disconnectPageRowElementResizeObserver()
+
+        // Check page. Returns 'true' if the page should be skipped from being checked
+        const checkPage=pageIdx=> {
+            if (!pages[pageIdx].childElementCount) {
+                deletePage(pageIdx)
+                return true
+            }
+            this.#setPageElementIndex(pages[pageIdx], newPageIdx++)
+            //console.log(pageIdx,newPageIdx,newPageRowIdx)
+
+            return false
+        }
 
         // Check page rows
-        const checkPageRows = (pageRows, startIdx) => {
-            for (let j = startIdx; j < pageRows.length;) {
-                const pageRow = pageRows[j]
-                const pageRowIdx = this.#getPageRowIndex(pageRow)
-
-                if (this.#selectedPageRows.get(pageRowIdx))
-                    pageRow.remove()
-
-                else{
-                    this.#setPageRowElementIndex(pageRow, newPageRowIdx++)
+        const checkPageRows = pageRows => {
+            for (let j = 0; j < pageRows.length;)
+                if(!checkPageRow(pageRows[j]))
                     j++
-                }
+        }
 
-                this.#selectedPageRows.delete(pageRowIdx)
+        // Check page row
+        const checkPageRow=pageRow=> {
+            const pageRowIdx = this.#getPageRowIndex(pageRow)
+            let removed = false
+
+            if (!this.#selectedPageRows.get(pageRowIdx))
+                this.#setPageRowElementIndex(pageRow, newPageRowIdx++)
+
+            else{
+                pageRow.remove()
+                removed = true
             }
+
+            this.#selectedPageRows.delete(pageRowIdx)
+            return removed
         }
 
         // Delete page
-        const deletePage = idx => {
+        const deletePage = () => {
             // Check if it's the current page
-            if(idx===this.#currentPage)
-                changedCurrentPage=true
+            if(this.#currentPage===pageIdx)
+                changedPage=true
 
             // Update page index and number of pages
-            if (oldPageIdx <= this.#currentPage&&this.#currentPage>0)
+            if (oldPageIdx <= oldCurrentPageIdx && this.#currentPage > 0)
                 this.#currentPage--
             this.#pagesNumber--
 
-            pages[idx].remove()
+            pages[pageIdx].remove()
         }
 
-        // Traverse pages
-        for (let i = 0,startIdx, page, pageRows; i < pagesContainer.childElementCount;) {
-            page = pages[i]
-            this.#setPageElementIndex(page, newPageIdx++)
-            pageRows = page.childNodes
-            checkPageRows(pageRows, 0)
 
-            // Check if the page is empty
-            if (!pageRows.length) {
-                deletePage(i)
+        // Traverse pages
+        while(pageIdx < pagesContainer.childElementCount) {
+            // Update page element index
+            page = pages[pageIdx]
+            oldPageIdx=this.#getPageIndex(page)
+
+            // Check page rows
+            checkPageRows(page.childNodes)
+
+            // Check page
+            if(checkPage(pageIdx))
+                continue
+
+            // Check if there has been removed some page rows
+            if (page.childElementCount === this.#pageSize){
+                pageIdx++
                 continue
             }
-            oldPageIdx++
 
             // Observe page
-            this.#addResizeObserverToElement(page, GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER)
-
-            // Check if it's the last page
-            if (i++ === pages.length - 1)
-                return changedCurrentPage
+            this.#addResizeObserverToElement(page, GRID.OBSERVERS.RESIZE.PAGE_ELEMENT)
 
             // Remove page if it is missing some rows
-            let j=i
-            while ((startIdx=page.childElementCount)<this.#pageSize&&j<this.#pagesNumber) {
-                const nextPage = pages[j++]
+            while ( page.childElementCount < this.#pageSize && ++pageIdx < this.#pagesNumber) {
+                 nextPage = pages[pageIdx]
+                oldPageIdx=this.#getPageIndex(nextPage)
+
+                // Check next page rows
+                checkPageRows(nextPage.childNodes)
+
+                // Check next page
+                if(checkPage(pageIdx))
+                    continue
 
                 // Append rows to the current page
-                while(startIdx++<this.#pageSize&&nextPage.childElementCount>0){
-                    const nextPageRow = nextPage.firstElementChild
+                while (page.childElementCount < this.#pageSize && nextPage.childElementCount > 0) {
+                    const nextPageRow=nextPage.firstElementChild
                     nextPageRow.remove()
 
                     // Update next page row index
-                    this.#setPageRowElementIndex(nextPageRow, newPageRowIdx++)
                     page.appendChild(nextPageRow)
                 }
 
-                checkPageRows(pageRows, startIdx)
-                page=nextPage
+                page = nextPage
             }
 
             // Check if the last page is empty
             if (page.childElementCount === 0) {
-                deletePage(this.#pagesNumber-1)
-                oldPageIdx++
+                deletePage(this.#pagesNumber - 1)
                 break
             }
         }
 
+        // Check if there are no pages
+        if(!pagesContainer.childElementCount)
+            return changedPage
+
+        // Add resize observer
+        this.#getCurrentPageElement().childNodes.forEach(row => this.#addResizeObserverToElement(row, GRID.OBSERVERS.RESIZE.PAGE_ROW_ELEMENT))
+
         // Update last page
         this.#lastPage = pages[pages.length - 1]
 
-        return changedCurrentPage
+        return changedPage
     }
 
     // - JSON
@@ -773,13 +800,13 @@ export class CompJSGrid extends CompJSElement {
             throw new Error("JSON is not an object...")
 
         // Header
-        this.#lockStatus = Boolean(jsonObject[GRID_JSON.LOCKED]);
-        this.#title = String(jsonObject[GRID_JSON.TITLE]);
+        this.#lockStatus = Boolean(jsonObject[GRID.JSON.LOCKED]);
+        this.#title = String(jsonObject[GRID.JSON.TITLE]);
 
         // Data
-        this.#pageSize = parseInt(jsonObject[GRID_JSON.PAGE_SIZE]);
-        this.#columns = this.#loadJSONColumnsData(jsonObject[GRID_JSON.COLUMNS]);
-        this.#data = this.#loadJSONBodyData(jsonObject[GRID_JSON.DATA]);
+        this.#pageSize = parseInt(jsonObject[GRID.JSON.PAGE_SIZE]);
+        this.#columns = this.#loadJSONColumnsData(jsonObject[GRID.JSON.COLUMNS]);
+        this.#data = this.#loadJSONBodyData(jsonObject[GRID.JSON.DATA]);
 
         // Sort columns keys
         this.#sortJSONColumnsKeys();
@@ -809,27 +836,23 @@ export class CompJSGrid extends CompJSElement {
     #loadJSONColumnsData(columnsObject) {
         const columnsList = getListFromObject(columnsObject)
         const columnsMap = new Map()
-        const requiredProps = [[GRID_JSON.COLUMN_DATA_INDEX, "index"], [GRID_JSON.COLUMN_DATA_TITLE, "title"], [GRID_JSON.COLUMN_DATA_TYPE, "type"], [GRID_JSON.COLUMN_DATA_NULLABLE, "nullable"]]
-        let key, data, dataMap
+        const requiredProps = [GRID.JSON.COLUMN.ID, GRID.JSON.COLUMN.INDEX, GRID.JSON.COLUMN.TITLE, GRID.JSON.COLUMN.DATA_TYPE, GRID.JSON.COLUMN.NULLABLE]
+        let id,columnMap
 
-        for (let columnMap of columnsList) {
-            key = columnMap[GRID_JSON.COLUMN_ID]
-            if (!key)
-                this.#throwMissingJSONPropertyError("ID")
-
-            data = columnMap[GRID_JSON.COLUMN_DATA]
-            if (!data)
-                this.#throwMissingJSONPropertyError("data")
-
-            dataMap = getMapFromObject(data)
-
-            // Check for required properties
-            requiredProps.forEach(([prop, propName]) => {
-                if (!dataMap.has(prop))
-                    this.#throwMissingJSONPropertyError(propName)
+        // Check for required properties
+        for (let column of columnsList) {
+            // Get and check column map
+            columnMap=getMapFromObject(column)
+            requiredProps.forEach((prop) => {
+                if (!columnMap.has(prop))
+                    this.#throwMissingJSONPropertyError(prop)
             })
 
-            columnsMap.set(key, dataMap)
+            // Store column map
+            id = columnMap.get(GRID.JSON.COLUMN.ID)
+            columnMap.delete(GRID.JSON.COLUMN.ID)
+
+            columnsMap.set(id, columnMap)
         }
 
         return columnsMap
@@ -842,9 +865,10 @@ export class CompJSGrid extends CompJSElement {
         for (let key of this.#columns.keys())
             this.#columnsSortedKeys.push([key, this.#columns.get(key)])
 
-        this.#columnsSortedKeys.sort((a, b) => a[1].get(GRID_JSON.COLUMN_DATA_INDEX) - b[1].get(GRID_JSON.COLUMN_DATA_INDEX));
+        this.#columnsSortedKeys.sort((a, b) => a[1].get(GRID.JSON.COLUMN.INDEX) - b[1].get(GRID.JSON.COLUMN.INDEX));
     }
 
+    /*
     // Get JSON props
     getJSON() {
         const obj = {}
@@ -858,18 +882,22 @@ export class CompJSGrid extends CompJSElement {
         obj.columns = this.#columns
         obj.data = this.#data
     }
+    */
 
+    /*
     // - Grid properties getters
+    // NOTE: Objects must be flatted
 
     // Get grid root class properties values
     getGridProperties() {
-        return this.getSelectorProperties(GRID_SELECTORS.ROOT, ...GRID_SELECTORS_LIST);
+        return this.getSelectorProperties(GRID.SELECTORS.ROOT, ...Object.values(GRID.SELECTORS));
     }
 
     // Get grid root class properties values to the given element ID
     getGridIdProperties() {
-        return this.getSelectorProperties(GRID_SELECTORS.ROOT, ...GRID_SELECTORS_LIST);
+        return this.getSelectorProperties(GRID.SELECTORS.ROOT, ...Object.values(GRID.SELECTORS));
     }
+     */
 
     // - Element getters
 
@@ -881,40 +909,34 @@ export class CompJSGrid extends CompJSElement {
         return this.#bodyContentPagesHeight.get(element)
     }
 
-    // Get body header columns
-    _getBodyHeaderColumnElements() {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_HEADER_COLUMN)
-        return this._querySelectorAll(this.#bodyHeaderColumnsContainer, "body header columns container", className)
-    }
-
     // Get body content page checkbox container elements
     #getBodyContentCheckboxContainerElements() {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_CHECKBOX_CONTAINER)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.CHECKBOX_CONTAINER)
         return this._querySelectorAll(this.#bodyContentCheckboxesContainer, "body content checkboxes container", className)
     }
 
     // Get body content page checkbox elements
     #getBodyContentCheckboxElements() {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_CHECKBOX)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.CHECKBOX)
         return this._querySelectorAll(this.#bodyContentCheckboxesContainer, "body content checkboxes container", className)
     }
 
     // Get body content page row elements
     #getBodyContentPageRowElements() {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW)
         return this._querySelectorAll(this.#bodyContentPagesContainer, "body content pages container", className)
     }
 
     // Get body content page cell elements
     #getBodyContentPageRowCellElements() {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW_CELL)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW_CELL)
         return this._querySelectorAll(this.#bodyContentPagesContainer, "body content pages container", className)
     }
 
     // Get page element 
     #getPageElement(idx) {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_PAGE)
-        return this._querySelectorWithData(this.#bodyContentPagesContainer, "body content pages container", className, GRID_CONSTANTS.PAGE_IDX, idx)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.PAGE)
+        return this._querySelectorWithData(this.#bodyContentPagesContainer, "body content pages container", className, GRID.DATASETS.PAGE_IDX, idx)
     }
 
     // Get current page element
@@ -924,34 +946,39 @@ export class CompJSGrid extends CompJSElement {
 
     // Get page row element
     #getPageRowElement(idx) {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW)
-        return this._querySelectorWithData(this.#bodyContentPagesContainer, "body content pages container", className, GRID_CONSTANTS.ROW_IDX, idx)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW)
+        return this._querySelectorWithData(this.#bodyContentPagesContainer, "body content pages container", className, GRID.DATASETS.ROW_IDX, idx)
     }
 
     // Get checkbox element
     #getCheckboxElement(idx) {
-        const className = this.CompJS.getFormattedClassName(GRID_SELECTORS.BODY_CONTENT_CHECKBOX)
-        return this._querySelectorWithData(this.#bodyContentCheckboxesContainer, "body content checkboxes container", className, GRID_CONSTANTS.ROW_IDX, idx)
+        const className = compJS.getFormattedClassName(GRID.SELECTORS.BODY.CONTENT.CHECKBOX)
+        return this._querySelectorWithData(this.#bodyContentCheckboxesContainer, "body content checkboxes container", className, GRID.DATASETS.ROW_IDX, idx)
+    }
+
+    // Get page index
+    #getPageIndex(element) {
+        return parseInt(element.dataset[GRID.DATASETS.PAGE_IDX])
     }
 
     // Get page row index
     #getPageRowIndex(element) {
-        return parseInt(element.dataset[GRID_CONSTANTS.ROW_IDX])
+        return parseInt(element.dataset[GRID.DATASETS.ROW_IDX])
     }
 
     // Get last page row index
     #getLastPageRowIndex() {
-        return this.#pagesNumber>0?this.#getPageRowIndex(this.#lastPage.lastElementChild):null
+        return this.#pagesNumber > 0 ? this.#getPageRowIndex(this.#lastPage.lastElementChild) : 0
     }
 
     // Get pagination button element class name
     #getPaginationButtonClassName(idx) {
         // Get the class name for either the middle or inner buttons
         for (let middleBtn of [this.#firstPageButton, this.#lastPageButton])
-            if (idx === parseInt(middleBtn.dataset[GRID_CONSTANTS.PAGE_IDX]))
-                return GRID_SELECTORS.FOOTER_MIDDLE_BTN
+            if (idx === parseInt(middleBtn.dataset[GRID.DATASETS.PAGE_IDX]))
+                return GRID.SELECTORS.FOOTER.MIDDLE_BTN
 
-        return GRID_SELECTORS.FOOTER_INNER_BTN
+        return GRID.SELECTORS.FOOTER.INNER_BTN
     }
 
     // Get pagination button active class name
@@ -970,25 +997,25 @@ export class CompJSGrid extends CompJSElement {
     // Get pagination button element
     #getPaginationButtonElement(idx) {
         const className = this.#getPaginationButtonClassName(idx)
-        const formattedClassName = this.CompJS.getFormattedClassName(className)
-        return this._querySelectorWithData(this.#footerPagination, "footer pagination", formattedClassName, GRID_CONSTANTS.PAGE_IDX, idx)
+        const formattedClassName = compJS.getFormattedClassName(className)
+        return this._querySelectorWithData(this.#footerPagination, "footer pagination", formattedClassName, GRID.DATASETS.PAGE_IDX, idx)
     }
 
     // - Setters
 
     // Set page element index
     #setPageElementIndex(element, idx) {
-        element.dataset[GRID_CONSTANTS.PAGE_IDX] = idx
+        element.dataset[GRID.DATASETS.PAGE_IDX] = idx
     }
 
     // Set page row element index
     #setPageRowElementIndex(element, idx) {
-        element.dataset[GRID_CONSTANTS.ROW_IDX] = idx
+        element.dataset[GRID.DATASETS.ROW_IDX] = idx
     }
 
     // Set cell column ID
     #setCellElementColumnId(element, id) {
-        element.dataset[GRID_CONSTANTS.COLUMN_ID] = id
+        element.dataset[GRID.DATASETS.COLUMN_ID] = id
     }
 
     // Set pagination button page
@@ -999,7 +1026,7 @@ export class CompJSGrid extends CompJSElement {
         if (idx >= this.#pagesNumber)
             idx = 0
 
-        element.dataset[GRID_CONSTANTS.PAGE_IDX] = idx
+        element.dataset[GRID.DATASETS.PAGE_IDX] = idx
     }
 
     // Set pagination button page index
@@ -1021,8 +1048,8 @@ export class CompJSGrid extends CompJSElement {
 
     // Load SVG
     async #loadSVG(parentElement, url, id, onLoad) {
-        this.CompJS.loadHiddenSVG(url, COMPJS_CONSTANTS.VIEW_BOX, id)
-            .then(() => this.CompJS.loadSVG(parentElement, id, GRID_SELECTORS.HEADER_ICON))
+        compJS.loadHiddenSVG(url, COMPJS.ATTRIBUTES.VIEW_BOX, id)
+            .then(() => compJS.loadSVG(parentElement, id, GRID.SELECTORS.HEADER.ICON))
             .then(svgElement => {
                 if (onLoad)
                     onLoad(svgElement)
@@ -1038,11 +1065,11 @@ export class CompJSGrid extends CompJSElement {
         // Change content editable status
         const isEditable = this.isContentEditable()
         this.setEditable(this.#headerTitle, isEditable)
-        this._getBodyHeaderColumnElements().forEach(element => this.setEditable(element, isEditable))
+        this.#bodyHeaderColumnsContainer.childNodes.forEach(element => this.setEditable(element, isEditable))
         this.#getBodyContentPageRowCellElements().forEach(element => this.setEditable(element, isEditable))
 
         if (this.#hasLock)
-            this.#headerEditIconContainer.childNodes.forEach(child => child.classList.toggle(COMPJS_SELECTORS.HIDE))
+            this.#headerEditIconContainer.childNodes.forEach(child => child.classList.toggle(COMPJS.SELECTORS.UTILITIES.HIDE))
     }
 
     // Add lock icon
@@ -1056,7 +1083,7 @@ export class CompJSGrid extends CompJSElement {
         this.#hasLock = true
 
         // Lock icons container
-        this.#headerEditIconContainer = this.CompJS.createDiv(this.#headerIconsContainer, GRID_SELECTORS.HEADER_ICON_CONTAINER, GRID_SELECTORS.HEADER_ICON_CONTAINER_EDIT);
+        this.#headerEditIconContainer = compJS.createDiv(this.#headerIconsContainer, GRID.SELECTORS.HEADER.ICON_CONTAINER, GRID.SELECTORS.HEADER.ICON_CONTAINER_EDIT);
 
         // Lock icon click event
         this.#headerEditIconContainer.addEventListener('click', event => {
@@ -1066,14 +1093,14 @@ export class CompJSGrid extends CompJSElement {
 
         // Icons objects
         const unlockIcon = {
-            url: COMPJS_URLS.UNLOCK_SVG,
-            id: GRID_SELECTORS.ICON_UNLOCK,
+            url: COMPJS.URLS.SVG.UNLOCK,
+            id: GRID.SELECTORS.ICON.UNLOCK,
             changeOnLock: true
         }
 
         const lockIcon = {
-            url: COMPJS_URLS.LOCK_SVG,
-            id: GRID_SELECTORS.ICON_LOCK,
+            url: COMPJS.URLS.SVG.LOCK,
+            id: GRID.SELECTORS.ICON.LOCK,
             changeOnLock: false
         }
 
@@ -1081,7 +1108,7 @@ export class CompJSGrid extends CompJSElement {
         for (let icon of [unlockIcon, lockIcon])
             this.#loadSVG(this.#headerEditIconContainer, icon.url, icon.id, svgElement => {
                 if (icon.changeOnLock)
-                    this.CompJS.addClassNames(svgElement, COMPJS_SELECTORS.HIDE)
+                    compJS.addClassNames(svgElement, COMPJS.SELECTORS.UTILITIES.HIDE)
             })
     }
 
@@ -1093,23 +1120,30 @@ export class CompJSGrid extends CompJSElement {
         this.#hasInsertion = true
 
         // Insert icon container
-        const headerInsertIconContainer = this.CompJS.createDiv(this.#headerIconsContainer, GRID_SELECTORS.HEADER_ICON_CONTAINER, GRID_SELECTORS.HEADER_ICON_CONTAINER_INSERT);
+        const headerInsertIconContainer = compJS.createDiv(this.#headerIconsContainer, GRID.SELECTORS.HEADER.ICON_CONTAINER, GRID.SELECTORS.HEADER.ICON_CONTAINER_INSERT);
 
         // Load insert SVG
-        this.#loadSVG(headerInsertIconContainer, COMPJS_URLS.PLUS_SVG, GRID_SELECTORS.ICON_INSERT)
+        this.#loadSVG(headerInsertIconContainer, COMPJS.URLS.SVG.PLUS, GRID.SELECTORS.ICON.INSERT)
 
         // Insert icon click event
         headerInsertIconContainer.addEventListener('click', event => {
             event.preventDefault()
 
-            // Check if there's enough space for a new row
-            const rowIndex = this.#getLastPageRowIndex()
-
-            if (rowIndex===null||this.#lastPage.childNodes.length >= this.#pageSize)
+            // Check if there's no row
+            if(this.#pagesNumber===0){
                 this.#addBodyContentPage()
+                 this.#addBodyContentPageRow(this.#lastPage, 0, false)
+            }
+            else{
+                // Check if there's enough space for a new row
+                const rowIndex = this.#getLastPageRowIndex()
 
-            // Add new row
-            this.#addBodyContentPageRow(this.#lastPage, rowIndex + 1, false)
+                if (this.#lastPage.childNodes.length >= this.#pageSize)
+                    this.#addBodyContentPage()
+
+                // Add new row
+                this.#addBodyContentPageRow(this.#lastPage, rowIndex + 1, false)
+            }
 
             // Make the new row editable
             const lastRow = this.#lastPage.lastElementChild
@@ -1152,14 +1186,14 @@ export class CompJSGrid extends CompJSElement {
         this.#hasRemove = true
 
         // Remove classes when there is no remove icon
-        this.#header.classList.remove(GRID_SELECTORS.HEADER_NO_CHECKBOXES)
-        this.#bodyHeader.classList.remove(GRID_SELECTORS.BODY_HEADER_NO_CHECKBOXES)
-        this.#bodyHeaderColumnsContainer.classList.remove(GRID_SELECTORS.BODY_HEADER_COLUMNS_CONTAINER_NO_CHECKBOXES)
-        this.#bodyContentPagesContainer.classList.remove(GRID_SELECTORS.BODY_CONTENT_PAGES_CONTAINER_NO_CHECKBOXES)
-        this.#footer.classList.remove(GRID_SELECTORS.FOOTER_NO_CHECKBOXES)
+        this.#header.classList.remove(GRID.SELECTORS.HEADER.BASE_NO_CHECKBOXES)
+        this.#bodyHeader.classList.remove(GRID.SELECTORS.BODY.HEADER.BASE_NO_CHECKBOXES)
+        this.#bodyHeaderColumnsContainer.classList.remove(GRID.SELECTORS.BODY.HEADER.COLUMNS_CONTAINER_NO_CHECKBOXES)
+        this.#bodyContentPagesContainer.classList.remove(GRID.SELECTORS.BODY.CONTENT.PAGES_CONTAINER_NO_CHECKBOXES)
+        this.#footer.classList.remove(GRID.SELECTORS.FOOTER.BASE_NO_CHECKBOXES)
 
         // Show checkboxes container
-        this.#bodyContentCheckboxesContainer.classList.remove(COMPJS_SELECTORS.HIDE)
+        this.#bodyContentCheckboxesContainer.classList.remove(COMPJS.SELECTORS.UTILITIES.HIDE)
 
         // Update body content checkboxes
         this.#addBodyContentCheckboxes()
@@ -1168,41 +1202,38 @@ export class CompJSGrid extends CompJSElement {
         this.#updateBodyContentCheckboxes()
 
         // Remove icon container
-        const headerRemoveIconContainer = this.CompJS.createDiv(this.#headerIconsContainer, GRID_SELECTORS.HEADER_ICON_CONTAINER, GRID_SELECTORS.HEADER_ICON_CONTAINER_REMOVE);
+        const headerRemoveIconContainer = compJS.createDiv(this.#headerIconsContainer, GRID.SELECTORS.HEADER.ICON_CONTAINER, GRID.SELECTORS.HEADER.ICON_CONTAINER_REMOVE);
 
         // Load remove SVG
-        this.#loadSVG(headerRemoveIconContainer, COMPJS_URLS.TRASH_SVG, GRID_SELECTORS.ICON_REMOVE)
+        this.#loadSVG(headerRemoveIconContainer, COMPJS.URLS.SVG.TRASH, GRID.SELECTORS.ICON.REMOVE)
 
         // Remove icon click event
         headerRemoveIconContainer.addEventListener('click', event => {
             event.preventDefault()
 
-            // Store pages number
-            const pagesNumber=this.#pagesNumber
-
             // Update selected page rows
             this.#updateSelectedPageRows()
 
+            // Change of the current pagination active button
+            this.#togglePaginationButtonActive()
+
             // Remove selected rows
-            const changedCurrentPage= this.#deleteSelectedPageRows()
+            const changedCurrentPage = this.#deleteSelectedPageRows()
 
             // Update body content checkboxes
+            this.#updateBodyContentCheckboxContainersHeight()
             this.#updateBodyContentCheckboxContainers()
             this.#updateBodyContentCheckboxes()
 
             // Update footer
             this.#updateFooter()
 
+            // Change of the current pagination active button
+            this.#togglePaginationButtonActive()
+
             // Change to the current page (in case it was deleted)
-            if (changedCurrentPage)
+            if (changedCurrentPage&&this.#pagesNumber>0)
                 this.#changePage(this.#currentPage)
-
-            else {
-                if(pagesNumber!==this.#pagesNumber)
-                    this.#updateFooter()
-
-                this.#updateBodyContentCheckboxContainersHeight()
-            }
         })
     }
 
@@ -1221,7 +1252,7 @@ export class CompJSGrid extends CompJSElement {
             button.addEventListener("click", event => {
                 event.preventDefault()
 
-                const pageIdx = parseInt(button.dataset[GRID_CONSTANTS.PAGE_IDX])
+                const pageIdx = parseInt(button.dataset[GRID.DATASETS.PAGE_IDX])
                 this.#changePage(pageIdx)
             })
     }
@@ -1252,12 +1283,12 @@ export class CompJSGrid extends CompJSElement {
 
     // Set grid root class property value
     setGridProperty(propertyName, propertyValue) {
-        this.setClassProperty(GRID_SELECTORS.ROOT, propertyName, propertyValue);
+        this.setClassProperty(GRID.SELECTORS.ROOT, propertyName, propertyValue);
     }
 
     // Set grid root class property value to the given element ID
     setGridIdProperty(propertyName, propertyValue) {
-        this.setIdFromSelectorProperty(GRID_SELECTORS.ROOT, propertyName, propertyValue);
+        this.setIdFromSelectorProperty(GRID.SELECTORS.ROOT, propertyName, propertyValue);
     }
 
     // - Observers getters and setters
@@ -1318,13 +1349,13 @@ export class CompJSGrid extends CompJSElement {
 
     // Initialize Page Element Resize Observer
     #initPageElementResizeObserver() {
-        if (this.#hasObserver(GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER))
+        if (this.#hasObserver(GRID.OBSERVERS.RESIZE.PAGE_ELEMENT))
             return
 
         const pageElementResizeObserverCallback = entries => {
             for (let entry of entries) {
                 let maxHeight
-                const height = this.CompJS.getElementTotalHeight(entry.target)
+                const height = compJS.getElementTotalHeight(entry.target)
                 const isNull = this.#maxHeightElement === null
 
                 if (!isNull)
@@ -1361,36 +1392,37 @@ export class CompJSGrid extends CompJSElement {
         }
 
         const pageElementResizeObserver = new ResizeObserver(pageElementResizeObserverCallback)
-        this.#setObserver(GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER, pageElementResizeObserver)
+        this.#setObserver(GRID.OBSERVERS.RESIZE.PAGE_ELEMENT, pageElementResizeObserver)
     }
 
-    // Initialize Row Element Resize Observer
-    #initRowElementResizeObserver() {
-        if (this.#hasObserver(GRID_CONSTANTS.ROW_RESIZE_OBSERVER))
+    // Initialize Page Row Element Resize Observer
+    #iniPageRowElementResizeObserver() {
+        if (this.#hasObserver(GRID.OBSERVERS.RESIZE.PAGE_ROW_ELEMENT))
             return
 
-        const rowElementResizeObserverCallback = entries => {
+        const pageRowElementResizeObserverCallback = entries => {
             for (let entry of entries) {
                 // Get page row element
                 const pageRow = entry.target
-                const height = this.CompJS.getElementTotalHeight(pageRow)
+                const height = compJS.getElementTotalHeight(pageRow)
                 const pageRowIndex = this.#getPageRowIndex(pageRow)
 
                 // Update checkbox container height
+                //console.log(pageRowIndex, pageRow, height)
                 const checkboxContainer = this.#getCheckboxElement(pageRowIndex).parentElement
-                checkboxContainer.style.height = this.CompJS.convertPixelsToRem(height) + "rem"
+                checkboxContainer.style.height = compJS.convertPixelsToRem(height) + "rem"
             }
         }
 
-        const rowElementResizeObserver = new ResizeObserver(rowElementResizeObserverCallback)
-        this.#setObserver(GRID_CONSTANTS.ROW_RESIZE_OBSERVER, rowElementResizeObserver)
+        const rowElementResizeObserver = new ResizeObserver(pageRowElementResizeObserverCallback)
+        this.#setObserver(GRID.OBSERVERS.RESIZE.PAGE_ROW_ELEMENT, rowElementResizeObserver)
     }
 
     // - Mutation observers
 
     // Initialize Title Observer
     #initTitleObserver() {
-        if (this.#hasObserver(GRID_CONSTANTS.TITLE_OBSERVER))
+        if (this.#hasObserver(GRID.OBSERVERS.MUTATION.TITLE))
             return
 
         const titleObserverOptions = {
@@ -1411,13 +1443,13 @@ export class CompJSGrid extends CompJSElement {
             })
         })
 
-        this.#setObserver(GRID_CONSTANTS.TITLE_OBSERVER, titleObserver)
-        this.#setObserverOptions(GRID_CONSTANTS.TITLE_OBSERVER, titleObserverOptions)
+        this.#setObserver(GRID.OBSERVERS.MUTATION.TITLE, titleObserver)
+        this.#setObserverOptions(GRID.OBSERVERS.MUTATION.TITLE, titleObserverOptions)
     }
 
     // Columns Observer
     #initColumnsObserver() {
-        if (this.#hasObserver(GRID_CONSTANTS.COLUMNS_OBSERVER))
+        if (this.#hasObserver(GRID.OBSERVERS.MUTATION.COLUMNS))
             return
 
         const columnsObserverOptions = {
@@ -1440,13 +1472,13 @@ export class CompJSGrid extends CompJSElement {
             })
         })
 
-        this.#setObserver(GRID_CONSTANTS.COLUMNS_OBSERVER, columnsObserver)
-        this.#setObserverOptions(GRID_CONSTANTS.COLUMNS_OBSERVER, columnsObserverOptions)
+        this.#setObserver(GRID.OBSERVERS.MUTATION.COLUMNS, columnsObserver)
+        this.#setObserverOptions(GRID.OBSERVERS.MUTATION.COLUMNS, columnsObserverOptions)
     }
 
     // Initialize Cells Observer
     #initCellsObserver() {
-        if (this.#hasObserver(GRID_CONSTANTS.CELLS_OBSERVER))
+        if (this.#hasObserver(GRID.OBSERVERS.MUTATION.CELLS))
             return
 
         const cellsObserverOptions = {
@@ -1460,21 +1492,22 @@ export class CompJSGrid extends CompJSElement {
                     return
 
                 const element = mutation.target.ownerDocument.activeElement
-                const columnId = element.dataset[GRID_CONSTANTS.COLUMN_ID]
+                const columnId = element.dataset[GRID.JSON.COLUMN.ID]
                 const columnData = this.#columns.get(columnId)
                 const textContent = mutation.target.textContent
 
                 // Validate empty cell
-                if (textContent.length === 0 && !columnData.get(GRID_JSON.COLUMN_DATA_NULLABLE)) {
+                if (textContent.length === 0 && !columnData.get(GRID.JSON.COLUMN.NULLABLE)) {
                     if (!this.#WARNING_CELLS.get(element))
                         this.#toggleCellWarning(element)
                     return
                 }
 
                 // Validate cell data type
-                const columnDataType = columnData.get(GRID_JSON.COLUMN_DATA_TYPE)
-                const regularExpression = this.CompJS.getDataTypeRegExp(columnDataType)
+                const columnDataType = columnData.get(GRID.JSON.COLUMN.DATA_TYPE)
+                const regularExpression = COMPJS.DATA_TYPES[columnDataType].REGEXP
 
+                // Test regular expression for the given data type
                 if (regularExpression !== undefined)
                     if (!regularExpression.test(textContent)) {
                         if (!this.#WARNING_CELLS.get(element))
@@ -1488,14 +1521,14 @@ export class CompJSGrid extends CompJSElement {
             })
         })
 
-        this.#setObserver(GRID_CONSTANTS.CELLS_OBSERVER, cellsObserver)
-        this.#setObserverOptions(GRID_CONSTANTS.CELLS_OBSERVER, cellsObserverOptions)
+        this.#setObserver(GRID.OBSERVERS.MUTATION.CELLS, cellsObserver)
+        this.#setObserverOptions(GRID.OBSERVERS.MUTATION.CELLS, cellsObserverOptions)
     }
 
     // Initialize Observers
     #initObservers() {
         this.#initPageElementResizeObserver()
-        this.#initRowElementResizeObserver()
+        this.#iniPageRowElementResizeObserver()
         this.#initTitleObserver()
         this.#initColumnsObserver()
         this.#initCellsObserver()
@@ -1508,10 +1541,9 @@ export class CompJSGrid extends CompJSElement {
         if (!element)
             return
 
-        if (map.has(element))
-            map.set(element, !map.get(element))
-        else
-            map.set(element, true)
+        // Toggle warning status
+        const value = map.get(element)
+        map.set(element, value === undefined ? true : !value)
     }
 
     // Add or remove global warning classes
@@ -1519,33 +1551,33 @@ export class CompJSGrid extends CompJSElement {
         this.#globalWarning = !this.#globalWarning
 
         // Title
-        this.#headerTitle.classList.toggle(GRID_SELECTORS.HEADER_TITLE_WARNING)
+        this.#headerTitle.classList.toggle(GRID.SELECTORS.HEADER.TITLE_WARNING)
 
         // Body
-        this.#bodyHeader.classList.toggle(GRID_SELECTORS.BODY_HEADER_WARNING)
+        this.#bodyHeader.classList.toggle(GRID.SELECTORS.BODY.HEADER.BASE_WARNING)
 
         // Body content checkboxes
         if (this.#bodyContentCheckboxesContainer !== undefined)
             this.#bodyContentCheckboxesContainer.childNodes.forEach(checkboxContainer => {
-                checkboxContainer.classList.toggle(GRID_SELECTORS.BODY_CONTENT_CHECKBOX_CONTAINER_WARNING)
-                checkboxContainer.firstElementChild.classList.toggle(COMPJS_SELECTORS.CHECKBOX_WARNING)
+                checkboxContainer.classList.toggle(GRID.SELECTORS.BODY.CONTENT.CHECKBOX_CONTAINER_WARNING)
+
+                const checkbox = checkboxContainer.firstElementChild
+                checkbox.classList.toggle(COMPJS.SELECTORS.ELEMENTS.CHECKBOX_WARNING)
             })
 
         //  Body content page rows
-        this.#getBodyContentPageRowElements().forEach(cell => {
-            cell.classList.toggle(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW_WARNING)
-        })
+        this.#getBodyContentPageRowElements().forEach(cell => cell.classList.toggle(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW_WARNING))
 
         // Pagination buttons
         for (let button of [this.#previousPageButton, this.#nextPageButton])
-            button.classList.toggle(GRID_SELECTORS.FOOTER_OUTER_BTN_WARNING)
+            button.classList.toggle(GRID.SELECTORS.FOOTER.OUTER_BTN_WARNING)
 
         for (let button of [this.#firstPageButton, this.#lastPageButton])
-            button.classList.toggle(GRID_SELECTORS.FOOTER_MIDDLE_BTN_WARNING)
+            button.classList.toggle(GRID.SELECTORS.FOOTER.MIDDLE_BTN_WARNING)
 
         if (this.#innerButtonsContainer !== undefined)
             for (let button of this.#innerButtonsContainer.childNodes)
-                button.classList.toggle(GRID_SELECTORS.FOOTER_INNER_BTN_WARNING)
+                button.classList.toggle(GRID.SELECTORS.FOOTER.INNER_BTN_WARNING)
 
         const activeButton = this.#getPaginationButtonElement(this.#currentPage)
         const className = this.#getPaginationButtonActiveClassName(this.#currentPage, true)
@@ -1558,7 +1590,7 @@ export class CompJSGrid extends CompJSElement {
             return
 
         this.#toggleElementWarningStatus(this.#WARNING_COLUMNS, element)
-        element.classList.toggle(GRID_SELECTORS.BODY_HEADER_COLUMN_WARNING)
+        element.classList.toggle(GRID.SELECTORS.BODY.HEADER.COLUMN_WARNING)
     }
 
     // Add or remove cell warning classes
@@ -1567,7 +1599,7 @@ export class CompJSGrid extends CompJSElement {
             return
 
         this.#toggleElementWarningStatus(this.#WARNING_CELLS, element)
-        element.classList.toggle(GRID_SELECTORS.BODY_CONTENT_PAGE_ROW_CELL_WARNING)
+        element.classList.toggle(GRID.SELECTORS.BODY.CONTENT.PAGE_ROW_CELL_WARNING)
     }
 
     // - Disconnect observers
@@ -1582,27 +1614,27 @@ export class CompJSGrid extends CompJSElement {
 
     // Disconnect page element resize observer
     #disconnectPageElementResizeObserver() {
-        this.disconnectObserver(GRID_CONSTANTS.PAGE_ELEMENT_RESIZE_OBSERVER)
+        this.disconnectObserver(GRID.OBSERVERS.RESIZE.PAGE_ELEMENT)
     }
 
-    // Disconnect row element resize observer
-    #disconnectRowElementResizeObserver() {
-        this.disconnectObserver(GRID_CONSTANTS.ROW_RESIZE_OBSERVER)
+    // Disconnect page row element resize observer
+    #disconnectPageRowElementResizeObserver() {
+        this.disconnectObserver(GRID.OBSERVERS.RESIZE.PAGE_ROW_ELEMENT)
     }
 
     // Disconnect title observer
     disconnectTitleObserver() {
-        this.disconnectObserver(GRID_CONSTANTS.TITLE_OBSERVER)
+        this.disconnectObserver(GRID.OBSERVERS.MUTATION.TITLE)
     }
 
     // Disconnect columns observer
     disconnectColumnsObserver() {
-        this.disconnectObserver(GRID_CONSTANTS.COLUMNS_OBSERVER)
+        this.disconnectObserver(GRID.OBSERVERS.MUTATION.COLUMNS)
     }
 
     // Disconnect body content data cells observer
     disconnectCellsObserver() {
-        this.disconnectObserver(GRID_CONSTANTS.CELLS_OBSERVER)
+        this.disconnectObserver(GRID.OBSERVERS.MUTATION.CELLS)
     }
 
     // Disconnect title, columns and cells observers

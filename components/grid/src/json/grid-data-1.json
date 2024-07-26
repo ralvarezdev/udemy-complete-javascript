@@ -3,40 +3,32 @@
   "title": "Students",
   "columns": [
     {
-      "columnId": "name",
-      "columnData": {
-        "title": "Name",
-        "index": 3,
-        "type": "string",
-        "nullable": false
-      }
+      "id": "name",
+      "title": "Name",
+      "index": 3,
+      "dataType": "string",
+      "nullable": false
     },
     {
-      "columnId": "age",
-      "columnData": {
-        "title": "Age",
-        "index": 1,
-        "type": "int",
-        "nullable": true
-      }
+      "id": "age",
+      "title": "Age",
+      "index": 1,
+      "dataType": "int",
+      "nullable": true
     },
     {
-      "columnId": "id",
-      "columnData": {
-        "title": "ID",
-        "index": 2,
-        "type": "uint",
-        "nullable": true
-      }
+      "id": "id",
+      "title": "ID",
+      "index": 2,
+      "dataType": "uint",
+      "nullable": true
     },
     {
-      "columnId": "country",
-      "columnData": {
-        "title": "Country",
-        "index": 0,
-        "type": "string",
-        "nullable": true
-      }
+      "id": "country",
+      "title": "Country",
+      "index": 0,
+      "dataType": "string",
+      "nullable": true
     }
   ],
   "pageSize": 5,

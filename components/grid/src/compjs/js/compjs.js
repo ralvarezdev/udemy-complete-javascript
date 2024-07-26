@@ -1,9 +1,6 @@
-import {COMPJS_SELECTORS, COMPJS_VARIABLES_LIST, COMPJS_PATHS, COMPJS_URIS, COMPJS_DATA_TYPES} from "./compjs-props.js";
+import {COMPJS} from "./compjs-props.js";
 
-export class CompJS {
-    // Unique instance
-    static #INSTANCE;
-
+class CompJS {
     // Document elements
     #head;
     #body
@@ -19,47 +16,19 @@ export class CompJS {
     // Elements
     #ELEMENTS_ID;
 
-    // Regular expressions
-    #DATA_TYPES_REGEXP;
-
     constructor() {
-        return CompJS.getInstance(this);
-    }
+        // Store head element
+        this.#head = document.querySelector('head');
+        this.#body = document.querySelector('body');
 
-    static getInstance(obj) {
-        if (CompJS.#INSTANCE === undefined) {
-            if (!obj instanceof CompJS)
-                throw new Error("Object must be an instance of CompJS.");
+        // Insert default CSS style to HTML
+        this.addStyleSheet(COMPJS.PATHS.MAIN_STYLE);
 
-            // Store head element
-            obj.#head = document.querySelector('head');
-            obj.#body = document.querySelector('body');
-
-            // Insert default CSS style to HTML
-            obj.addStyleSheet(COMPJS_PATHS.COMPJS_STYLE);
-
-            // Custom CSS style
-            obj.#checkStyleElement();
-            obj.#stylesMap = new Map();
-            obj.#ELEMENTS_ID = new Map();
-            obj.#LOADED_SVGS = new Map()
-
-            // Regular Expressions
-            obj.#DATA_TYPES_REGEXP = {
-                [COMPJS_DATA_TYPES.STRING]: /^.*$/,
-                [COMPJS_DATA_TYPES.INTEGER]: /^[-+]?[0-9]+$/,
-                [COMPJS_DATA_TYPES.UNSIGNED_INTEGER]: /^[0-9]+$/,
-                [COMPJS_DATA_TYPES.DECIMAL]: /^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,
-                [COMPJS_DATA_TYPES.UNSIGNED_DECIMAL]: /^[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,
-                [COMPJS_DATA_TYPES.BOOLEAN]: /^(true|false)$/,
-                [COMPJS_DATA_TYPES.CHAR]: /^.$/,
-                [COMPJS_DATA_TYPES.DATE]: /^\d{4}-\d{2}-\d{2}$/,
-                [COMPJS_DATA_TYPES.TIME]: /^\d{2}:\d{2}:\d{2}$/
-            }
-
-            CompJS.#INSTANCE = obj;
-        }
-        return CompJS.#INSTANCE;
+        // Custom CSS style
+        this.#initStyleElement();
+        this.#stylesMap = new Map();
+        this.#ELEMENTS_ID = new Map();
+        this.#LOADED_SVGS = new Map()
     }
 
     // - Utilities
@@ -74,22 +43,6 @@ export class CompJS {
         return pixels / parseFloat(getComputedStyle(document.documentElement).fontSize);
     }
 
-    // Get regular expression for a given data type
-    getDataTypeRegExp(dataType) {
-        return this.#DATA_TYPES_REGEXP[dataType];
-    }
-
-    // Check if the style element exists and is inside the head element
-    #checkStyleElement() {
-        if (this.#style === undefined) {
-            this.#style = document.createElement('style');
-            this.#style.id = COMPJS_SELECTORS.STYLE;
-        }
-
-        if (this.#head.contains(this.#style) === false)
-            this.#head.appendChild(this.#style);
-    }
-
     // Check if a variable is a string
     isString(variable) {
         return variable instanceof String || typeof (variable) === 'string';
@@ -98,12 +51,12 @@ export class CompJS {
     // Check selectors
     checkSelector(selector) {
         if (!this.isString(selector))
-            throw new Error('Class name must be a string...');
+            throw new Error('Selector must be a string...');
     }
 
     checkSelectors(...selectors) {
-        if (selectors === undefined)
-            throw new Error('Selectors are undefined...');
+        if (selectors === undefined || selectors === null)
+            throw new Error('Selectors are undefined or null...');
 
         if (selectors.length === 0)
             throw new Error('Selectors list is empty...');
@@ -111,12 +64,13 @@ export class CompJS {
         selectors.forEach(selector => this.checkSelector(selector))
     }
 
-    // Get formatted class names
+    // Get formatted class name
     getFormattedClassName(selector) {
         this.checkSelector(selector)
         return selector.startsWith(".") ? selector : ("." + selector);
     }
 
+    // Get formatted class names
     getFormattedClassNames(selectors) {
         this.checkSelectors(...selectors)
 
@@ -126,17 +80,18 @@ export class CompJS {
         return selectors
     }
 
-    // Get formatted IDs
+    // Get formatted ID
     getFormattedId(selector) {
         this.checkSelector(selector)
         return selector.startsWith("#") ? selector : ("#" + selector);
     }
 
+    // Get formatted IDs
     getFormattedIds(selectors) {
         this.checkSelectors(...selectors)
 
         selectors.forEach((selector, i) => {
-            selectors[i] = this.getFormattedClassName(selector);
+            selectors[i] = this.getFormattedId(selector);
         })
         return selectors
     }
@@ -153,6 +108,18 @@ export class CompJS {
             throw new Error('Property value must be a string...');
     }
 
+    // - Initializers
+
+    // Initialize the style element and append to the head element
+    #initStyleElement() {
+        // Create style element
+        this.#style = document.createElement('style');
+        this.#style.id = COMPJS.SELECTORS.STYLE;
+
+        // Append style element to head element
+        this.#head.appendChild(this.#style);
+    }
+
     // - Getters
 
     // Get element from selector
@@ -163,7 +130,7 @@ export class CompJS {
 
     // Get element computed style
     getCompStyle(element) {
-        return (element === null) ? null : window.getComputedStyle(element);
+        return element ? window.getComputedStyle(element) : null;
     }
 
     // Get selector computed style
@@ -177,7 +144,7 @@ export class CompJS {
         this.checkPropertyName(propertyName);
 
         const propertyValue = compStyle.getPropertyValue(propertyName);
-        return (propertyValue === undefined) ? null : propertyValue;
+        return propertyValue ? propertyValue : null;
     }
 
     // Get computed style property from selector
@@ -202,12 +169,8 @@ export class CompJS {
         return selectorPropertiesMap;
     }
 
-    // Get CompJS properties
-    getCompJSProperties() {
-        return this.getSelectorProperties(COMPJS_SELECTORS.ROOT, ...COMPJS_VARIABLES_LIST);
-    }
-
-    getCompJSElementId(elementId) {
+    // Get CompJS element by ID
+    getCompJSElementById(elementId) {
         const element = this.#ELEMENTS_ID.get(elementId);
 
         if (element === undefined)
@@ -232,29 +195,32 @@ export class CompJS {
         this.checkPropertyValue(propertyValue);
 
         // Add class property style
-        if (this.#stylesMap.has(selector) === false) {
+        const propertiesMap = this.#stylesMap.get(selector);
+
+        if (propertiesMap === undefined) {
             this.#stylesMap.set(selector, new Map([[propertyName, propertyValue]]));
             return;
         }
 
-        this.#stylesMap.get(selector).set(propertyName, propertyValue);
+        propertiesMap.set(propertyName, propertyValue);
     }
 
     // Set CompJS selector property values
     setCompJSSelectorProperty(propertyName, propertyValue) {
-        this.setSelectorProperty(COMPJS_SELECTORS.ROOT, propertyName, propertyValue);
+        this.setSelectorProperty(COMPJS.SELECTORS.ROOT, propertyName, propertyValue);
     }
 
     // Set CompJS element ID
     setCompJSElementId(element, id) {
         this.checkSelector(id);
 
-        if (this.getCompJSElementId(id))
+        if (this.getCompJSElementById(id))
             throw new Error("Element ID has already being assigned...");
 
         this.#ELEMENTS_ID.set(id, element);
     }
 
+    // Set element ID
     setElementId(element, id) {
         if (id)
             element.id = id
@@ -262,10 +228,7 @@ export class CompJS {
 
     // Set class property values
     addClassNames(element, ...classNames) {
-        if (!classNames)
-            return
-
-        if (!classNames instanceof Array)
+        if (!classNames || !classNames instanceof Array)
             return
 
         this.checkSelectors(...classNames);
@@ -273,8 +236,9 @@ export class CompJS {
     }
 
     // - Links
+
+    // Create new link element
     addLink(rel, type, href, id) {
-        // Create new link element for the stylesheet
         let link = document.createElement('link');
 
         // Set the attributes for link element
@@ -288,6 +252,7 @@ export class CompJS {
         this.#head.appendChild(link);
     }
 
+    // Add stylesheet
     addStyleSheet(path) {
         if (!path.endsWith('.css'))
             throw new Error("Invalid path to stylesheet, it must end with '.css'...");
@@ -325,10 +290,6 @@ export class CompJS {
 
     // Apply customized styles to 'style' element
     applyStyles() {
-        // Check styles map
-        this.#checkStyleElement();
-
-        // Append customized styles
         let newContent = "";
 
         for (let [selector, property] of this.#stylesMap.entries()) {
@@ -378,7 +339,7 @@ export class CompJS {
 
     // Create button element with ID
     createButtonWithId(parentElement, id, ...classNames) {
-        return this.createElementWithId('button', parentElement, id, ...classNames, COMPJS_SELECTORS.BUTTON);
+        return this.createElementWithId('button', parentElement, id, ...classNames, COMPJS.SELECTORS.ELEMENTS.BUTTON);
     }
 
     // Create button element
@@ -388,7 +349,7 @@ export class CompJS {
 
     // Create input element with ID
     createInputWithId(parentElement, type, name, value, id, ...classNames) {
-        const inputElement = this.createElementWithId('input', parentElement, id, ...classNames, COMPJS_SELECTORS.INPUT);
+        const inputElement = this.createElementWithId('input', parentElement, id, ...classNames, COMPJS.SELECTORS.ELEMENTS.INPUT);
 
         if (name)
             inputElement.name = name
@@ -409,7 +370,7 @@ export class CompJS {
 
     // Create input radio element with ID
     createInputRadioWithId(parentElement, name, value, checked, id, ...classNames) {
-        const inputElement = this.createInputWithId(parentElement, 'radio', name, value, id, ...classNames, COMPJS_SELECTORS.RADIO);
+        const inputElement = this.createInputWithId(parentElement, 'radio', name, value, id, ...classNames, COMPJS.SELECTORS.ELEMENTS.RADIO);
         inputElement.checked = checked
 
         return inputElement
@@ -422,7 +383,7 @@ export class CompJS {
 
     // Create input checkbox element with ID
     createInputCheckboxWithId(parentElement, name, value, checked, id, ...classNames) {
-        const inputElement = this.createInputWithId(parentElement, 'checkbox', name, value, id, ...classNames, COMPJS_SELECTORS.CHECKBOX);
+        const inputElement = this.createInputWithId(parentElement, 'checkbox', name, value, id, ...classNames, COMPJS.SELECTORS.ELEMENTS.CHECKBOX);
         inputElement.checked = checked
 
         return inputElement
@@ -489,7 +450,7 @@ export class CompJS {
     // Load hidden SVG to be used as reference
     async loadHiddenSVG(url, viewBox, id) {
         if (!this.#hiddenSVGContainer)
-            this.#hiddenSVGContainer = this.createDiv(this.#body, COMPJS_SELECTORS.HIDDEN_SVG_CONTAINER, COMPJS_SELECTORS.HIDE)
+            this.#hiddenSVGContainer = this.createDiv(this.#body, COMPJS.SELECTORS.ELEMENTS.HIDDEN_SVG_CONTAINER, COMPJS.SELECTORS.UTILITIES.HIDE)
 
         // SVG already loaded
         if (this.#LOADED_SVGS.get(id))
@@ -498,8 +459,8 @@ export class CompJS {
         // Set SVG as being loaded
         this.#LOADED_SVGS.set(id, true)
 
-        const svgElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'svg');
-        const symbolElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'symbol');
+        const svgElement = document.createElementNS(COMPJS.URIS.NAMESPACES.SVG, 'svg');
+        const symbolElement = document.createElementNS(COMPJS.URIS.NAMESPACES.SVG, 'symbol');
 
         this.setElementId(symbolElement, id)
 
@@ -513,14 +474,14 @@ export class CompJS {
                 const parsedSvg = parser.parseFromString(svgData, "image/svg+xml");
 
                 svgElement.version = "2.0";
-                svgElement.classList.add(COMPJS_SELECTORS.HIDDEN_SVG)
+                svgElement.classList.add(COMPJS.SELECTORS.ELEMENTS.HIDDEN_SVG)
                 symbolElement.setAttribute('viewBox', viewBox);
 
                 symbolElement.innerHTML = parsedSvg.documentElement.innerHTML;
             });
     }
 
-    // Load SVG
+    // Load SVG using a hidden SVG element
     loadSVG(parentElement, id, ...classNames) {
         id = this.getFormattedId(id)
         const getHiddenSVG = document.querySelector(id);
@@ -528,8 +489,8 @@ export class CompJS {
         if (!getHiddenSVG)
             throw new Error("Hidden SVG element not found...");
 
-        const svgElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'svg');
-        const useElement = document.createElementNS(COMPJS_URIS.SVG_NAMESPACE, 'use');
+        const svgElement = document.createElementNS(COMPJS.URIS.NAMESPACES.SVG, 'svg');
+        const useElement = document.createElementNS(COMPJS.URIS.NAMESPACES.SVG, 'use');
         useElement.setAttribute('href', id);
 
         this.addClassNames(svgElement, ...classNames)
@@ -539,3 +500,5 @@ export class CompJS {
         return svgElement;
     }
 }
+
+export const compJS = Object.freeze(new CompJS());

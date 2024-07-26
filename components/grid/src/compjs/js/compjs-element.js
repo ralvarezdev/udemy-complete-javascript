@@ -1,19 +1,12 @@
-import {CompJS} from "./compjs.js";
-import {COMPJS_PATHS} from "./compjs-props.js";
+import {compJS} from "./compjs.js";
 
 export class CompJSElement {
-    static #COMPJS;
-
     // Element properties
     #ELEMENT_ID;
     #PARENT_ELEMENT
 
-    static {
-        CompJSElement.#COMPJS = new CompJS();
-    }
-
     constructor(elementId, parentElement) {
-        this.#PARENT_ELEMENT = (parentElement === undefined) ? document.body : parentElement;
+        this.#PARENT_ELEMENT = parentElement ? parentElement : document.body;
         this.#ELEMENT_ID = String(elementId)
     }
 
@@ -26,15 +19,6 @@ export class CompJSElement {
 
     // - Getters
 
-    // Get CompJS instance
-    static get CompJS() {
-        return CompJSElement.#COMPJS
-    }
-
-    get CompJS() {
-        return CompJSElement.#COMPJS
-    }
-
     // Get parent element
     get parentElement() {
         return this.#PARENT_ELEMENT
@@ -45,6 +29,10 @@ export class CompJSElement {
         return this.#ELEMENT_ID
     }
 
+    get id() {
+        return this.elementId()
+    }
+
     // Get selector with element ID
     getIdFromSelector(selector) {
         return [selector, this.#ELEMENT_ID].join('--')
@@ -53,25 +41,25 @@ export class CompJSElement {
     // Get formatted selector with element ID
     getFormattedIdFromSelector(selector) {
         const id = this.getIdFromSelector(selector)
-        return this.CompJS.getFormattedId(id)
+        return compJS.getFormattedId(id)
     }
 
     // Get class properties values
     getClassNameProperties(className, ...propertiesName) {
-        className = this.CompJS.getFormattedClassName(className)
-        return this.CompJS.getSelectorProperties(className, ...propertiesName);
+        className = compJS.getFormattedClassName(className)
+        return compJS.getSelectorProperties(className, ...propertiesName);
     }
 
     // Get class properties values
     getIdProperties(id, ...propertiesName) {
-        id = this.CompJS.getFormattedId(id)
-        return this.CompJS.getSelectorProperties(id, ...propertiesName);
+        id = compJS.getFormattedId(id)
+        return compJS.getSelectorProperties(id, ...propertiesName);
     }
 
     // Get class with element ID properties values
     getIdFromSelectorProperties(selector, ...propertiesName) {
         const id = this.getFormattedIdFromSelector(selector)
-        return this.CompJS.getSelectorProperties(id, ...propertiesName);
+        return compJS.getSelectorProperties(id, ...propertiesName);
     }
 
     // Get formatted data name
@@ -119,20 +107,20 @@ export class CompJSElement {
 
     // Set class property value
     setClassProperty(className, propertyName, propertyValue) {
-        className = this.CompJS.getFormattedClassName(className)
-        this.CompJS.setSelectorProperty(className, propertyName, propertyValue);
+        className = compJS.getFormattedClassName(className)
+        compJS.setSelectorProperty(className, propertyName, propertyValue);
     }
 
     // Set ID property value
     setIdProperty(id, propertyName, propertyValue) {
-        id = this.CompJS.getFormattedId(id)
-        this.CompJS.setSelectorProperty(id, propertyName, propertyValue);
+        id = compJS.getFormattedId(id)
+        compJS.setSelectorProperty(id, propertyName, propertyValue);
     }
 
     // Set class with element ID property value
     setIdFromSelectorProperty(selector, propertyName, propertyValue) {
         const id = this.getFormattedIdFromSelector(selector)
-        this.CompJS.setSelectorProperty(id, propertyName, propertyValue);
+        compJS.setSelectorProperty(id, propertyName, propertyValue);
     }
 
     // Make element editable
@@ -145,32 +133,32 @@ export class CompJSElement {
     // Create element with ID
     createElementWithId(tagName, parentElement, selector, ...classNames) {
         const id = this.getIdFromSelector(selector)
-        return this.CompJS.createElementWithId(tagName, parentElement, id, ...classNames);
+        return compJS.createElementWithId(tagName, parentElement, id, ...classNames);
     }
 
     // Create div with ID
     createDivWithId(parentElement, selector, ...classNames) {
         const id = this.getIdFromSelector(selector)
-        return this.CompJS.createDivWithId(parentElement, id, ...classNames);
+        return compJS.createDivWithId(parentElement, id, ...classNames);
     }
 
     // Create button with ID
     createButtonWithId(parentElement, selector, ...classNames) {
         const id = this.getIdFromSelector(selector)
-        return this.CompJS.createButtonWithId(parentElement, id, ...classNames);
+        return compJS.createButtonWithId(parentElement, id, ...classNames);
     }
 
     // Create input with ID
     createInputWithId(parentElement, selector, name, type, value, ...classNames) {
         const id = this.getIdFromSelector(selector)
-        return this.CompJS.createInputWithId(parentElement, id, name, type, value, ...classNames);
+        return compJS.createInputWithId(parentElement, id, name, type, value, ...classNames);
     }
 
     // - Re-setters
 
     // Reset applied customized styles
     resetAppliedStyles(selector) {
-        this.CompJS.checkSelector(selector);
-        this.CompJS.resetAppliedStyle(selector);
+        compJS.checkSelector(selector);
+        compJS.resetAppliedStyle(selector);
     }
 }
