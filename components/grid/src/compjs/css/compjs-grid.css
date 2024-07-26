@@ -3,6 +3,15 @@
 @import url('compjs-grid-header.css');
 @import url('compjs-grid-keyframes.css');
 
+:root {
+    /* Grid sizes */
+    --compjs-grid-checkbox-padding-size: var(--compjs-padding-medium-size);
+    --compjs-grid-checkbox-margin-size: var(--compjs-margin-micro-size);
+    --compjs-grid-checkbox-size: var(--compjs-checkbox-medium-size);
+    --compjs-grid-checkbox-container-size: calc(var(--compjs-grid-checkbox-size) + var(--compjs-grid-checkbox-padding-size) * 2 + var(--compjs-grid-checkbox-margin-size) * 2);
+    --compjs-grid-page-row-width: calc(100% + var(--compjs-grid-checkbox-container-size));
+}
+
 .compjs__grid {
     display: grid;
     grid-template-columns: auto 1fr;

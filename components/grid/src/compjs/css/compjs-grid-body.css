@@ -91,58 +91,56 @@
 }
 
 .compjs__grid__body__content__checkbox-container {
-    padding: 0 var(--compjs-padding-medium-size);
+    padding: 0 var(--compjs-grid-checkbox-padding-size);
 
     display: grid;
     place-content: center;
 
-    transition: background-color var(--compjs-transition-color-duration) ease-out;
+    transition: height var(--compjs-transition-height-duration) ease-out;
 }
 
 .compjs__grid__body__content__checkbox {
     position: relative;
-    width: var(--compjs-checkbox-medium-size);
-    height: var(--compjs-checkbox-medium-size);
+    width: var(--compjs-grid-checkbox-size);
+    height: var(--compjs-grid-checkbox-size);
+    margin: 0 var(--compjs-grid-checkbox-margin-size);
 
     z-index: 1;
 }
 
 .compjs__grid__body__content__page {
-    width: 100%;
+    width: var(--compjs-grid-page-row-width);
     overflow: hidden;
     min-height: fit-content;
 
     position: absolute;
-}
-
-.compjs__grid__body__content__page--show-from-right,
-.compjs__grid__body__content__page--show-from-left {
-    translate: 0;
+    translate: calc(-1 * var(--compjs-grid-checkbox-container-size));
 }
 
 .compjs__grid__body__content__page--show-from-right {
-    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveInFromRight;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) pageRowMoveInFromRight;
 }
 
 .compjs__grid__body__content__page--show-from-left {
-    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveInFromLeft;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) pageRowMoveInFromLeft;
 }
 
 .compjs__grid__body__content__page--hide-to-left {
-    translate: -125%;
+    translate: calc(-100% - var(--compjs-grid-checkbox-container-size));
 
-    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveOutToLeft;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) pageRowMoveOutToLeft;
 }
 
 .compjs__grid__body__content__page--hide-to-right {
-    translate: 100%;
+    translate: calc(100% - var(--compjs-grid-checkbox-container-size));
 
-    animation: var(--compjs-transition-translate-duration) linear var(--compjs-transition-translate-delay) moveOutToRight;
+    animation: var(--compjs-transition-translate-duration) ease-in-out var(--compjs-transition-translate-delay) pageRowMoveOutToRight;
 }
 
 .compjs__grid__body__content__page__row {
     display: grid;
     grid-auto-columns: 1fr;
+    padding-left: var(--compjs-grid-checkbox-container-size);
     min-height: fit-content;
 
     font-size: var(--compjs-text-font-size);
@@ -151,17 +149,14 @@
     transition: background-color var(--compjs-transition-color-duration) ease-out;
 }
 
-.compjs__grid__body__content__checkbox-container:nth-child(odd),
 .compjs__grid__body__content__page__row:nth-child(odd) {
     background-color: var(--compjs-primary-color-light);
 }
 
-.compjs__grid__body__content__checkbox-container--warning:nth-child(odd),
 .compjs__grid__body__content__page__row--warning:nth-child(odd) {
     background-color: var(--compjs-grey-light);
 }
 
-.compjs__grid__body__content__checkbox-container:nth-child(even),
 .compjs__grid__body__content__page__row:nth-child(even) {
     background-color: var(--compjs-white);
 }

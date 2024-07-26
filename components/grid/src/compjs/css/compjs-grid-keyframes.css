@@ -18,50 +18,42 @@
     }
 }
 
-@keyframes moveInFromLeft {
+@keyframes pageRowMoveInFromLeft {
     0% {
-        translate: -125%;
+        translate: calc(-100% - var(--compjs-grid-checkbox-container-size));
     }
 
     100% {
-        translate: 0;
+        translate: calc(-1 * var(--compjs-grid-checkbox-container-size));
     }
 }
 
-@keyframes moveInFromRight {
+@keyframes pageRowMoveInFromRight {
     0% {
-        translate: 100%;
-    }
-
-    80% {
-        translate: 0;
+        translate: calc(100% - var(--compjs-grid-checkbox-container-size));
     }
 
     100% {
-        translate: 0;
+        translate: calc(-1 * var(--compjs-grid-checkbox-container-size));
     }
 }
 
-@keyframes moveOutToLeft {
+@keyframes pageRowMoveOutToLeft {
     0% {
-        translate: 0;
+        translate: calc(-1 * var(--compjs-grid-checkbox-container-size));
     }
 
     100% {
-        translate: -125%;
+        translate: calc(-100% - var(--compjs-grid-checkbox-container-size));
     }
 }
 
-@keyframes moveOutToRight {
+@keyframes pageRowMoveOutToRight {
     0% {
-        translate: 0;
-    }
-
-    20% {
-        translate: 0;
+        translate: calc(-1 * var(--compjs-grid-checkbox-container-size));
     }
 
     100% {
-        translate: 100%;
+        translate: calc(100% - var(--compjs-grid-checkbox-container-size));
     }
 }

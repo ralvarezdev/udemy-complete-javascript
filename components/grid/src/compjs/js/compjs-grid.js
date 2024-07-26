@@ -592,7 +592,7 @@ export class CompJSGrid extends CompJSElement {
 
         // Get number of required inner buttons
         const isInsideOffsetRange = 2 * this.#pageButtonOffset + 1 < this.#pagesNumber - 2
-        const currentNumberButtons=this.#innerButtonsContainer.childElementCount
+        const currentNumberButtons = this.#innerButtonsContainer.childElementCount
         const requiredNumberButtons = isInsideOffsetRange ? 2 * this.#pageButtonOffset + 1 : this.#pagesNumber - 2
         const innerButtons = this.#innerButtonsContainer.childNodes
 
@@ -666,8 +666,8 @@ export class CompJSGrid extends CompJSElement {
     #deleteSelectedPageRows() {
         const pagesContainer = this.#bodyContentPagesContainer
         const pages = pagesContainer.childNodes
-        const oldCurrentPageIdx=this.#currentPage
-        let changedPage=false, oldPageIdx , newPageIdx = 0, newPageRowIdx = 0,pageIdx=0,page,nextPage
+        const oldCurrentPageIdx = this.#currentPage
+        let changedPage = false, oldPageIdx, newPageIdx = 0, newPageRowIdx = 0, pageIdx = 0, page, nextPage
 
         // Disconnect page element resize observer
         this.#disconnectPageElementResizeObserver()
@@ -676,7 +676,7 @@ export class CompJSGrid extends CompJSElement {
         this.#disconnectPageRowElementResizeObserver()
 
         // Check page. Returns 'true' if the page should be skipped from being checked
-        const checkPage=pageIdx=> {
+        const checkPage = pageIdx => {
             if (!pages[pageIdx].childElementCount) {
                 deletePage(pageIdx)
                 return true
@@ -690,19 +690,19 @@ export class CompJSGrid extends CompJSElement {
         // Check page rows
         const checkPageRows = pageRows => {
             for (let j = 0; j < pageRows.length;)
-                if(!checkPageRow(pageRows[j]))
+                if (!checkPageRow(pageRows[j]))
                     j++
         }
 
         // Check page row
-        const checkPageRow=pageRow=> {
+        const checkPageRow = pageRow => {
             const pageRowIdx = this.#getPageRowIndex(pageRow)
             let removed = false
 
             if (!this.#selectedPageRows.get(pageRowIdx))
                 this.#setPageRowElementIndex(pageRow, newPageRowIdx++)
 
-            else{
+            else {
                 pageRow.remove()
                 removed = true
             }
@@ -714,8 +714,8 @@ export class CompJSGrid extends CompJSElement {
         // Delete page
         const deletePage = () => {
             // Check if it's the current page
-            if(this.#currentPage===pageIdx)
-                changedPage=true
+            if (this.#currentPage === pageIdx)
+                changedPage = true
 
             // Update page index and number of pages
             if (oldPageIdx <= oldCurrentPageIdx && this.#currentPage > 0)
@@ -727,20 +727,20 @@ export class CompJSGrid extends CompJSElement {
 
 
         // Traverse pages
-        while(pageIdx < pagesContainer.childElementCount) {
+        while (pageIdx < pagesContainer.childElementCount) {
             // Update page element index
             page = pages[pageIdx]
-            oldPageIdx=this.#getPageIndex(page)
+            oldPageIdx = this.#getPageIndex(page)
 
             // Check page rows
             checkPageRows(page.childNodes)
 
             // Check page
-            if(checkPage(pageIdx))
+            if (checkPage(pageIdx))
                 continue
 
             // Check if there has been removed some page rows
-            if (page.childElementCount === this.#pageSize){
+            if (page.childElementCount === this.#pageSize) {
                 pageIdx++
                 continue
             }
@@ -749,20 +749,20 @@ export class CompJSGrid extends CompJSElement {
             this.#addResizeObserverToElement(page, GRID.OBSERVERS.RESIZE.PAGE_ELEMENT)
 
             // Remove page if it is missing some rows
-            while ( page.childElementCount < this.#pageSize && ++pageIdx < this.#pagesNumber) {
-                 nextPage = pages[pageIdx]
-                oldPageIdx=this.#getPageIndex(nextPage)
+            while (page.childElementCount < this.#pageSize && ++pageIdx < this.#pagesNumber) {
+                nextPage = pages[pageIdx]
+                oldPageIdx = this.#getPageIndex(nextPage)
 
                 // Check next page rows
                 checkPageRows(nextPage.childNodes)
 
                 // Check next page
-                if(checkPage(pageIdx))
+                if (checkPage(pageIdx))
                     continue
 
                 // Append rows to the current page
                 while (page.childElementCount < this.#pageSize && nextPage.childElementCount > 0) {
-                    const nextPageRow=nextPage.firstElementChild
+                    const nextPageRow = nextPage.firstElementChild
                     nextPageRow.remove()
 
                     // Update next page row index
@@ -780,7 +780,7 @@ export class CompJSGrid extends CompJSElement {
         }
 
         // Check if there are no pages
-        if(!pagesContainer.childElementCount)
+        if (!pagesContainer.childElementCount)
             return changedPage
 
         // Add resize observer
@@ -837,12 +837,12 @@ export class CompJSGrid extends CompJSElement {
         const columnsList = getListFromObject(columnsObject)
         const columnsMap = new Map()
         const requiredProps = [GRID.JSON.COLUMN.ID, GRID.JSON.COLUMN.INDEX, GRID.JSON.COLUMN.TITLE, GRID.JSON.COLUMN.DATA_TYPE, GRID.JSON.COLUMN.NULLABLE]
-        let id,columnMap
+        let id, columnMap
 
         // Check for required properties
         for (let column of columnsList) {
             // Get and check column map
-            columnMap=getMapFromObject(column)
+            columnMap = getMapFromObject(column)
             requiredProps.forEach((prop) => {
                 if (!columnMap.has(prop))
                     this.#throwMissingJSONPropertyError(prop)
@@ -1130,11 +1130,10 @@ export class CompJSGrid extends CompJSElement {
             event.preventDefault()
 
             // Check if there's no row
-            if(this.#pagesNumber===0){
+            if (this.#pagesNumber === 0) {
                 this.#addBodyContentPage()
-                 this.#addBodyContentPageRow(this.#lastPage, 0, false)
-            }
-            else{
+                this.#addBodyContentPageRow(this.#lastPage, 0, false)
+            } else {
                 // Check if there's enough space for a new row
                 const rowIndex = this.#getLastPageRowIndex()
 
@@ -1232,7 +1231,7 @@ export class CompJSGrid extends CompJSElement {
             this.#togglePaginationButtonActive()
 
             // Change to the current page (in case it was deleted)
-            if (changedCurrentPage&&this.#pagesNumber>0)
+            if (changedCurrentPage && this.#pagesNumber > 0)
                 this.#changePage(this.#currentPage)
         })
     }

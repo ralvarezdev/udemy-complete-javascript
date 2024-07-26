@@ -29,6 +29,28 @@ export const GRID = Object.freeze({
         COLUMN_ID: "cellColumnId"
     }),
 
+    // CompJS Grid CSS variables name
+    VARIABLES: Object.freeze({
+        // Checkbox class names
+        CHECKBOX: Object.freeze({
+            BASE_SIZE: "--compjs-grid-checkbox-size",
+            PADDING_SIZE: "--compjs-grid-checkbox-padding-size",
+            MARGIN_SIZE: "--compjs-grid-checkbox-margin-size",
+            CONTAINER_SIZE: "--compjs-grid-checkbox-container-size",
+        }),
+
+        // Body class names
+        BODY: Object.freeze({
+            // Content class names
+            CONTENT: Object.freeze({
+                // Page class names
+                PAGE_ROW: Object.freeze({
+                    WIDTH: "--compjs-grid-page-row-width",
+                })
+            })
+        })
+    }),
+
     // CompJS Grid CSS selectors
     SELECTORS: Object.freeze({
         // Root class name

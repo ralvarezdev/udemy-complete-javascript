@@ -12,6 +12,8 @@
     --compjs-transition-translate-delay: 0s;
     --compjs-transition-scale-duration: 0.15s;
     --compjs-transition-scale-delay: 0s;
+    --compjs-transition-height-duration: 0.2s;
+    --compjs-transition-height-delay: 0s;
 
     /* Font sizes */
     --compjs-h2-font-size: 4.4rem;

@@ -48,6 +48,18 @@
     initial-value: 0s;
 }
 
+@property --compjs-transition-height-duration {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0.4s;
+}
+
+@property --compjs-transition-height-delay {
+    syntax: "<time>";
+    inherits: true;
+    initial-value: 0s;
+}
+
 /* - Font sizes */
 
 @property --compjs-h2-font-size {

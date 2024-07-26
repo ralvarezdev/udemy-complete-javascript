@@ -6,12 +6,12 @@ export class ReactNumbersHandler {
 
     constructor(dataType) {
         this.#NUMBERS = new Map();
-        
-         // Check data type
+
+        // Check data type
         if (!ReactNumbersHandler.checkDataType(dataType))
             throw new Error("Invalid data type")
-        
-        this.#DATA_TYPE=dataType
+
+        this.#DATA_TYPE = dataType
     }
 
     // - Getters
@@ -40,8 +40,8 @@ export class ReactNumbersHandler {
 
         if (!reactNumber instanceof ReactNumber)
             throw new Error("Invalid React Number")
-        
-        if(this.#DATA_TYPE!==reactNumber.dataType)
+
+        if (this.#DATA_TYPE !== reactNumber.dataType)
             throw new Error("Invalid React Number data type")
 
         if (this.#NUMBERS.has(id))
@@ -60,11 +60,11 @@ export class ReactNumbersHandler {
     }
 
     // - Validators
-    
+
     // Check data type
     static checkDataType(dataType) {
         for (let validDataType of Object.values(REACT_NUMBER.DATA_TYPES))
-            if (dataType ===validDataType)
+            if (dataType === validDataType)
                 return true
 
         return false
@@ -79,7 +79,7 @@ export class ReactNumbersHandler {
                     return null
                 else
                     return number
-                
+
             } else if (this.#DATA_TYPE === REACT_NUMBER.DATA_TYPES.BIG_INT)
                 return BigInt(number)
 
@@ -274,19 +274,20 @@ export class ReactEquation {
             while (operators.length > 0 && getTopOp() !== '(')
                 pushResultStack(operators.pop())
 
-            if(operators.length===0)
+            if (operators.length === 0)
                 throw new Error("Invalid React Equation")
 
             operators.pop()
             return
         }
 
-        if (operators.length === 0 || this.#hasHigherPriority(op, getTopOp())){
+        if (operators.length === 0 || this.#hasHigherPriority(op, getTopOp())) {
             operators.push(op)
-            return}
+            return
+        }
 
-       while (operators.length > 0 && !this.#hasHigherPriority(op, getTopOp()) && getTopOp() !== '(')
-           pushResultStack(operators.pop())
+        while (operators.length > 0 && !this.#hasHigherPriority(op, getTopOp()) && getTopOp() !== '(')
+            pushResultStack(operators.pop())
 
         pushTempStack(op)
     }
