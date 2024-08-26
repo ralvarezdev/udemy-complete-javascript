@@ -1,38 +1,33 @@
 # Complete JavaScript Course
 
-This repository contains the source code of the challenges and projects from the Complete JavaScript Course, taught by:
+This repository contains the source code of the challenges and projects from The Complete JavaScript Course 2024: From Zero to Expert! course.
+
+You can view my certificate [here](https://www.udemy.com/certificate/UC-6ed688b1-1953-4b2b-bb70-f4aeaa502caa/).
 
 ## Teachers
 
-Jonas Schmedtmann <a href="https://github.com/jonasschmedtmann">(jonasschmedtmann)</a>.
+- [jonasschmedtmann](https://github.com/jonasschmedtmann) - Jonas Schmedtmann
 
-## Course Info
+## Course Links
 
-<a href="https://github.com/jonasschmedtmann/complete-javascript-course">Course GitHub Repository</a>
+- [Course GitHub repository](https://github.com/jonasschmedtmann/complete-javascript-course)
 
-<a href="https://www.udemy.com/course/the-complete-javascript-course/">Udemy Course</a>
-
-<a href="https://www.udemy.com/certificate/UC-6ed688b1-1953-4b2b-bb70-f4aeaa502caa/">My Course Certification</a>
+- [Udemy course](https://www.udemy.com/course/the-complete-javascript-course/)
 
 ## Project Websites
 
-<a href="https://ralvarezdev-guess-my-number.netlify.app/">Guess My Number</a>
-
-<a href="https://ralvarezdev-pig-game.netlify.app/">Pig Game</a>
-
-<a href="https://ralvarezdev-bankist-app.netlify.app/">Bankist Web App</a>
-
-<a href="https://ralvarezdev-bankist-web.netlify.app/">Bankist Website</a>
-
-<a href="https://ralvarezdev-mapty.netlify.app/">Mapty</a>
-
-<a href="https://ralvarezdev-forkify.netlify.app/">Forkify</a>
+- [Guess My Number](https://ralvarezdev-guess-my-number.netlify.app/)
+- [Pig Game](https://ralvarezdev-pig-game.netlify.app/)
+- [Bankist Web App](https://ralvarezdev-bankist-app.netlify.app/)
+- [Bankist Website](https://ralvarezdev-bankist-web.netlify.app/)
+- [Mapty](https://ralvarezdev-mapty.netlify.app/)
+- [Forkify](https://ralvarezdev-forkify.netlify.app/)
 
 ## Notes
 
 ### Node Modules
 
-<a href="NODE_MODULES.md">Shrink Node Modules Guide</a>
+- [Shrink node_modules guide](NODE_MODULES.md)
 
 ### Bankist Web App
 
