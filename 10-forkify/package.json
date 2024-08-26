@@ -8,5 +8,12 @@
     "build": "parcel build index.html --dist-dir ./dist"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.12.0",
+    "parcel": "^2.10.3"
+  },
+  "dependencies": {
+    "fracty": "^1.0.11"
+  }
 }
